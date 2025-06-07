@@ -13,5 +13,6 @@ namespace ProductAndCategoryAPI.Repositories
         Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(int categoryId);
         Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
 
+        Task<IEnumerable<Product>> GetPageAsync(int pageNumber, int pageSize);
     }
 }

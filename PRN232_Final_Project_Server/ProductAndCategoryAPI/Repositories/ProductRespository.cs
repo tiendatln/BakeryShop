@@ -49,7 +49,7 @@ namespace ProductAndCategoryAPI.Repositories
         public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
         {
             return await _context.Products
-                .Where(p => p.ProductName.Contains(searchTerm) || p.Description.Contains(searchTerm) 
+                .Where(p => p.ProductName.Contains(searchTerm) || p.Description.Contains(searchTerm)
                 || p.ProductID.ToString().Contains(searchTerm) || p.Price.ToString().Contains(searchTerm))
                 .ToListAsync();
         }
@@ -58,5 +58,12 @@ namespace ProductAndCategoryAPI.Repositories
             return await _context.Products.Where(p => p.IsAvailable).ToListAsync();
         }
 
+        public async Task<IEnumerable<Product>> GetPageAsync(int pageNumber, int pageSize)
+        {
+            return await _context.Products
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
     }
 }

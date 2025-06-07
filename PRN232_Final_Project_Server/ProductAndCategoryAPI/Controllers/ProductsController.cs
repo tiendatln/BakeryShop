@@ -137,5 +137,20 @@ namespace ProductAndCategoryAPI.Controllers
             }
             return Ok(products);
         }
+
+        [HttpGet("page/{pageNumber}/{pageSize}")]
+        public async Task<ActionResult<IEnumerable<ReadProductDTO>>> GetPage(int pageNumber = 1, int pageSize = 10)
+        {
+            if (pageNumber < 1 || pageSize < 1)
+            {
+                return BadRequest("Page number and page size must be greater than zero.");
+            }
+            var products = await _product.GetPageAsync(pageNumber, pageSize);
+            if (products == null || !products.Any())
+            {
+                return NotFound("No products found on this page.");
+            }
+            return Ok(products);
+        }
     }
 }

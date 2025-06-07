@@ -58,5 +58,10 @@ namespace ProductAndCategoryAPI.Service
             var products = await _productRepository.SearchProductsAsync(searchTerm);
             return _mapper.Map<IEnumerable<ReadProductDTO>>(products);
         }
+        public async Task<IEnumerable<ReadProductDTO>> GetPageAsync(int pageNumber, int pageSize)
+        {
+            var products = await _productRepository.GetPageAsync(pageNumber, pageSize);
+            return _mapper.Map<IEnumerable<ReadProductDTO>>(products);
+        }
     }
 }

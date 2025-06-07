@@ -11,6 +11,7 @@ namespace ProductAndCategoryAPI.Service
         Task<bool> DeleteProductAsync(int id);
         Task<IEnumerable<ReadProductDTO>> GetProductsByCategoryIdAsync(int categoryId);
         Task<IEnumerable<ReadProductDTO>> SearchProductsAsync(string searchTerm);
+        Task<IEnumerable<ReadProductDTO>> GetPageAsync(int pageNumber, int pageSize);
 
     }
 }
