@@ -1,4 +1,4 @@
-namespace UserAPI
+namespace AuthAPI
 {
     public class WeatherForecast
     {
