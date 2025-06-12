@@ -29,10 +29,12 @@ namespace ProductAndCategoryAPI.Repositories
 
         public async Task<Product?> UpdateProductAsync(int id, Product product)
         {
-            if (id != product.ProductID) return null;
-            _context.Entry(product).State = EntityState.Modified;
+            product.ProductID = id; // Ensure the ID is set correctly
+            _context.ChangeTracker.Clear();
+            _context.Update(product);
+            var existingProduct = await _context.Products.FindAsync(id);
             await _context.SaveChangesAsync();
-            return product;
+            return existingProduct;
         }
         public async Task<bool> DeleteProductAsync(int id)
         {
@@ -53,17 +55,11 @@ namespace ProductAndCategoryAPI.Repositories
                 || p.ProductID.ToString().Contains(searchTerm) || p.Price.ToString().Contains(searchTerm))
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Product>> GetAvailableProductsAsync()
-        {
-            return await _context.Products.Where(p => p.IsAvailable).ToListAsync();
-        }
 
-        public async Task<IEnumerable<Product>> GetPageAsync(int pageNumber, int pageSize)
+
+        public IQueryable<Product> GetAvailableProductsAsync()
         {
-            return await _context.Products
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            return _context.Products.AsQueryable();
         }
     }
 }

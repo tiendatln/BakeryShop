@@ -15,7 +15,7 @@ namespace ProductAndCategoryAPI.DTOs
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryID { get; set; }
         [Required]
-        public string ImageURL { get; set; } = string.Empty;
+        public IFormFile ImageURL { get; set; } = default;
         public bool IsAvailable { get; set; } = true;
     }
 }

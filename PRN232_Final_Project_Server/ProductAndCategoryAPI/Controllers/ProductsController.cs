@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Server;
 using ProductAndCategoryAPI.Data;
@@ -54,37 +55,27 @@ namespace ProductAndCategoryAPI.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, UpdateProductDTO product)
+        public async Task<IActionResult> PutProduct(int id, [FromForm] UpdateProductDTO product)
         {
-            if (id != product.ProductID)
+            if (product == null && product.ImageURL.Length <= 0)
             {
-                return BadRequest();
+
+                return BadRequest("Product data is null or image is not provided.");
             }
+            var updatedProduct = await _product.UpdateProductAsync(id, product);
 
-            await _product.UpdateProductAsync(id, product);
-
-            return NoContent();
+            return Ok(updatedProduct);
         }
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CreateProductDTO>> PostProduct(CreateProductDTO product, IFormFile imgFile)
+        public async Task<ActionResult<CreateProductDTO>> PostProduct([FromForm] CreateProductDTO product)
         {
-            string imageUrl = "";
-            if (imgFile != null && imgFile.Length > 0)
+            if (product == null && product.ImageURL.Length <= 0)
             {
-                // Ví dụ lưu ảnh vào thư mục wwwroot/images
-                var fileName = Path.GetFileName(imgFile.FileName);
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "/img", fileName);
 
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await imgFile.CopyToAsync(stream);
-                }
-
-                // Gắn đường dẫn ảnh vào DTO nếu cần
-                product.ImageURL = $"/img/{fileName}";
+                return BadRequest("Product data is null or image is not provided.");
             }
 
             var createdProduct = await _product.CreateProductAsync(product);
@@ -104,7 +95,7 @@ namespace ProductAndCategoryAPI.Controllers
 
             await _product.DeleteProductAsync(id);
 
-            return NoContent();
+            return Ok(true);
         }
 
         private async Task<bool> ProductExists(int id)
@@ -138,19 +129,13 @@ namespace ProductAndCategoryAPI.Controllers
             return Ok(products);
         }
 
-        [HttpGet("page/{pageNumber}/{pageSize}")]
-        public async Task<ActionResult<IEnumerable<ReadProductDTO>>> GetPage(int pageNumber = 1, int pageSize = 10)
+        // GET: api/Products/Get
+        [HttpGet("Get")]
+        [EnableQuery]
+        public IQueryable<Product> GetAvailableProducts()
         {
-            if (pageNumber < 1 || pageSize < 1)
-            {
-                return BadRequest("Page number and page size must be greater than zero.");
-            }
-            var products = await _product.GetPageAsync(pageNumber, pageSize);
-            if (products == null || !products.Any())
-            {
-                return NotFound("No products found on this page.");
-            }
-            return Ok(products);
+            return _product.GetAvailableProductsAsync();
+
         }
     }
 }
