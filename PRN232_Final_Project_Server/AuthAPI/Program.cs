@@ -1,3 +1,5 @@
+using AuthAPI.Service;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,18 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Inject HttpClient for external API calls
+builder.Services.AddHttpClient("UserAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7227/api/Users/"); // Adjust the base address as needed
+});
+
+// Inject Service
+builder.Services.AddScoped<AuthAPI.Service.Interface.IUserValidationService, AuthAPI.Service.UserValidationService>();
+
+builder.Services.AddScoped<TokenService>();
+
 
 var app = builder.Build();
 
