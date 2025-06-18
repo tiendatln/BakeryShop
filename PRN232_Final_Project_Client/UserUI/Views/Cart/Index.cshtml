@@ -1,8 +1,8 @@
 ﻿
-@{
+@* @{
     ViewData["Title"] = "Cart";
     var cartItems = Model as List<Cart>;
-}
+} *@
 
 <head>
     <meta charset="utf-8" />
@@ -60,7 +60,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (cartItems != null && cartItems.Any())
+                    @* @if (cartItems != null && cartItems.Any())
                     {
                         foreach (var item in cartItems)
                         {
@@ -83,7 +83,7 @@
                                 <td class="subtotal">@(item.Product.Price * item.Quantity)</td>
                             </tr>
                         }
-                    }
+                    } *@
                     else
                     {
                         <tr>

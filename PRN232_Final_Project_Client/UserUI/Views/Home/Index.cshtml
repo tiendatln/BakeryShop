@@ -1,4 +1,4 @@
-﻿@using DataAccess.Models
+﻿@* @using DataAccess.Models *@
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -155,12 +155,12 @@
 <body>
 
     <div class="img_center">
-        <img src="img/combo img/buffet.png" id="imageSlider" />
+        <img src="img/comboimg/buffet.png" id="imageSlider" />
     </div>
 
     <h1>Best Sellers</h1>
 
-    @{
+@*     @{
         var rainbow = ViewData["rainbow"] as Product;
         var bunny = ViewData["bunny"] as Product;
         var lava = ViewData["lava"] as Product;
@@ -197,7 +197,7 @@
             </a>
         </div>
 
-    </section>
+    </section> *@
 
     <section class="ourProduct">
 
@@ -208,35 +208,35 @@
         <div class="categories">
             <div class="category">
                 <a>
-                    <img src="~/img/PRODUCT/Bread/Gourment Fruit Loaf.png" alt="bread" />
+                    <img src="~/img/product/bread/gourmetfruitloaf.png" />
                     <h3 style="font-family: 'Baskerville Old Face'">BREAD</h3>
                 </a>
             </div>
 
             <div class="category">
                 <a>
-                    <img src="~/img/PRODUCT/Cake slice/Les Opera.png" alt="cake" />
+                    <img src="~/img/product/cakeslice/lesopera.png" />
                     <h3 style="font-family: 'Baskerville Old Face'">CAKE SLICE</h3>
                 </a>
             </div>
 
             <div class="category">
                 <a>
-                    <img src="~/img/product/savory/chocolate croissant.png" />
+                    <img src="~/img/product/savory/chocolatecroissant.png" />
                     <h3 style="font-family: 'Baskerville Old Face'">SAVORY</h3>
                 </a>
             </div>
 
             <div class="category">
                 <a>
-                    <img src="~/img/PRODUCT/Special/Snowy Fruity.png" alt="special" />
+                    <img src="~/img/product/special/snowyfruity.png" />
                     <h3 style="font-family: 'Baskerville Old Face'">SPECIAL</h3>
                 </a>
             </div>
 
             <div class="category">
                 <a>
-                    <img src="img/PRODUCT/Sweet/Chocolate Donut.png" alt="sweet" />
+                    <img src="~/img/product/sweet/chocolatedonut.png" />
                     <h3 style="font-family: 'Baskerville Old Face'">SWEET</h3>
                 </a>
             </div>
@@ -246,10 +246,10 @@
 
     <script>
         const images = [
-            "img/combo img/buffet.png",
-            "img/combo img/ny25.png",
-            "img/combo img/price.jpg",
-            "img/combo img/top.jpg"
+            "img/comboimg/buffet.png",
+            "img/comboimg/ny25.png",
+            "img/comboimg/price.jpg",
+            "img/comboimg/top.jpg"
         ];
 
         let currentIndex = 0;

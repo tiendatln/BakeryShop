@@ -1,7 +1,29 @@
+﻿using Service.BaseService;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Session
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session tồn tại trong 30 phút
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// HttpClient
+builder.Services.AddHttpClient<GatewayHttpClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7112/");
+});
+
+// Dependency Injection
+builder.Services.AddScoped<Service.Interfaces.IUserService, Service.Services.UserService>();
+
+
 
 var app = builder.Build();
 
@@ -19,6 +41,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseSession(); // Sử dụng Session
 
 app.MapControllerRoute(
     name: "default",

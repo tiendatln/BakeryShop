@@ -1,10 +1,10 @@
 ﻿
 @using System.Linq
 
-@{
+@* @{
     ViewData["Title"] = "History";
     var orderItems = Model as List<Order>;
-}
+} *@
 
 <head>
     <meta charset="utf-8" />
@@ -44,7 +44,7 @@
     </div>
 
     <div class="container">
-        @if (orderItems == null || !orderItems.Any())
+       @*  @if (orderItems == null || !orderItems.Any())
         {
             <div class="alert alert-info mt-5">
                 You don't have any orders yet.
@@ -87,7 +87,7 @@
                     </tbody>
                 </table>
             </div>
-        }
+        } *@
     </div>
 
     <!-- Bootstrap JS -->

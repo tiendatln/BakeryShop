@@ -1,6 +1,6 @@
-﻿namespace Gateway.DTOs
+﻿namespace DTOs.UserDTO
 {
-    public class UserValidateDTO
+    public class LoginRequest
     {
         public string Email { get; set; } = null!;
 
