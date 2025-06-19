@@ -27,14 +27,14 @@ namespace UserUI.Controllers
         {
             if(string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
-                ModelState.AddModelError(string.Empty, "Email and Password are required.");
+                TempData["ErrorMessage"] = "Email and Password are required.";
                 return View();
             }
 
             var token = await _userService.LoginAsync(email, password);
             if (string.IsNullOrEmpty(token))
             {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                TempData["ErrorMessage"] = "Invalid email or password.";
                 return View();
             }
 
@@ -65,16 +65,16 @@ namespace UserUI.Controllers
             if (string.IsNullOrEmpty(fullname) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(address)
             || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(password))
             {
-                ViewBag.Error = "Please fill all fields";
-                return View();
+                TempData["ErrorMessage"] = "Fill all field!";
+                return RedirectToAction("Login");
             }
 
             // check user exit
             bool userExits = await _userService.CheckUserExists(email);
             if (userExits)
             {
-                ViewBag.Error = "Email has already been registered";
-                return View();
+                TempData["ErrorMessage"] = "Email has already been registered";
+                return RedirectToAction("Login");
             }
 
             // Lưu thông tin vào TempData để dùng trong Verify
@@ -117,13 +117,6 @@ namespace UserUI.Controllers
         [HttpPost]
         public async Task<IActionResult> Verify(string verifyCode)
         {
-            // Get data from TempData
-            string fullname = TempData["Fullname"] as string;
-            string email = TempData["Email"] as string;
-            string address = TempData["Address"] as string;
-            string phone = TempData["Phone"] as string;
-            string password = TempData["Password"] as string;
-
             // get verify code from session
             string storedCode = HttpContext.Session.GetString("VerifyCode"); // correct code
 
@@ -132,6 +125,14 @@ namespace UserUI.Controllers
                 ViewBag.ErrorMessage = "Invalid Verify Code!";
                 return View();
             }
+
+            // Get data from TempData
+            string fullname = TempData["Fullname"] as string;
+            string email = TempData["Email"] as string;
+            string address = TempData["Address"] as string;
+            string phone = TempData["Phone"] as string;
+            string password = TempData["Password"] as string;
+            TempData.Keep();
 
             // add new user
             var result = await _userService.RegisterAsync(fullname, email, address, phone, password);

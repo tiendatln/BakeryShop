@@ -38,7 +38,7 @@ namespace Service.Services
 
         public async Task<bool> CheckUserExists(string email)
         {
-            var response = await _httpClient.GetAsync("/users/check-email-exit");
+            var response = await _httpClient.GetAsync($"/users/check-email-exit?email={Uri.EscapeDataString(email)}");
             if (response.IsSuccessStatusCode)
             {
                 var exists = await response.Content.ReadFromJsonAsync<bool>();
