@@ -109,6 +109,7 @@
     },
 
     // === USER API ===
+    // Get all users
     {
       "DownstreamPathTemplate": "/api/Users",
       "DownstreamScheme": "https",
@@ -127,6 +128,7 @@
         "role": "Admin"
       }
     },
+    // Get user profile
     {
       "DownstreamPathTemplate": "/api/Users/me",
       "DownstreamScheme": "https",
@@ -144,6 +146,32 @@
       "RouteClaimsRequirement": {
         "role": "Admin,Customer"
       }
+    },
+    // Check email exits
+    {
+      "DownstreamPathTemplate": "/api/Users/emailExit",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users/check-email-exit",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    // Register user
+    {
+      "DownstreamPathTemplate": "/api/Users",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users/register",
+      "UpstreamHttpMethod": [ "POST" ]
     }
   ],
   "GlobalConfiguration": {

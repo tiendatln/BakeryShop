@@ -13,5 +13,6 @@ namespace UserAPI.Service.Interface
         Task<ReadUserDTO> UpdateUserAsync(UpdateUserProfileDTO updateUserProfileDTO);
         Task<bool> DeleteUserAsync(int id);
         IQueryable<ReadUserDTO> GetAllUsers();
+        Task<bool> IsEmailExistsAsync(string email);
     }
 }

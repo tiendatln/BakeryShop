@@ -122,6 +122,14 @@ namespace UserAPI.Service
             return updatedUser;
         }
 
-
+        public async Task<bool> IsEmailExistsAsync(string email)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                return false; // Email không tồn tại
+            }
+            return true; // Email đã tồn tại
+        }
     }
 }

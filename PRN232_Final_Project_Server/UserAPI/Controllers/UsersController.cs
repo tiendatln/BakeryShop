@@ -42,6 +42,19 @@ namespace UserAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("emailExit")]
+        public async Task<ActionResult<bool>> IsEmailExists( [FromQuery] string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email cannot be null or empty.");
+            }
+
+            var exists = await _userService.IsEmailExistsAsync(email);
+            return Ok(exists);
+        }
+
+
         // GET: api/Users
         [HttpGet]
         [EnableQuery]

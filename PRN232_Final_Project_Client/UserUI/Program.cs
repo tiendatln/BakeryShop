@@ -23,6 +23,8 @@ builder.Services.AddHttpClient<GatewayHttpClient>(client =>
 // Dependency Injection
 builder.Services.AddScoped<Service.Interfaces.IUserService, Service.Services.UserService>();
 
+builder.Services.AddScoped<Service.Services.EmailService>();
+
 
 
 var app = builder.Build();
