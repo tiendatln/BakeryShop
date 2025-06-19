@@ -5,15 +5,17 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAPI", "UserAPI\UserAPI.csproj", "{0C9049CA-5F59-4F74-B3E9-8D5E842C7DC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.csproj", "{988B9D7F-32F5-402E-BDAB-E5CE868DCD14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gateway", "Gateway\Gateway.csproj", "{988B9D7F-32F5-402E-BDAB-E5CE868DCD14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthAPI", "AuthAPI\AuthAPI.csproj", "{1E1AED5B-0CD3-4D39-BB75-DB305127B427}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthAPI", "AuthAPI\AuthAPI.csproj", "{1E1AED5B-0CD3-4D39-BB75-DB305127B427}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductAndCategoryAPI", "ProductAndCategoryAPI\ProductAndCategoryAPI.csproj", "{A02D712C-D5CB-4F48-811D-E085C6B524EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductAndCategoryAPI", "ProductAndCategoryAPI\ProductAndCategoryAPI.csproj", "{A02D712C-D5CB-4F48-811D-E085C6B524EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartAPI", "CartAPI\CartAPI.csproj", "{B0F36078-3403-4486-9182-E1ACE0D44DC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartAPI", "CartAPI\CartAPI.csproj", "{B0F36078-3403-4486-9182-E1ACE0D44DC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeedbackAPI", "FeedbackAPI\FeedbackAPI.csproj", "{FA4C0EE0-1E76-4769-91F3-35D5E538270A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeedbackAPI", "FeedbackAPI\FeedbackAPI.csproj", "{FA4C0EE0-1E76-4769-91F3-35D5E538270A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderAPI", "OrderAPI\OrderAPI.csproj", "{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{FA4C0EE0-1E76-4769-91F3-35D5E538270A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA4C0EE0-1E76-4769-91F3-35D5E538270A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA4C0EE0-1E76-4769-91F3-35D5E538270A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
