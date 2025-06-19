@@ -6,6 +6,7 @@ using ProductAndCategoryAPI.DTOs;
 using ProductAndCategoryAPI.Repositories;
 using ProductAndCategoryAPI.Service;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,7 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 var odataBuilder = new ODataConventionModelBuilder();
 odataBuilder.EntitySet<ReadProductDTO>("Products")
     .EntityType.HasKey(p => p.ProductID); // Chỉ định key cho entity
-
+odataBuilder.EntitySet<ReadCategoryDTO>("Categories")
+    .EntityType.HasKey(c => c.CategoryID);
 builder.Services.AddControllers().AddOData( options => options
 .AddRouteComponents("odata",odataBuilder.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(100));
 
@@ -30,8 +32,8 @@ builder.Services.AddScoped<IProductRespository, ProductRespository>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddDbContext<ProductAndCategoryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 var app = builder.Build();
 
