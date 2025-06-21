@@ -25,13 +25,7 @@
         }
       ],
       "UpstreamPathTemplate": "/products",
-      "UpstreamHttpMethod": [ "GET" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "role": "Admin,Customer"
-      }
+      "UpstreamHttpMethod": [ "GET" ]
     },
     {
       "DownstreamPathTemplate": "/api/Products",
@@ -68,6 +62,48 @@
       "RouteClaimsRequirement": {
         "role": "Admin"
       }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+      "RouteClaimsRequirement": {
+        "role": "Admin"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/category/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/category/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/search",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/search",
+      "UpstreamHttpMethod": [ "GET" ]
     },
 
     // === CART API ===
