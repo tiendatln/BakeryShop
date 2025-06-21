@@ -104,13 +104,13 @@ namespace ProductAndCategoryAPI.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<ReadProductDTO>>> SearchProduct(string searchTerm)
+        public async Task<ActionResult<IEnumerable<ReadProductDTO>>> SearchProduct([FromQuery] string searchKey)
         {
-            if (string.IsNullOrWhiteSpace(searchTerm))
+            if (string.IsNullOrWhiteSpace(searchKey))
             {
                 return BadRequest("Search term cannot be empty.");
             }
-            var products = await _product.SearchProductsAsync(searchTerm);
+            var products = await _product.SearchProductsAsync(searchKey);
             if (products == null || !products.Any())
             {
                 return NotFound("No products found matching the search term.");

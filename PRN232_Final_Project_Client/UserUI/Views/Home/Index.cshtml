@@ -160,44 +160,41 @@
 
     <h1>Best Sellers</h1>
 
-@*     @{
-        var rainbow = ViewData["rainbow"] as Product;
-        var bunny = ViewData["bunny"] as Product;
-        var lava = ViewData["lava"] as Product;
-    }
+    @* <section class="bestSeller" id="listSeller">
+        </section>
 
-    <section class="bestSeller">
+        <script>
 
-        <div class="product">
-            <a asp-action="Index" asp-controller="Detail" asp-route-productId="@rainbow?.ProductId">
-                <h2 style="font-family: 'Baskerville Old Face'">@rainbow?.ProductName Cake</h2>
-                <img src="@rainbow?.ImageUrl" />
-                <p>@rainbow?.Description</p>
-                <p>Price: $ @rainbow?.Price</p>
+            $(document).ready(function()){
+                $.ajax({
+                    url: '/Product/GetBestSellers', // URL của action trong HomeController
+                    type: 'GET',
+                    success: function (data) {
+                        var bestSellersContainer = $('.listSeller');
+                        bestSellersContainer.empty(); // Xóa nội dung cũ
+                        $.each(data, function (index, product) {
+                            var productHtml = `
+
+                            <div class="product">
+            <a asp-action="Index" asp-controller="Detail" asp-route-productId="${product.productId}">
+                <h2 style="font-family: 'Baskerville Old Face'">${product.productName}</h2>
+                <img src="${product.imageUrl}" />
+                <p>${product.description}</p>
+                <p>Price: $ ${product.price}</p>
             </a>
         </div>
 
+                            `;
+                            bestSellersContainer.append(productHtml);
+                        });
+                    },
+                    error: function () {
+                        console.error('Error fetching best sellers data.');
+                }
+                })
+            }
 
-        <div class="product">
-            <a asp-action="Index" asp-controller="Detail" asp-route-productId="@bunny?.ProductId">
-                <h2 style="font-family: 'Baskerville Old Face'">@bunny?.ProductName Cake</h2>
-                <img src="@bunny?.ImageUrl" />
-                <p>@bunny?.Description</p>
-                <p>Price: $ @bunny?.Price</p>
-            </a>
-        </div>
-
-
-        <div class="product">
-            <a asp-action="Index" asp-controller="Detail" asp-route-productId="@lava?.ProductId">
-                <h2 style="font-family: 'Baskerville Old Face'">@lava?.ProductName Cake</h2>
-                <img src="@lava?.ImageUrl" />
-                <p>@lava?.Description</p>
-                <p>Price: $ @lava?.Price $</p>
-            </a>
-        </div>
-
-    </section> *@
+        </script> *@
 
     <section class="ourProduct">
 

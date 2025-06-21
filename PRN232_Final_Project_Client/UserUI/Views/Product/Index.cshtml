@@ -1,9 +1,6 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Product";
 }
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,248 +10,833 @@
     <title>Product Page</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <!-- Link GG Font -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Monsieur+La+Doulaise&family=Oleo+Script:wght@400;700&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        html, body {
-            height: 100%;
-            width: 100%;
-            overflow-x: hidden; /* Ngăn chặn scroll ngang */
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
         .hero {
-            background-image: url('/img/PRODUCT/Background/Bakery.jpg'); /* Thay URL ảnh nền */
+            background: linear-gradient(135deg, rgba(255, 107, 53, 0.2), rgba(243, 156, 18, 0.2)), url('/img/PRODUCT/Background/Bakery.jpg');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            height: 300px;
+            min-height: 60vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content:center;
+            justify-content: center;
+            position: relative;
+            color: white;
+        }
+
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.2);
+                z-index: 1;
+            }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Breadcrumb */
+        .custom-breadcrumb {
+            background: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .custom-breadcrumb .breadcrumb-item a {
+                color: white;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                font-weight: 500;
+            }
+
+                .custom-breadcrumb .breadcrumb-item a:hover {
+                    color: #f39c12;
+                    transform: translateY(-2px);
+                }
+
+            .custom-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+                content: "›";
+                color: white;
+                font-size: 1.2rem;
+            }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin: 4rem 0 3rem;
+            position: relative;
+        }
+
+            .section-header h2 {
+                font-family: 'Playfair Display', serif;
+                font-weight: 600;
+                color: #ff6b35;
+                font-size: 2.5rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                display: inline-block;
+                position: relative;
+                padding: 0 2rem;
+                background: white;
+                z-index: 2;
+            }
+
+            .section-header::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(135deg, #ff6b35 0%, #f39c12 100%);
+                z-index: 1;
+            }
+
+        /* Category Cards */
+        .category-section {
+            padding: 4rem 0;
+            background: #f8f9fa;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            text-decoration: none;
+            color: #2c3e50;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .category-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, #ff6b35 0%, #f39c12 100%);
+                transition: left 0.4s ease;
+                z-index: 0;
+            }
+
+            .category-card:hover::before {
+                left: 0;
+            }
+
+            .category-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+                color: white;
+                text-decoration: none;
+            }
+
+        .category-card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .category-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ff6b35;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover .category-icon {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            transition: color 0.3s ease;
+        }
+
+        /* Product Cards */
+        .products-section {
             padding: 1rem 0;
         }
 
-        .header-cart {
-            font-size: 1.5rem;
-            color: white;
-            font-weight: bold;
-            margin-bottom: 1rem;
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            text-decoration: none;
+            color: #2c3e50;
+            position: relative;
+            height: 100%;
+            display: block;
         }
 
-        .header-cart {
-            font-size: 2rem;
-            color: white;
-            margin-bottom: 0.5rem; /* Khoảng cách giữa HOME và breadcrumb */
-            text-transform: uppercase;
-        }
-
-       .header-cart .separator {
-                margin: 0 0.5rem;
-        }
-
-        .breadcrumb {
-        font-size: 1rem;
-        color: white;
-    }
-
-    .breadcrumb a {
-        color: white;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-    .breadcrumb a:hover {
-        color: #f7811b; /* Màu cam khi hover */
-    }
-
-    .breadcrumb-item + .breadcrumb-item::before {
-        content: "/";
-        color: white; /* Dấu "/" màu trắng */
-        padding: -1px 0.5rem;
-    }
-
-    .breadcrumb-item.active {
-        color: white; /* Màu trắng cho Product */
-    }
-        .text-left{
-            font-family: "Oleo Script", serif;
-            font-weight: 400;
-            font-style: normal;
-            font-size: 32px;
-            margin-left: 50px;
-        }
-        .product-card .card {
-            background-color: #f7811b; 
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 70%;
-            width: 90%;
-        }
-
-        .container1 .row {
-            gap: 0px; /* Add space between the cards */
-            margin: 0 40px;
-        }
-
-
-        a:hover .card {
-            transform: translateY(-5px); /* Di chuyển lên 5px */
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2); /* Tạo hiệu ứng đổ bóng */
-            transition: all 0.3s ease-in-out;
-        }
-
-        .card {
-            width: 300px; /* Tăng chiều rộng */
-            height: 450px; /* Tăng chiều cao */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-            .card img {
-                width: 100%;
-                height: 250px; /* Tăng chiều cao của ảnh */
-                object-fit: cover;
-                border-top-left-radius: 12px;
-                border-top-right-radius: 12px;
+            .product-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+                color: #2c3e50;
+                text-decoration: none;
             }
 
-        .card-body {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+
+            .product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.4s ease;
+            }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #ff6b35 0%, #f39c12 100%);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-info {
+            padding: 2rem;
             text-align: center;
-            padding: 15px; /* Tăng khoảng cách nội dung */
         }
 
-        .card-title {
-            font-size: 1.2rem; /* Tăng kích thước chữ */
-            font-weight: bold;
-            white-space: nowrap; /* Không xuống dòng */
-            overflow: hidden; /* Ẩn nội dung thừa */
-            text-overflow: ellipsis; /* Hiển thị "..." khi quá dài */
-            max-width: 100%;
+        .product-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
         }
 
-        .card-text {
-            font-size: 1.2rem; /* Tăng kích thước chữ */
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff6b35;
+            margin-bottom: 1.5rem;
         }
 
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, #ff6b35 0%, #f39c12 100%);
+            border: none;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
+            .add-to-cart-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 20px rgba(255, 107, 53, 0.3);
+                color: white;
+            }
+
+            .add-to-cart-btn i {
+                margin-right: 0.5rem;
+            }
+
+        /* Responsive adjustments using Bootstrap classes */
+        .hero-title-responsive {
+            font-size: 4rem;
+        }
+
+        .hero-subtitle-responsive {
+            font-size: 1.2rem;
+        }
+
+        .section-header-responsive h2 {
+            font-size: 2.5rem;
+        }
+
+        /* Loading effect */
+        .fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+            .fade-in.show {
+                opacity: 1;
+            }
+
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0);
+            pointer-events: none;
+        }
+
+            .ripple.animate {
+                transform: scale(4);
+                opacity: 0;
+                transition: transform 0.6s, opacity 0.6s;
+            }
     </style>
 </head>
 <body>
-
     <!-- Hero Section -->
     <section class="hero">
-        <h1 class="header-cart text-center">
-            PRODUCT
-        </h1>
-        <div class="breadcrumb-container d-flex text-center">
+        <div class="hero-content">
+            <h1 class="hero-title">Our Products</h1>
+            <p class="hero-subtitle">Discover our exquisite collection of artisanal delights crafted with passion</p>
             <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-0">
+                <ol class="breadcrumb custom-breadcrumb justify-content-center">
                     <li class="breadcrumb-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["action"].ToString() == "Index" && ViewContext.RouteData.Values["controller"].ToString() == "Home" ? "active" : "")"
-                           asp-controller="Home" asp-action="Index">Home</a>
+                        <a asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Product</li>
+                    <li class="breadcrumb-item active text-white" aria-current="page">Products</li>
                 </ol>
             </nav>
         </div>
     </section>
-    <!-- Main Content -->
-    <div class="container1 mt-3">
-        <h1 class="text-left mb-4">List of Products</h1>
-        <div class="row d-flex mb-4 justify-content-between">
-            <!-- Example Product Cards -->
-            <div class="col-md-2 product-card">
-                <div class="card">
-                    <div class="card-body text-white">
-                        <h5 class="card-title"><a asp-action="Index" asp-controller="Product" asp-route-categoryId="1" style="color:white; text-decoration:none">Bread</a></h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 product-card">
-                <div class="card">
-                    <div class="card-body text-white">
-                        <h5 class="card-title"><a asp-action="Index" asp-controller="Product" asp-route-categoryId="2" style="color:white; text-decoration:none">Cake Slice</a></h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 product-card">
-                <div class="card">
-                    <div class="card-body text-white">
-                        <h5 class="card-title"><a asp-action="Index" asp-controller="Product" asp-route-categoryId="3" style="color:white; text-decoration:none">Savory</a></h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 product-card">
-                <div class="card">
-                    <div class="card-body text-white">
-                        <h5 class="card-title"><a asp-action="Index" asp-controller="Product" asp-route-categoryId="4" style="color:white; text-decoration:none">Special</a></h5>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2 product-card">
-                <div class="card">
-                    <div class="card-body text-white">
-                        <h5 class="card-title"><a asp-action="Index" asp-controller="Product" asp-route-categoryId="5" style="color:white; text-decoration:none">Sweet</a></h5>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Additional Text -->
-        <div class="text-center mb-4">
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <hr style="width: 15%; margin: 0; border-top: 2px solid #f7811b;">
-                <span style="padding: 0 50px; font-weight: bold; text-transform: uppercase; color:#f7811b">Wake Up Your Taste Buds</span>
-                <hr style="width: 15%; margin: 0; border-top: 2px solid #f7811b;">
-            </div>
-            <h1 class="header-cart text-center" style="color:#f7811b">
-                @if (ViewBag.Category == null)
-                {
-                    var productCate = Model.FirstOrDefault();
-                    @productCate?.Category?.CategoryName
-                } else
-                {
-                    @ViewBag.Category;
-                }
 
-            </h1>
-        </div>
-    </div>
-    <!-- Food List Section -->
-    <div class="container mt-4">
-        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center" style="margin: 0 -40px;">
-            @foreach(var product in Model)
-            {
-                <a asp-action="Index" asp-controller="Detail" asp-route-productId="@product.ProductId" style="text-decoration:none;">
-                    <div class="col">
-                        <div class="card h-100 text-center">
-                            <img src="~/@product.ImageUrl" class="card-img-top" alt="@product.ProductName">
-                            <div class="card-body">
-                                <h5 class="card-title">@product.ProductName</h5>
-                                <p class="card-text text-warning fw-bold">$@product.Price</p>
-                                <button class="btn btn-warning text-white">Add to Cart</button>
-                            </div>
+   
+
+    <!-- Category Section -->
+    <section class="category-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <h2>Browse Categories</h2>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12 d-flex">
+                    <a class="category-card fade-in flex-fill category-link scroll-reveal" data-category-id="0">
+                        <div class="category-card-content text-center">
+                            <i class="fas fa-th-large category-icon"></i>
+                            <h3 class="category-title">All</h3>
                         </div>
-                    </div>
-                </a>
-            }
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                    <a class="category-card fade-in category-link scroll-reveal" data-category-id="1">
+                        <div class="category-card-content">
+                            <i class="fas fa-bread-slice category-icon"></i>
+                            <h3 class="category-title">Bread</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                    <a class="category-card fade-in category-link scroll-reveal" data-category-id="2">
+                        <div class="category-card-content">
+                            <i class="fas fa-birthday-cake category-icon"></i>
+                            <h3 class="category-title">Cake Slice</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                    <a class="category-card fade-in category-link scroll-reveal" data-category-id="3">
+                        <div class="category-card-content">
+                            <i class="fas fa-cookie-bite category-icon"></i>
+                            <h3 class="category-title">Savory</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                    <a class="category-card fade-in category-link scroll-reveal" data-category-id="4">
+                        <div class="category-card-content">
+                            <i class="fas fa-star category-icon"></i>
+                            <h3 class="category-title">Special</h3>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-2 col-md-4 col-sm-6 col-12">
+                    <a class="category-card fade-in category-link scroll-reveal" data-category-id="5">
+                        <div class="category-card-content">
+                            <i class="fas fa-candy-cane category-icon"></i>
+                            <h3 class="category-title">Sweet</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section" style="padding: 3rem 0;">
+        <div class="container">
+            <div class="position-relative">
+                <form id="globalSearchForm" class="search-bar">
+                    <input id="globalSearchInput" class="form-control" type="search" placeholder="Search..." />
+                    <ul id="suggestionList" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="container">
+            <div class="section-header scroll-reveal">
+                <h2>Featured Products</h2>
+            </div>
+
+            <div class="row g-4" id="productList">
+                <style>
+                    .product-card, .product-image, .product-info {
+                        opacity: 1 !important;
+                        visibility: visible !important;
+                        display: block !important;
+                        color: inherit !important;
+                    }
+                </style>
+            </div>
+            <div class="container mt-5">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous -->
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" tabindex="-1">Previous</a>
+                        </li>
+
+                        <!-- Page Numbers -->
+                        <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="?page=2">2</a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
+
+                        <!-- Next -->
+                        <li class="page-item">
+                            <a class="page-link" href="?page=3">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            const container = $('#productList');
+            const $searchInput = $('#globalSearchInput');
+            const $suggestionList = $('#suggestionList');
+            let currentCategoryId = 0;
+
+            // Category click handler
+            $('.category-link').on('click', function (e) {
+                e.preventDefault();
+
+                // Remove active class from all categories
+                $('.category-link').removeClass('active');
+                // Add active class to clicked category
+                $(this).addClass('active');
+
+                currentCategoryId = $(this).data('category-id') || 0;
+                fetchFilteredProducts();
+            });
+
+            // Search form submit
+            $('#globalSearchForm').on('submit', function (e) {
+                e.preventDefault();
+                fetchFilteredProducts();
+            });
+
+            // Search suggestions
+            $searchInput.on('input', function () {
+                const searchTerm = $(this).val().trim();
+                if (searchTerm.length === 0) {
+                    $suggestionList.empty().hide();
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Product/SearchProductsAjax',
+                    method: 'GET',
+                    data: { searchTerm, categoryId: currentCategoryId },
+                    success: function (data) {
+                        $suggestionList.empty();
+
+                        if (data.length === 0) {
+                            $suggestionList.append('<li class="list-group-item suggestion-item disabled">No products found</li>');
+                            $suggestionList.show();
+                            return;
+                        }
+
+                        data.slice(0, 5).forEach(product => {
+                            const item = $(`<li class="list-group-item suggestion-item">${product.productName}</li>`);
+                            item.on('click', function () {
+                                $searchInput.val(product.productName);
+                                $suggestionList.empty().hide();
+                                fetchFilteredProducts();
+                            });
+                            $suggestionList.append(item);
+                        });
+                        $suggestionList.show();
+                    },
+                    error: function () {
+                        console.log('Error fetching suggestions');
+                    }
+                });
+            });
+
+            // Combined search function
+            function fetchFilteredProducts() {
+                const searchTerm = $searchInput.val().trim();
+
+                if (!searchTerm && currentCategoryId !== 0) {
+                    $.get('/Product/GetProductsByCategory', { categoryId: currentCategoryId }, renderProducts);
+                }
+                else if (searchTerm && currentCategoryId !== 0) {
+                    $.get('/Product/SearchProductsAjax', {
+                        searchTerm: searchTerm,
+                        categoryId: currentCategoryId
+                    }, renderProducts);
+                }
+                else if (searchTerm && currentCategoryId === 0) {
+                    $.get('/Product/SearchProductsAjax', { searchTerm }, renderProducts);
+                }
+                else {
+                    $.get('/Product/GetAllProducts', renderProducts);
+                }
+            }
+
+            // Render products function
+            function renderProducts(data) {
+                container.empty();
+                if (!data || data.length === 0) {
+                    container.append(`
+                        <div class="col-12 text-center">
+                            <div style="padding: 4rem 2rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
+                                <i class="fas fa-search" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 2rem;"></i>
+                                <h3 style="color: #4a5568; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">No products found</h3>
+                                <p style="color: #718096;">Try adjusting your search or browse different categories</p>
+                            </div>
+                        </div>`);
+                    return;
+                }
+
+                data.forEach(function (product, index) {
+                    const html = `
+                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                        <a class="product-card fade-in scroll-reveal" href="/Detail/Index?productId=${product.productID}" style="animation-delay: ${index * 0.1}s">
+                            <div class="product-image">
+                                <img src="${product.imageURL}" alt="${product.productName}" loading="lazy">
+                            </div>
+                            <div class="product-info">
+                                <h3 class="product-name">${product.productName}</h3>
+                                <div class="product-price">$${product.price}</div>
+                                <button class="add-to-cart-btn" onclick="event.preventDefault(); addRipple(event);">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </a>
+                    </div>`;
+                    container.append(html);
+                });
+
+                // Trigger animations
+                setTimeout(() => {
+                    $('.fade-in').addClass('show');
+                    initScrollReveal();
+                }, 100);
+            }
+
+            // Hide suggestions when clicking outside
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('#globalSearchForm').length) {
+                    $suggestionList.empty().hide();
+                }
+            });
+
+            // Load all products on page load
+            $.get('/Product/GetAllProducts', renderProducts);
+        });
+
+        // Enhanced animations and interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize scroll reveal
+            initScrollReveal();
+
+            // Fade in elements with staggered delay
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.classList.add('show');
+                }, index * 150);
+            });
+
+            // Enhanced responsive adjustments
+            function adjustLayout() {
+                const heroTitle = document.querySelector('.hero-title');
+                const heroSubtitle = document.querySelector('.hero-subtitle');
+
+                if (window.innerWidth <= 768) {
+                    document.documentElement.style.setProperty('--hero-padding', '2rem 1rem');
+                } else {
+                    document.documentElement.style.setProperty('--hero-padding', '4rem 2rem');
+                }
+            }
+
+            adjustLayout();
+            window.addEventListener('resize', adjustLayout);
+
+            // Add smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Scroll reveal function
+        function initScrollReveal() {
+            const reveals = document.querySelectorAll('.scroll-reveal');
+
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('revealed');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            reveals.forEach(reveal => {
+                revealObserver.observe(reveal);
+            });
+        }
+
+        // Enhanced ripple effect
+        function addRipple(event) {
+            const button = event.currentTarget;
+            const ripple = document.createElement('span');
+            const rect = button.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = event.clientX - rect.left - size / 2;
+            const y = event.clientY - rect.top - size / 2;
+
+            ripple.classList.add('ripple');
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+
+            button.appendChild(ripple);
+
+            // Add haptic feedback for mobile
+            if ('vibrate' in navigator) {
+                navigator.vibrate(50);
+            }
+
+            setTimeout(() => {
+                ripple.classList.add('animate');
+            }, 10);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 800);
+        }
+
+        // Enhanced card interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add magnetic effect to cards
+            document.querySelectorAll('.category-card, .product-card').forEach(card => {
+                card.addEventListener('mousemove', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / 10;
+                    const rotateY = (centerX - x) / 10;
+
+                    this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+                });
+            });
+
+            // Add floating animation to hero elements
+            const heroElements = document.querySelectorAll('.hero-title, .hero-subtitle');
+            heroElements.forEach((element, index) => {
+                element.style.animation = `float 6s ease-in-out infinite ${index * 0.5}s`;
+            });
+        });
+
+        // Performance optimization
+        let ticking = false;
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(updateAnimations);
+                ticking = true;
+            }
+        }
+
+        function updateAnimations() {
+            // Update any scroll-based animations here
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', requestTick);
+
+        // Add loading states
+        function showLoading() {
+            $('#productList').html(`
+                <div class="col-12 text-center">
+                    <div style="padding: 4rem 2rem;">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading amazing products...</p>
+                    </div>
+                </div>
+            `);
+        }
+
+        // Add error handling
+        function showError(message = 'Something went wrong') {
+            $('#productList').html(`
+                <div class="col-12 text-center">
+                    <div style="padding: 4rem 2rem; background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%); border-radius: 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 4rem; color: #e53e3e; margin-bottom: 2rem;"></i>
+                        <h3 style="color: #c53030; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">Oops!</h3>
+                        <p style="color: #9b2c2c;">${message}</p>
+                        <button onclick="window.location.reload()" class="btn btn-outline-danger mt-3">Try Again</button>
+                    </div>
+                </div>
+            `);
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                $('#suggestionList').empty().hide();
+            }
+
+            if (e.key === '/' && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                $('#globalSearchInput').focus();
+            }
+        });
+
+        // Add touch gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                // Add swipe functionality here if needed
+                console.log(diff > 0 ? 'Swiped left' : 'Swiped right');
+            }
+        }
+
+        // Add theme toggle functionality
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+    </script>
 </body>
 </html>

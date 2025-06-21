@@ -51,7 +51,7 @@ namespace ProductAndCategoryAPI.Repositories
         public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
         {
             return await _context.Products
-                .Where(p => p.ProductName.Contains(searchTerm) || p.Description.Contains(searchTerm)
+                .Where(p => p.ProductName.Contains(searchTerm)
                 || p.ProductID.ToString().Contains(searchTerm) || p.Price.ToString().Contains(searchTerm))
                 .ToListAsync();
         }

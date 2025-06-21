@@ -421,7 +421,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")"
+                            <a class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" && ViewContext.RouteData.Values["controller"]?.ToString() == "Product" ? "active" : "")"
                                asp-controller="Product" asp-action="Index" asp-route-categoryId="0">
                                 <i class="fas fa-birthday-cake me-2"></i>Products
                             </a>
@@ -434,10 +434,14 @@
                         </li>
                     </ul>
 
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
                     <!-- Search bar -->
-                    <form class="search-bar" asp-action="Search" asp-controller="Product">
-                        <input class="form-control" type="search" name="searchKey" placeholder="Search delicious treats..." aria-label="Search" />
-                    </form>
+                    <!-- Layout.cshtml hoặc _Layout.cshtml -->
+                    
+
+                    
+                    
 
                     <!-- Icons: Cart + User -->
                     <div class="navbar-icons">
