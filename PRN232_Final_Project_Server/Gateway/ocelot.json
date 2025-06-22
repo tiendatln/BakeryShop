@@ -1,241 +1,255 @@
 {
-    "Routes": [
+  "Routes": [
+    // === AUTH API ===
+    {
+      "DownstreamPathTemplate": "/api/Auth/login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Auth/login",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7009
-                }
-            ],
-            "UpstreamPathTemplate": "/auth/login",
-            "UpstreamHttpMethod": [ "POST" ]
-        },
-        {
-            "DownstreamPathTemplate": "/api/Products",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
-        {
-            "DownstreamPathTemplate": "/api/Products",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products",
-            "UpstreamHttpMethod": [ "POST" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Products/{id}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/{id}",
-            "UpstreamHttpMethod": [ "PUT" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Products/{id}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/{id}",
-            "UpstreamHttpMethod": [ "DELETE" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Products/category/{id}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/category/{id}",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
-        {
-            "DownstreamPathTemplate": "/api/Products/search",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/search",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
-        {
-            "DownstreamPathTemplate": "/api/Cart/{userId}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7027
-                }
-            ],
-            "UpstreamPathTemplate": "/cart/{userId}",
-            "UpstreamHttpMethod": [ "GET" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Cart",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7027
-                }
-            ],
-            "UpstreamPathTemplate": "/cart",
-            "UpstreamHttpMethod": [ "POST" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Cart/{cartId}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7027
-                }
-            ],
-            "UpstreamPathTemplate": "/cart/{cartId}",
-            "UpstreamHttpMethod": [ "DELETE" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Cart/update-quantities",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7027
-                }
-            ],
-            "UpstreamPathTemplate": "/cart/update-quantities",
-            "UpstreamHttpMethod": [ "PUT" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Users",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7227
-                }
-            ],
-            "UpstreamPathTemplate": "/users",
-            "UpstreamHttpMethod": [ "GET" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Users/me",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7227
-                }
-            ],
-            "UpstreamPathTemplate": "/users/me",
-            "UpstreamHttpMethod": [ "GET" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer"
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin,Customer"
-            }
-        },
-        {
-            "DownstreamPathTemplate": "/api/Users/emailExit",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7227
-                }
-            ],
-            "UpstreamPathTemplate": "/users/check-email-exit",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
-        {
-            "DownstreamPathTemplate": "/api/Users",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7227
-                }
-            ],
-            "UpstreamPathTemplate": "/users/register",
-            "UpstreamHttpMethod": [ "POST" ]
+          "Host": "localhost",
+          "Port": 7009
         }
-    ],
-    "GlobalConfiguration": {
-        "BaseUrl": "https://localhost:7112"
+      ],
+      "UpstreamPathTemplate": "/auth/login",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+
+    // === PRODUCT API ===
+    {
+      "DownstreamPathTemplate": "/api/Products",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+        "RouteClaimsRequirement": {
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+        }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+        "RouteClaimsRequirement": {
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+        }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+        "RouteClaimsRequirement": {
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+        }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/category/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/category/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/search",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/search",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+
+    // === CART API ===
+    {
+            
+                "DownstreamPathTemplate": "/api/Cart/{userId}",
+                "DownstreamScheme": "https",
+                "DownstreamHostAndPorts": [
+                    {
+                        "Host": "localhost",
+                        "Port": 7027
+                    }
+                ],
+                "UpstreamPathTemplate": "/cart/{userId}",
+                "UpstreamHttpMethod": [ "GET" ],
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "Bearer"
+                },
+                "RouteClaimsRequirement": {
+                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+                }
+            },
+            {
+                "DownstreamPathTemplate": "/api/Cart",
+                "DownstreamScheme": "https",
+                "DownstreamHostAndPorts": [
+                    {
+                        "Host": "localhost",
+                        "Port": 7027
+                    }
+                ],
+                "UpstreamPathTemplate": "/cart",
+                "UpstreamHttpMethod": [ "POST" ],
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "Bearer"
+                },
+                "RouteClaimsRequirement": {
+                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+                }
+            },
+            {
+                "DownstreamPathTemplate": "/api/Cart/{cartId}",
+                "DownstreamScheme": "https",
+                "DownstreamHostAndPorts": [
+                    {
+                        "Host": "localhost",
+                        "Port": 7027
+                    }
+                ],
+                "UpstreamPathTemplate": "/cart/{cartId}",
+                "UpstreamHttpMethod": [ "DELETE" ],
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "Bearer"
+                },
+                "RouteClaimsRequirement": {
+                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+                }
+            },
+            {
+                "DownstreamPathTemplate": "/api/Cart/update-quantities",
+                "DownstreamScheme": "https",
+                "DownstreamHostAndPorts": [
+                    {
+                        "Host": "localhost",
+                        "Port": 7027
+                    }
+                ],
+                "UpstreamPathTemplate": "/cart/update-quantities",
+                "UpstreamHttpMethod": [ "PUT" ],
+                "AuthenticationOptions": {
+                    "AuthenticationProviderKey": "Bearer"
+                },
+                "RouteClaimsRequirement": {
+                    "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+                }
+            
+    
+    },
+
+    // === USER API ===
+    // Get all users
+    {
+      "DownstreamPathTemplate": "/api/Users",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+        "RouteClaimsRequirement": {
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+        }
+    },
+    // Get user profile
+    {
+      "DownstreamPathTemplate": "/api/Users/me",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users/me",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer"
+      },
+        "RouteClaimsRequirement": {
+            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin,Customer"
+        }
+    },
+    // Check email exits
+    {
+      "DownstreamPathTemplate": "/api/Users/emailExit",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users/check-email-exit",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    // Register user
+    {
+      "DownstreamPathTemplate": "/api/Users",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users/register",
+      "UpstreamHttpMethod": [ "POST" ]
     }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7112"
+  }
 }
