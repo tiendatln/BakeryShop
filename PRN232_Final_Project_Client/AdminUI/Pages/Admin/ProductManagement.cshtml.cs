@@ -31,9 +31,13 @@ namespace AdminUI.Pages.Admin
             }
         }
 
-        public async Task<IActionResult> OnGetAllProductAsync()
+        public async Task<IActionResult> OnGetAllProductAsync(int page)
         {
-            var products = await _productService.GetAllProductsAsync();
+
+            var take = 10; // Number of products per page
+            var skip = (page - 1) * take; // Calculate the number of products to skip
+
+            var products = await _productService.GetProductPage(take, skip);
 
             if (products == null || !products.Any())
             {

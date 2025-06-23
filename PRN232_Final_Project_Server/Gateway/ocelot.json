@@ -101,6 +101,18 @@
       "UpstreamPathTemplate": "/products/{id}",
       "UpstreamHttpMethod": [ "GET" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/Products/Get",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/Get",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
 
     // === CART API ===
     {

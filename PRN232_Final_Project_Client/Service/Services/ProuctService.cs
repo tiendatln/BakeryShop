@@ -99,5 +99,12 @@ namespace Service.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
         }
+
+        public async Task<List<ReadProductDTO>> GetProductPage(int take, int skip)
+        {
+            var response = await _httpClient.GetAsync($"/products/Get?$top{take}&skip={skip}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
+        }
     }
 }

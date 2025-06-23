@@ -16,6 +16,6 @@ namespace Service.Interfaces
         public Task DeleteProductAsync(int productId, string token);
         public Task<List<ReadProductDTO>> GetProductsByCategoryAsync(int categoryId);
         public Task<List<ReadProductDTO>> SearchProductsAsync(string searchTerm);
-
+        public Task<List<ReadProductDTO>> GetProductPage(int take, int skip);
     }
 }

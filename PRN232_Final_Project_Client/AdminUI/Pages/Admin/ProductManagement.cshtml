@@ -65,9 +65,11 @@
 
 
                     <script>
+                        const page = document.getElementById('page');
                         $(document).ready(function () {
+                            
                             $.ajax({
-                                url: '?handler=AllProduct',
+                                url: `?handler=AllProduct&productId=${page}`,
                                 type: 'GET',
                                 success: function (data) {
                                     const container = $('#productTableBody');
