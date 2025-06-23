@@ -1,7 +1,27 @@
-var builder = WebApplication.CreateBuilder(args);
+﻿var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session tồn tại trong 30 phút
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// HttpClient
+builder.Services.AddHttpClient<Service.BaseService.GatewayHttpClient>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7112/");
+});
+
+// Dependency Injection
+builder.Services.AddScoped<Service.Interfaces.IUserService, Service.Services.UserService>();
+builder.Services.AddScoped<Service.Interfaces.IProductService, Service.Services.ProuctService>();
+
+builder.Services.AddScoped<Service.Services.EmailService>();
 
 var app = builder.Build();
 
@@ -17,6 +37,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSession(); 
 
 app.UseAuthorization();
 

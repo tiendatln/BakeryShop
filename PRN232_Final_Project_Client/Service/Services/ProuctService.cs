@@ -4,6 +4,7 @@ using Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,6 +54,29 @@ namespace Service.Services
                 Console.WriteLine($"Exception: {ex.Message}");
                 throw;
             }
+        }
+
+        public async Task<ReadProductDTO> CreateProductAsync(CreateProductDTO productDto, string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.PostAsJsonAsync("/products", productDto);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<ReadProductDTO>();
+        }
+
+        public async Task<ReadProductDTO> UpdateProductAsync(UpdateProductDTO productDto, string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.PutAsJsonAsync($"/products/{productDto.ProductID}", productDto);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<ReadProductDTO>();
+        }
+
+        public async Task DeleteProductAsync(int productId, string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.DeleteAsync($"/products/{productId}");
+            response.EnsureSuccessStatusCode();
         }
 
 

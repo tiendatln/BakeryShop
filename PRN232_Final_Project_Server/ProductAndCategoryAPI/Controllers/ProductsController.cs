@@ -70,9 +70,9 @@ namespace ProductAndCategoryAPI.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CreateProductDTO>> PostProduct([FromForm] CreateProductDTO product)
+        public async Task<ActionResult<CreateProductDTO>> PostProduct(CreateProductDTO product)
         {
-            if (product == null && product.ImageURL.Length <= 0)
+            if (product == null)
             {
 
                 return BadRequest("Product data is null or image is not provided.");

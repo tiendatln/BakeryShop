@@ -31,23 +31,6 @@ namespace ProductAndCategoryAPI.Service
         public async Task<Product> CreateProductAsync(CreateProductDTO createProductDto)
         {
             var product = _mapper.Map<Product>(createProductDto);
-            if (createProductDto != null && createProductDto.ImageURL.Length > 0)
-            {
-                // Save the image to a specific path, e.g., wwwroot/images
-                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "img");
-                Directory.CreateDirectory(folderPath);
-                var fileName = Path.GetFileName(createProductDto.ImageURL.FileName);
-                var filePath = Path.Combine(folderPath, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await createProductDto.ImageURL.CopyToAsync(stream);
-                }
-                product.ImageURL = $"img/{fileName}"; // Set the image URL
-            }
-            else
-            {
-                product.ImageURL = string.Empty; // Set default or empty if no image provided
-            }
             var createdProduct = await _productRepository.CreateProductAsync(product);
             return _mapper.Map<Product>(createdProduct);
         }

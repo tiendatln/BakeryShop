@@ -11,6 +11,9 @@ namespace Service.Interfaces
     {
         public Task<List<ReadProductDTO>> GetAllProductsAsync();
         public Task<ReadProductDTO> GetProductByIdAsync(int productId);
+        public Task<ReadProductDTO> CreateProductAsync(CreateProductDTO productDto, string token);
+        public Task<ReadProductDTO> UpdateProductAsync(UpdateProductDTO productDto, string token);
+        public Task DeleteProductAsync(int productId, string token);
         public Task<List<ReadProductDTO>> GetProductsByCategoryAsync(int categoryId);
         public Task<List<ReadProductDTO>> SearchProductsAsync(string searchTerm);
 
