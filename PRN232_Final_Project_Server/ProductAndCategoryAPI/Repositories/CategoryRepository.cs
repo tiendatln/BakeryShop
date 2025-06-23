@@ -17,7 +17,6 @@ namespace ProductAndCategoryAPI.Repositories
         {
             return await _context.Categories
                 .Include(c => c.Products)
-                .OrderBy(c => c.CategoryName)
                 .ToListAsync();
         }
 
