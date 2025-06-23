@@ -1,6 +1,7 @@
 ﻿using DTOs.UserDTO;
 using Service.BaseService;
 using Service.Interfaces;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
 namespace Service.Services
@@ -26,8 +27,8 @@ namespace Service.Services
 
             if (response.IsSuccessStatusCode)
             {
-                var token = await response.Content.ReadAsStringAsync();
-                return token; // Trả về token nếu đăng nhập thành công
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                return result?.Token;
             }
             else
             {
@@ -73,6 +74,20 @@ namespace Service.Services
                 // Xử lý lỗi đăng ký
                 return false;
             }
+        }
+
+        public async Task<ReadUserDTO> GetUserInfoAsync(string token)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/users/info");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var response = await _httpClient.SendAsync(request);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var content = await response.Content.ReadFromJsonAsync<ReadUserDTO>();
+            return content;
         }
     }
 }

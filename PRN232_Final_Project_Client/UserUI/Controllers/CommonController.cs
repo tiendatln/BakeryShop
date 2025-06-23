@@ -147,5 +147,27 @@ namespace UserUI.Controllers
             // Chuyển hướng đến trang đăng nhập sau khi đăng ký thành công
             return RedirectToAction("Login", "Common");
         }
+
+        // ***** Profile *****
+        [HttpGet]
+        public async Task<IActionResult> Profile()
+        {
+            // Get user token from session
+            string token = HttpContext.Session.GetString("UserToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Login", "Common");
+            }
+
+            // Get user info
+            var user = await _userService.GetUserInfoAsync(token);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+                return RedirectToAction("Login", "Common");
+            }
+
+            return View(user);
+        }
     }
 }
