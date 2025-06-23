@@ -102,7 +102,7 @@ namespace Service.Services
 
         public async Task<List<ReadProductDTO>> GetProductPage(int take, int skip)
         {
-            var response = await _httpClient.GetAsync($"/products/Get?$top{take}&skip={skip}");
+            var response = await _httpClient.GetAsync($"/products/Get?$top={take}&$skip={skip}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
         }

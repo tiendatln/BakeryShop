@@ -37,9 +37,12 @@ builder.Services.AddAuthentication("Bearer")
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero,
 
+            // ✅ Cấu hình này đảm bảo Ocelot đọc được đúng claim gốc
             NameClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
-            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
         };
+
+        // ✅ Bắt buộc: Không cho .NET tự ánh xạ claim
         options.MapInboundClaims = false;
     });
 
@@ -84,6 +87,15 @@ app.UseAuthorization(); // Ensure this is after UseAuthentication
 
 app.MapControllers();
 
+app.Use(async (context, next) =>
+{
+    Console.WriteLine("👀 CLAIMS:");
+    foreach (var claim in context.User.Claims)
+    {
+        Console.WriteLine($"👉 {claim.Type} = {claim.Value}");
+    }
+    await next();
+});
 // Use Ocelot middleware
 await app.UseOcelot();
 

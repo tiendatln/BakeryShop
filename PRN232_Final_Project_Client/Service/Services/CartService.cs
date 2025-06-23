@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using CartAPI.DTOs;
+using Service.BaseService;
 using Service.Interfaces;
 
 namespace Service.Services
@@ -15,9 +16,9 @@ namespace Service.Services
 
         private readonly HttpClient _httpClient;
 
-        public CartService(HttpClient httpClient)
+        public CartService(GatewayHttpClient gateway)
         {
-            _httpClient = httpClient;
+            _httpClient = gateway.Client;
         }
 
         private void AddBearerToken(string token)
@@ -36,7 +37,7 @@ namespace Service.Services
         public async Task<bool> AddCartAsync(CartCreateDTO dto, string token)
         {
             AddBearerToken(token);
-            var response = await _httpClient.PostAsJsonAsync("/cart", dto);
+            var response = await _httpClient.PostAsJsonAsync("/cart/add", dto);
             return response.IsSuccessStatusCode;
         }
 

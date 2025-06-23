@@ -1,7 +1,9 @@
+using Azure;
 using DTOs.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.Interfaces;
+using System.Drawing.Printing;
 using System.Threading.Tasks;
 
 namespace AdminUI.Pages.Admin
@@ -31,20 +33,25 @@ namespace AdminUI.Pages.Admin
             }
         }
 
-        public async Task<IActionResult> OnGetAllProductAsync(int page)
+        public async Task<IActionResult> OnGetAllProductAsync([FromQuery]int page)
         {
+            var allproducts = await _productService.GetAllProductsAsync();
+            var totalPages = (int)Math.Ceiling(allproducts.Count / 10f);
 
-            var take = 10; // Number of products per page
-            var skip = (page - 1) * take; // Calculate the number of products to skip
+            var skip = (page - 1) * 10; // Calculate the number of products to skip based on the current page
 
-            var products = await _productService.GetProductPage(take, skip);
+            var products = await _productService.GetProductPage(10, skip);
 
             if (products == null || !products.Any())
             {
                 return new JsonResult(new { success = false, message = "No products found." });
             }
 
-            return new JsonResult(products);
+            return new JsonResult(new
+            {
+                products = products,
+                totalPages = totalPages
+            });
         }
 
 
@@ -72,7 +79,7 @@ namespace AdminUI.Pages.Admin
             {
                 CreateProduct.ImageURL = string.Empty; // Set default or empty if no image provided
             }
-            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQ3VzdG9tZXIgVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImN1c3RvbWVyQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQ3VzdG9tZXIiLCJleHAiOjE3NTA2MjExMjIsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.TuB7ISII40_ZhzArg5ijIxseZKY3WaEBmBos3CYARrE";
+            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4gVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NTA2ODk3MTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.tSzzyW6C-f0BKgXbZf-R1wkNywVmhEJQeiK6rChflso";
             Console.WriteLine($"Token: {token}");
             var createdProduct = await _productService.CreateProductAsync(CreateProduct, token);
 
@@ -86,7 +93,7 @@ namespace AdminUI.Pages.Admin
 
         public async Task<IActionResult> OnGetDeleteAsync(int productId)
         {
-            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4gVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NTA2NzY2NzAsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.ug-7MDHbIb4VW_6phvesuQ5PQpBFagrMBe3MQ0s8LFU";
+            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4gVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NTA2ODk3MTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.tSzzyW6C-f0BKgXbZf-R1wkNywVmhEJQeiK6rChflso";
             Console.WriteLine($"Token: {token}");
             try
             {
