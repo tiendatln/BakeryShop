@@ -72,10 +72,10 @@ namespace CartAPI.Controllers
 
 
         // POST: api/cart
-        [HttpPost]
-        public async Task<ActionResult> AddCart([FromBody] CartCreateDTO dto)
+        [HttpPost("{userId}")]
+        public async Task<IActionResult> AddCart(int userId, [FromBody] CartCreateDTO dto)
         {
-
+            dto.UserID = userId; // gán userId từ Ocelot route
             await _service.AddCart(dto);
             return Ok(new { message = "Cart item added successfully" });
         }

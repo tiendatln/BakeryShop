@@ -56,9 +56,12 @@ namespace UserUI.Controllers
             if (string.IsNullOrEmpty(token)) return Unauthorized();
 
             var success = await _cartService.AddCartAsync(dto, token);
-            if (!success) ModelState.AddModelError("", "Add to cart failed!");
+            if (!success)
+            {
+                TempData["OrderErrors"] = "Add to cart failed!";
+            }
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index"); // hoặc quay lại Detail nếu muốn
         }
         [HttpPost]
         public async Task<IActionResult> RemoveFromCart(int cartID)
@@ -80,5 +83,38 @@ namespace UserUI.Controllers
             await _cartService.UpdateQuantitiesAsync(updates, token);
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> CheckOut(List<int> cartIds)
+        {
+            var token = HttpContext.Session.GetString("UserToken");
+            if (string.IsNullOrEmpty(token)) return RedirectToAction("Login", "Common");
+
+            if (cartIds == null || cartIds.Count == 0)
+            {
+                TempData["OrderErrors"] = "No cart selected!";
+                return RedirectToAction("Index");
+            }
+
+            // Lấy chi tiết cart
+            var allCarts = await _cartService.GetCartAsync(token);
+            var selectedCarts = allCarts.Where(c => cartIds.Contains(c.CartID)).ToList();
+
+            // Lấy danh sách sản phẩm tương ứng
+            var selectedProducts = new List<ReadProductDTO>();
+            foreach (var cart in selectedCarts)
+            {
+                var product = await _productService.GetProductByIdAsync(cart.ProductID);
+                selectedProducts.Add(product);
+            }
+
+            // Gửi qua View
+            ViewBag.CartItems = selectedCarts;
+            ViewBag.Products = selectedProducts;
+            ViewBag.CartIDs = cartIds;
+
+            return View("Checkout"); // trả về trang Checkout.cshtml
+        }
+
     }
 }

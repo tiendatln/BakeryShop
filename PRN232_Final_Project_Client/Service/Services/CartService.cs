@@ -37,7 +37,7 @@ namespace Service.Services
         public async Task<bool> AddCartAsync(CartCreateDTO dto, string token)
         {
             AddBearerToken(token);
-            var response = await _httpClient.PostAsJsonAsync("/cart", dto);
+            var response = await _httpClient.PostAsJsonAsync("/cart/add", dto);
             return response.IsSuccessStatusCode;
         }
 
