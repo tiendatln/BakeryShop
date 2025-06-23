@@ -1,8 +1,7 @@
-﻿
-@* @{
-    ViewData["Title"] = "Cart";
-    var cartItems = Model as List<Cart>;
-} *@
+﻿@{
+    var carts = (List<CartAPI.DTOs.CartDTO>)ViewBag.CartItems;
+    var products = (List<DTOs.ProductDTO.ReadProductDTO>)ViewBag.Products;
+}
 
 <head>
     <meta charset="utf-8" />
@@ -60,34 +59,38 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @* @if (cartItems != null && cartItems.Any())
+                    @if (carts != null && products != null && carts.Any())
                     {
-                        foreach (var item in cartItems)
+                        for (int i = 0; i < carts.Count; i++)
                         {
+                            var cart = carts[i];
+                            var product = products[i];
+
                             <tr>
                                 <td>
-                                    <input type="checkbox" class="cart-checkbox" value="@item.CartId">
+                                    <input type="checkbox" class="cart-checkbox" value="@cart.CartID">
                                 </td>
                                 <td>
-                                    <span class="remove-btn text-danger" data-cartid="@item.CartId" style="cursor: pointer;">✖</span>
+                                    <span class="remove-btn text-danger" data-cartid="@cart.CartID" style="cursor: pointer;">✖</span>
                                 </td>
                                 <td>
-                                    <img src="~/@item.Product.ImageUrl" class="product-image" width="50">
+                                    <img src="~/@product.ImageURL" class="product-image" width="50">
                                 </td>
-                                <td>@item.Product.ProductName</td>
-                                <td class="price">@item.Product.Price.ToString("C")</td>
+                                <td>@product.ProductName</td>
+                                <td class="price">@product.Price.ToString("C")</td>
                                 <td>
-                                    <input type="hidden" name="cartID[]" value="@item.CartId" />
-                                    <input type="number" class="quantity-input form-control w-50" name="quantity[]" value="@item.Quantity" min="1" max="@item.Product.StockQuantity" readonly required>
+                                    <input type="hidden" name="updates[@i].CartID" value="@cart.CartID" />
+                                    <input type="number" name="updates[@i].Quantity" value="@cart.Quantity" class="quantity-input form-control w-50"                            
+                                           min="1" max="@product.StockQuantity" readonly required>
                                 </td>
-                                <td class="subtotal">@(item.Product.Price * item.Quantity)</td>
+                                <td class="subtotal">@(product.Price * cart.Quantity)</td>
                             </tr>
                         }
-                    } *@
+                    }
                     else
                     {
                         <tr>
-                            <td colspan="6" class="text-center">Your cart is empty.</td>
+                            <td colspan="7" class="text-center">Your cart is empty.</td>
                         </tr>
                     }
                 </tbody>
