@@ -1,8 +1,7 @@
-﻿namespace CartAPI.DTOs
+﻿namespace DTOs.CartDTO
 {
     public class CartCreateDTO
     {
-        public int UserID { get; set; }
         public int ProductID { get; set; }
         public int Quantity { get; set; }
 

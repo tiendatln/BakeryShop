@@ -8,6 +8,6 @@ namespace CartAPI.Repositories
         Task AddCart(Cart cart);
         Task DeleteCart(int cartID);
         Task UpdateQuantity(Cart updateCart);
-
+        Task<int> GetCartCountByUserIdAsync(int userId);
     }
 }
