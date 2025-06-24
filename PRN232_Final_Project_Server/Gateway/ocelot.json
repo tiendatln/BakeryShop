@@ -102,7 +102,7 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
-      "DownstreamPathTemplate": "/api/Products/Get?$top={top}&$skip={skip}",
+      "DownstreamPathTemplate": "/api/Products/Get",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -110,8 +110,11 @@
           "Port": 7016
         }
       ],
-      "UpstreamPathTemplate": "/products/Get?$top={top}&$skip={skip}",
-      "UpstreamHttpMethod": [ "GET" ]
+      "UpstreamPathTemplate": "/products/Get",
+      "UpstreamHttpMethod": [ "GET" ],
+      "Forwarding": {
+        "Query": true
+      }
     },
 
     // === CART API ===

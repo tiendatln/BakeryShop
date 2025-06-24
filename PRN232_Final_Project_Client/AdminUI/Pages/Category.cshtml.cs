@@ -28,6 +28,12 @@ namespace PRN232_Final_Project_Client.Pages.Categories
             Categories = await _categoryService.GetAllCategoriesAsync();
         }
 
+        public async Task<IActionResult> OnGetAllCategoryAsync()
+        {
+            var categories = await _categoryService.GetAllCategoriesAsync();
+            return new JsonResult(categories);
+        }
+
         public async Task<IActionResult> OnPostCreateAsync()
         {
             // Xử lý Description - đặt empty string nếu null

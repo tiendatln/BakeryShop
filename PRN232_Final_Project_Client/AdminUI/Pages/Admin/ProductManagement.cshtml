@@ -19,6 +19,7 @@
                 </div>
                 <div class="card-body">
                     <!-- Search and Filter -->
+                    <form id="search" method="get">
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <div class="input-group">
@@ -28,7 +29,6 @@
                         </div>
                         <div class="col-md-3">
                             <select class="form-select" id="categoryFilter">
-                                <option value="">All Categories</option>
                                 <!-- Categories will be populated here -->
                             </select>
                         </div>
@@ -40,6 +40,7 @@
                             </select>
                         </div>
                     </div>
+                    </form>
 
                     <!-- Products Table -->
                     <div class="table-responsive">
@@ -58,134 +59,15 @@
                             </thead>
                             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                             <tbody id="productTableBody">
-
+                                <!--List Product-->
                             </tbody>
-                            
-
-                            <!-- Scripts -->
-                            <script>
-                                $(document).ready(function () {
-                                    const page = parseInt($(this).data('page'));
-                                    if (isNaN(page) || page < 1) {
-                                        loadProducts(1);
-                                    } else {
-                                        loadProducts(page);
-                                    }
-                                });
-
-                                function loadProducts(page) {
-
-                                    
-                                    $.ajax({
-                                        url: `?handler=AllProduct&page=${page}`,
-                                        type: 'GET',
-                                        success: function (data) {
-                                            const container = $('#productTableBody');
-                                            renderProducts(data.products, container);
-                                            renderPagination(data.totalPages, page);
-                                        },
-                                        error: function () {
-                                            console.error('Failed to load products.');
-                                        }
-                                    });
-                                }
-
-                                function renderProducts(data, container) {
-                                    container.empty();
-
-                                    if (!data || data.length === 0) {
-                                    container.append(`
-                                    <tr>
-                                        <div class="col-12 text-center">
-                                            <div style="padding: 4rem 2rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
-                                                <i class="fas fa-search" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 2rem;"></i>
-                                                <h3 style="color: #4a5568; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">No products found</h3>
-                                                <p style="color: #718096;">Try adjusting your search or browse different categories</p>
-                                            </div>
-                                        </div>
-                                    </tr>`);
-
-                                    return;
-                                    }
-
-                                    data.forEach(product => {
-                                        const imageHtml = product.imageURL
-                                            ? `<img src="/${product.imageURL}" class="img-thumbnail" style="width:50px;height:50px;">`
-                                            : `<div class="bg-light text-center" style="width:50px;height:50px;"><i class="fas fa-image text-muted"></i></div>`;
-
-                                        const html = `
-                                            <tr>
-                                                <td>${product.productID}</td>
-                                                <td>${imageHtml}</td>
-                                                <td><strong>${product.productName}</strong></td>
-                                                <td>${product.categoryID}</td>
-                                                <td class="text-success fw-bold">${product.price}</td>
-                                                <td><span class="badge ${product.stockQuantity > 0 ? "bg-success" : "bg-danger"}">${product.stockQuantity}</span></td>
-                                                <td><span class="badge ${product.isAvailable ? "bg-success" : "bg-secondary"}">${product.isAvailable ? "In Stock" : "Out of Stock"}</span></td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <button class="btn btn-outline-primary" onclick="viewProduct(${product.productID})">Details</button>
-                                                        <button class="btn btn-outline-warning" onclick="editProduct(${product.productID})">Edit</button>
-                                                        <button class="btn btn-outline-danger" onclick="deleteProduct(${product.productID}, '${product.productName}')">Delete</button>
-                                                    </div>
-                                                </td>
-                                            </tr>`;
-                                        container.append(html);
-                                    });
-                                }
-
-                                function renderPagination(totalPages, currentPage) {
-                                    const pagination = $('.pagination');
-                                    pagination.empty();
-
-                                    // Previous
-                                    pagination.append(`
-                                        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                                            <a class="page-link" href="#" data-page="${currentPage - 1}">&laquo;</a>
-                                        </li>`);
-
-                                    // Page numbers
-                                    for (let i = 1; i <= totalPages; i++) {
-                                        pagination.append(`
-                                            <li class="page-item ${i === currentPage ? 'active' : ''}">
-                                                <a class="page-link" href="#" data-page="${i}">${i}</a>
-                                            </li>`);
-                                    }
-
-                                    // Next
-                                    pagination.append(`
-                                        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                                            <a class="page-link" href="#" data-page="${currentPage + 1}">&raquo;</a>
-                                        </li>`);
-
-                                    // Event binding
-                                    $('.page-link').click(function (e) {
-                                        e.preventDefault();
-                                        const page = parseInt($(this).data('page'));
-                                        if (!isNaN(page)) {
-                                            loadProducts(page);
-                                        }
-                                    });
-                                }
-
-                                // Optional: Dummy handlers
-                                function viewProduct(id) {
-                                    alert(`View product ${id}`);
-                                }
-
-                                function deleteProduct(id, name) {
-                                    if (confirm(`Delete product "${name}"?`)) {
-                                        // Handle delete logic here
-                                    }
-                                }
-                            </script>
                         </table>
                     </div>
                     <nav>
                         <ul class="pagination justify-content-center"></ul>
                     </nav>
 
-                    
+
 
 
                 </div>
@@ -198,13 +80,13 @@
 <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form id="productForm" method="post" enctype="multipart/form-data" asp-page-handler="Create">
+            <form id="productForm" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="productModalLabel">Add New Product</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="productId" name="ProductID" value="0">
+                    <input type="hidden" id="productId" name="ProductID">
 
                     <div class="row">
                         <div class="col-md-6">
@@ -218,8 +100,7 @@
                             <div class="mb-3">
                                 <label for="categoryId" class="form-label">Category <span class="text-danger">*</span></label>
                                 <select class="form-select" id="categoryId" name="CategoryID" required>
-                                    <option value="">Select Category</option>
-                                    <option value="1">1</option>
+
                                     <!-- Categories will be populated here -->
                                 </select>
                                 <div class="invalid-feedback">Please select a category</div>
@@ -352,62 +233,194 @@
 
 <script>
 
-    // $(document).ready(function() {
-    //     Load categories
-    //     $.ajax({
-    //         url: '?handler=GetCategories',
-    //         type: 'GET',
-    //         success: function(data) {
-    //             const categorySelect = $('#categoryId, #categoryFilter');
-    //             categorySelect.empty();
-    //             categorySelect.append('<option value="">Select Category</option>');
-    //             data.forEach(category => {
-    //                 categorySelect.append(`<option value="1"</option>`);
-    //             });
-    //         },
-    //         error: function() {
-    //             console.error('Failed to load categories.');
-    //         }
-    //     });
-    // });
+    $(document).ready(function () {
+                                    const page = parseInt($(this).data('page'));
+                                    if (isNaN(page) || page < 1) {
+                                        loadProducts(1);
+                                    } else {
+                                        loadProducts(page);
+                                    }
+                                });
 
 
+                               
+                                 
+        // Gắn sự kiện cho cả 3 thành phần: input + 2 dropdown
+        $('#searchInput, #categoryFilter, #statusFilter').on('input change', function () {
+            $.ajax({
+                url: '?handler=SearchProducts',
+                type: 'GET',
+                data: {
+                    searchTerm: $('#searchInput').val(),
+                    categoryId: $('#categoryFilter').val(),
+                    status: $('#statusFilter').val()
+                },
+                success: function (data) {
+                    const container = $('#productTableBody');
+                    renderProducts(data.products, container);
+                    renderPagination(data.totalPages, 1);
+                },
+                error: function () {
+                    console.error('Failed to load products.');
+                }
+            });
+        });
+    
 
-    // Search functionality
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        filterTable();
-    });
 
-    document.getElementById('categoryFilter').addEventListener('change', function() {
-        filterTable();
-    });
+                                    function loadProducts(page) {
 
-    document.getElementById('statusFilter').addEventListener('change', function() {
-        filterTable();
-    });
+                                    $.ajax({
+                                        url: `?handler=AllProduct&page=${page}`,
+                                        type: 'GET',
+                                        success: function (data) {
+                                            const container = $('#productTableBody');
+                                            renderProducts(data.products, container);
+                                            renderPagination(data.totalPages, page);
+                                        },
+                                        error: function () {
+                                            console.error('Failed to load products.');
+                                        }
+                                    });
+                                }
 
+                                function renderProducts(data, container) {
+                                    container.empty();
 
-    function filterTable() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const categoryFilter = document.getElementById('categoryFilter').value;
-        const statusFilter = document.getElementById('statusFilter').value;
-        const rows = document.querySelectorAll('#productTableBody tr');
+                                    if (!data || data.length === 0) {
+                                    container.append(`
+                                    <tr>
+                                        <div class="col-12 text-center">
+                                            <div style="padding: 4rem 2rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
+                                                <i class="fas fa-search" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 2rem;"></i>
+                                                <h3 style="color: #4a5568; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">No products found</h3>
+                                                <p style="color: #718096;">Try adjusting your search or browse different categories</p>
+                                            </div>
+                                        </div>
+                                    </tr>`);
 
-        rows.forEach(row => {
-            // Skip empty state row
-            if (row.cells.length === 1) return;
+                                    return;
+                                    }
 
-            const productName = row.cells[2].textContent.toLowerCase();
-            const category = row.cells[3].textContent.trim();
-            const status = row.querySelector('.badge').textContent.includes('In Stock') ? 'true' : 'false';
+                                    $.ajax({
+                                        url: '/Category?handler=AllCategory',
+                                        type: 'GET',
+                                        success: function(categories) {
+                                            const categoryMap = categories.reduce((map, category) => {
+                                                map[category.categoryID] = category.categoryName;
+                                                return map;
+                                            }, {});
+                                            renderProductRows(data, container, categoryMap);
+                                        },
+                                        error: function() {
+                                            console.error('Failed to load categories.');
+                                        }
+                                    });
 
-            const matchesSearch = productName.includes(searchTerm);
-            const matchesCategory = !categoryFilter || category === categoryFilter;
-            const matchesStatus = !statusFilter || status === statusFilter;
+                                        function renderProductRows(data, container, categoryMap) {
+        container.empty(); // Xóa dữ liệu cũ (nếu có)
 
-            row.style.display = matchesSearch && matchesCategory && matchesStatus ? '' : 'none';
+        data.forEach(product => {
+            // Nếu categoryName chưa có, lấy từ categoryMap
+            if (!product.categoryName && categoryMap[product.categoryID]) {
+                product.categoryName = categoryMap[product.categoryID];
+            }
+
+            const imageHtml = product.imageURL
+                ? `<img src="/${product.imageURL}" class="img-thumbnail" style="width:50px;height:50px;">`
+                : `<div class="bg-light text-center" style="width:50px;height:50px;"><i class="fas fa-image text-muted"></i></div>`;
+
+            const html = `
+                <tr>
+                    <td>${product.productID}</td>
+                    <td>${imageHtml}</td>
+                    <td><strong>${product.productName}</strong></td>
+                    <td>${product.categoryName || 'N/A'}</td>
+                    <td class="text-success fw-bold">${product.price}</td>
+                    <td><span class="badge ${product.stockQuantity > 0 ? "bg-success" : "bg-danger"}">${product.stockQuantity}</span></td>
+                    <td><span class="badge ${product.isAvailable ? "bg-success" : "bg-secondary"}">${product.isAvailable ? "In Stock" : "Out of Stock"}</span></td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-primary" onclick="viewProduct(${product.productID})">Details</button>
+                            <button class="btn btn-outline-warning" onclick="editProduct(${product.productID})">Edit</button>
+                            <button class="btn btn-outline-danger" onclick="deleteProduct(${product.productID}, '${product.productName}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            container.append(html);
         });
     }
+
+                                }
+
+                                ///renderPagination
+                                function renderPagination(totalPages, currentPage) {
+                                    const pagination = $('.pagination');
+                                    pagination.empty();
+
+                                    // Previous
+                                    pagination.append(`
+                                        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" data-page="${currentPage - 1}">&laquo;</a>
+                                        </li>`);
+
+                                    // Page numbers
+                                    for (let i = 1; i <= totalPages; i++) {
+                                        pagination.append(`
+                                            <li class="page-item ${i === currentPage ? 'active' : ''}">
+                                                <a class="page-link" id="pageNumber" href="#" data-page="${i}">${i}</a>
+                                            </li>`);
+                                    }
+
+                                    // Next
+                                    pagination.append(`
+                                        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" data-page="${currentPage + 1}">&raquo;</a>
+                                        </li>`);
+
+                                    // Event binding
+                                    $('.page-link').click(function (e) {
+                                        e.preventDefault();
+                                        const page = parseInt($(this).data('page'));
+                                        if (!isNaN(page)) {
+                                            sessionStorage.setItem('currentPage', page);
+                                            loadProducts(page);
+                                        }
+                                    });
+                                }
+
+                                // Optional: Dummy handlers
+                                function viewProduct(id) {
+                                    alert(`View product ${id}`);
+                                }
+
+                                function deleteProduct(id, name) {
+                                    if (confirm(`Delete product "${name}"?`)) {
+                                        // Handle delete logic here
+                                    }
+                                }
+
+    $(document).ready(function() {
+        $.ajax({
+            url: '/Category?handler=AllCategory',
+            type: 'GET',
+            success: function(data) {
+                const categorySelect = $('#categoryId, #categoryFilter');
+                categorySelect.empty();
+                categorySelect.append('<option value="">Select Category</option>');
+                data.forEach(category => {
+                categorySelect.append(`<option value="${category.categoryID}">${category.categoryName}</option>`);
+                });
+            },
+            error: function() {
+                console.error('Failed to load categories.');
+            }
+        });
+    });
+
+
+    
 
     // Clear form
     function clearForm() {
@@ -415,22 +428,31 @@
         document.getElementById('productId').value = '0';
         document.getElementById('productModalLabel').textContent = 'Add New Product';
         document.getElementById('imagePreview').style.display = 'none';
+
+
     }
 
-    // Edit product
-        $(document).ready(function () {
-        // Mở modal để tạo mới
-        $('#btnAddProduct').click(function () {
-            resetForm();
-            $('#productModalLabel').text('Add New Product');
-            $('#productModal').modal('show');
-        });
+        function editProduct(productID) {
+        // Reset form & trạng thái
+        const form = document.getElementById('productForm');
+        form.reset();
+        form.classList.remove('was-validated');
+        $(form).find('.is-invalid').removeClass('is-invalid');
 
-        // Mở modal để chỉnh sửa
-        $('.btn-edit').click(function () {
-            const id = $(this).data('id');
-            $.get(`?handler=ProductDetail&productId=${id}`, function (data) {
-                $('#productModalLabel').text('Edit Product');
+        $('#productModalLabel').text('Edit Product');
+        $('#imagePreview').hide();
+        $('#previewImg').attr('src', '');
+
+        // Gọi API lấy chi tiết sản phẩm
+        $.ajax({
+            url: `?handler=ProductDetail&productId=${productID}`,
+            type: 'GET',
+            success: function(data) {
+                if (!data) {
+                    alert('No product data found.');
+                    return;
+                }
+
                 $('#productId').val(data.productID);
                 $('#productName').val(data.productName);
                 $('#categoryId').val(data.categoryID);
@@ -438,43 +460,72 @@
                 $('#price').val(data.price);
                 $('#stockQuantity').val(data.stockQuantity);
                 $('#isAvailable').prop('checked', data.isAvailable);
-                $('#imagePreview').show();
-                $('#previewImg').attr('src', `/${data.imageURL}`);
-                $('#productModal').modal('show');
-            });
-        });
 
-        // Gửi form (AJAX submit)
-        $('#productForm').submit(function (e) {
-            e.preventDefault();
-
-            var formData = new FormData(this);
-            const productId = $('#productId').val();
-            const handler = productId == 0 ? 'Create' : 'Update';
-
-            $.ajax({
-                url: `?handler=${handler}`,
-                type: 'POST',
-                data: formData,
-                contentType: false,
-                processData: false,
-                success: function () {
-                    $('#productModal').modal('hide');
-                    location.reload(); // Hoặc dùng AJAX để cập nhật danh sách
-                },
-                error: function () {
-                    alert('Đã có lỗi xảy ra!');
+                if (data.imageURL) {
+                    $('#previewImg').attr('src', '/' + data.imageURL);
+                    $('#imagePreview').show();
                 }
-            });
-        });
 
-        function resetForm() {
-            $('#productForm')[0].reset();
-            $('#productId').val(0);
-            $('#imagePreview').hide();
-            $('#previewImg').attr('src', '');
+                // Mở modal sau khi load dữ liệu xong
+                const modal = new bootstrap.Modal(document.getElementById('productModal'));
+                modal.show();
+            },
+            error: function() {
+                alert('Failed to load product details.');
+            }
+        });
+    }
+
+
+    $('#productForm').on('submit', function (e) {
+      e.preventDefault();
+
+      var form = this;
+      var formData = new FormData(form); // Tự động lấy cả input type="file" và các field khác
+      console.log(document.getElementById("productId").value);
+      const page = sessionStorage.getItem('currentPage') || 1; // Lấy trang hiện tại từ sessionStorage
+      if(document.getElementById("productId").value != 0){
+          //Edit Product
+          $.ajax({
+        url: '?handler=Update',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function () {
+          alert('Product Edit successfully!');
+          $('#productModal').modal('hide');
+          
+          console.log(page);
+          loadProducts(page)
+        },
+        error: function () {
+          alert('Error editing product.');
         }
+      });
+      }else{
+          // add product
+          $.ajax({
+        url: '?handler=Create',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function () {
+          alert('Product created successfully!');
+          $('#productModal').modal('hide');
+         
+          console.log(page);
+          loadProducts(page)
+        },
+        error: function () {
+          alert('Error creating product.');
+        }
+      });
+      }
     });
+
+
 
     // View product
         function viewProduct(productID) {
@@ -500,6 +551,9 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <strong>Quantity:</strong> ${data.stockQuantity}
+                                </div>
+                                <div class="col-sm-6">
+                                    <CreatedDate:</strong> ${data.createdDate}
                                 </div>
                                 <div class="col-sm-6">
                                     <strong>Status:</strong>
@@ -533,7 +587,7 @@
                 type: 'GET',
                 success: function(data) {
                     alert('Product has been deleted!');
-                    const page = parseInt($(this).data('page')) || 1;
+                    const page = sessionStorage.getItem('currentPage') || 1; // Get current page from sessionStorage
                     loadProducts(page); // Reload products
                 },
                 error: function() {
@@ -544,35 +598,4 @@
     }
 
 
-
-    // Image preview
-    document.getElementById('imageUrl').addEventListener('blur', function() {
-        const url = this.value;
-        if (url) {
-            const preview = document.getElementById('imagePreview');
-            const img = document.getElementById('previewImg');
-            img.src = url;
-            preview.style.display = 'block';
-
-            img.onerror = function() {
-                preview.style.display = 'none';
-            };
-        } else {
-            document.getElementById('imagePreview').style.display = 'none';
-        }
-    });
-
-    // Form validation
-    document.getElementById('productForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        if (this.checkValidity()) {
-            // In a real application, you would submit the form via AJAX
-            alert('Product has been saved successfully!');
-            const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
-            modal.hide();
-        } else {
-            this.classList.add('was-validated');
-        }
-    });
 </script>
