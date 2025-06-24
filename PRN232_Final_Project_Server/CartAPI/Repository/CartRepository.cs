@@ -26,7 +26,7 @@ namespace CartAPI.Repositories
             if (cart != null)
             {
                 _context.Remove(cart);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
         }
 
