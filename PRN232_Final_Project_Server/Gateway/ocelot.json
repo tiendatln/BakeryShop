@@ -14,105 +14,108 @@
             "UpstreamHttpMethod": [ "POST" ]
         },
 
-        // === PRODUCT API ===
+    // === PRODUCT API ===
+    {
+      "DownstreamPathTemplate": "/api/Products",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Products",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Products",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products",
-            "UpstreamHttpMethod": [ "POST" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "RequireAuthentication": true
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
-            }
-        },
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Products/{id}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/{id}",
-            "UpstreamHttpMethod": [ "PUT", "DELETE" ],
-            "AuthenticationOptions": {
-                "AuthenticationProviderKey": "Bearer",
-                "RequireAuthentication": true
-            },
-            "RouteClaimsRequirement": {
-                "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
-            }
-        },
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamHttpMethod": [ "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/category/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Products/category/{id}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/category/{id}",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/category/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/search",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Products/search",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/search",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/search",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Products/{id}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/{id}",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamHttpMethod": [ "GET" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/Get",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
         {
-            "DownstreamPathTemplate": "/api/Products/Get?$top={top}&$skip={skip}",
-            "DownstreamScheme": "https",
-            "DownstreamHostAndPorts": [
-                {
-                    "Host": "localhost",
-                    "Port": 7016
-                }
-            ],
-            "UpstreamPathTemplate": "/products/Get?$top={top}&$skip={skip}",
-            "UpstreamHttpMethod": [ "GET" ]
-        },
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/Get",
+      "UpstreamHttpMethod": [ "GET" ],
+      "Forwarding": {
+        "Query": true
+      }
+    },
 
         // === CART API ===
         {

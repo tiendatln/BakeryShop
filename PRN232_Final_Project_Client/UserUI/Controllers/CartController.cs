@@ -154,7 +154,7 @@ namespace UserUI.Controllers
         public async Task<IActionResult> Add(CartCreateDTO dto)
         {
             var token = HttpContext.Session.GetString("UserToken");
-            if (string.IsNullOrEmpty(token)) return Unauthorized();
+            if (string.IsNullOrEmpty(token)) return RedirectToAction("Login", "Common");
 
             var success = await _cartService.AddCartAsync(dto, token);
             if (!success)

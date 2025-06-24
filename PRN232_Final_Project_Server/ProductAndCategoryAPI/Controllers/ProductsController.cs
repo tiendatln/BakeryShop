@@ -55,17 +55,26 @@ namespace ProductAndCategoryAPI.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, [FromForm] UpdateProductDTO product)
+        public async Task<IActionResult> PutProduct(int id, UpdateProductDTO product)
         {
-            if (product == null && product.ImageURL.Length <= 0)
+            
+
+            // Nếu cập nhật mà không có ảnh mới, thì giữ nguyên ảnh cũ
+            if (string.IsNullOrWhiteSpace(product.ImageURL))
             {
+                var existing = await _product.GetProductByIdAsync(id);
+                if (existing == null)
+                {
+                    return NotFound();
+                }
 
-                return BadRequest("Product data is null or image is not provided.");
+                product.ImageURL = existing.ImageURL;
             }
-            var updatedProduct = await _product.UpdateProductAsync(id, product);
 
+            var updatedProduct = await _product.UpdateProductAsync(id, product);
             return Ok(updatedProduct);
         }
+
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

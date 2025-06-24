@@ -1,4 +1,4 @@
-using Azure;
+﻿using Azure;
 using DTOs.ProductDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,6 +14,7 @@ namespace AdminUI.Pages.Admin
 
         [BindProperty(SupportsGet = true)]
         public List<ReadProductDTO> readProducts { get; set; } = new List<ReadProductDTO>();
+
         public ProductManagementModel(IProductService productService)
         {
             _productService = productService;
@@ -21,13 +22,12 @@ namespace AdminUI.Pages.Admin
 
         public async Task OnGet()
         {
-            HttpContext.Session.SetString("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4gVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NTA2OTQ3MjMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.8JHrTOxGhpFP1qJE_Q8HcsjkHlnMYAzYwi5TNqNtv68"); // Set the active page in session
+            HttpContext.Session.SetString("token"
+                , "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTEUgTkdVRU4gVElFTiBEQVQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0aWVuZGF0bGUyMjEyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzUwNzc5NDcwLCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDA5IiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzExMiJ9._TzuaJ2H-6Vs-YAl7ranm41DqvYIw9BEQg-BujTzNvg"); // Set the active page in session
         }
 
-        public async Task<IActionResult> OnGetAllProductAsync([FromQuery]int page)
+        public async Task<IActionResult> OnGetAllProductAsync([FromQuery] int page)
         {
-            
-
             var skip = (page - 1) * 10; // Calculate the number of products to skip based on the current page\
 
             var allproducts = await _productService.GetAllProductsAsync();
@@ -47,7 +47,6 @@ namespace AdminUI.Pages.Admin
             });
         }
 
-
         [BindProperty]
         public CreateProductDTO CreateProduct { get; set; } = new CreateProductDTO();
 
@@ -64,7 +63,6 @@ namespace AdminUI.Pages.Admin
                 var userFilePath = Path.Combine(userFolderPath, fileName);
                 if (!System.IO.File.Exists(adminFilePath))
                 {
-                    System.IO.File.Delete(adminFilePath); // Delete existing file if it exists
                     Directory.CreateDirectory(adminfolderPath);
                     using (var stream = new FileStream(adminFilePath, FileMode.Create))
                     {
@@ -73,7 +71,6 @@ namespace AdminUI.Pages.Admin
                 }
                 if (!System.IO.File.Exists(userFilePath))
                 {
-                    System.IO.File.Delete(userFilePath); // Delete existing file if it exists
                     Directory.CreateDirectory(userFolderPath);
                     using (var stream = new FileStream(userFilePath, FileMode.Create))
                     {
@@ -116,7 +113,6 @@ namespace AdminUI.Pages.Admin
                 if (System.IO.File.Exists(adminFilePath))
                 {
                     System.IO.File.Delete(adminFilePath); // Delete existing file if it exists
-                    
                 }
                 if (System.IO.File.Exists(userFilePath))
                 {
@@ -133,9 +129,10 @@ namespace AdminUI.Pages.Admin
             }
         }
 
+        //update product
         [BindProperty]
         public UpdateProductDTO UpdateProduct { get; set; } = new UpdateProductDTO();
-        //update product
+
         public async Task<IActionResult> OnPostUpdateAsync(IFormFile ImageFile)
         {
             if (ImageFile != null && ImageFile.Length > 0)
@@ -168,7 +165,16 @@ namespace AdminUI.Pages.Admin
             }
             else
             {
-                UpdateProduct.ImageURL = string.Empty; // Set default or empty if no image provided
+                var existingProduct = await _productService.GetProductByIdAsync(UpdateProduct.ProductID);
+                if (existingProduct != null)
+                {
+                    UpdateProduct.ImageURL = existingProduct.ImageURL; // Retain the existing image URL if no new image is provided
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Product not found.");
+                    return Page();
+                }
             }
             var token = HttpContext.Session.GetString("token");
             Console.WriteLine($"Token: {token}");
@@ -181,7 +187,6 @@ namespace AdminUI.Pages.Admin
             return RedirectToPage("ProductManagement");
         }
 
-
         public async Task<IActionResult> OnGetProductDetailAsync(int productId)
         {
             var product = await _productService.GetProductByIdAsync(productId);
@@ -192,5 +197,23 @@ namespace AdminUI.Pages.Admin
             return new JsonResult(product);
         }
 
+        public async Task<IActionResult> OnGetSearchProductsAsync(string searchTerm, int categoryId, bool status)
+        {
+            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, status);
+            var totalPages = (int)Math.Ceiling(product.Count / 10f);
+
+            return new JsonResult(new
+            {
+                products = product,
+                totalPages = totalPages
+            }); // Trả JSON danh sách sản phẩm theo danh mục
+        }
+
+        public async Task<ActionResult> OnGetProductsByCategoryAsyns(int categoryId)
+        {
+            var product = await _productService.GetProductsByCategoryAsync(categoryId);
+
+            return new JsonResult(product); // Redirect to Index view with category products
+        }
     }
 }
