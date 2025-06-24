@@ -95,5 +95,12 @@ namespace CartAPI.Controllers
             await _service.UpdateQuantity(updates);
             return Ok(new { message = "Cart quantities updated successfully" });
         }
+        [HttpGet("{userId}/count")]
+        // [Authorize(Roles = "Customer")] // Thêm Authorize nếu cần
+        public async Task<ActionResult<int>> GetCartCount(int userId)
+        {
+            var count = await _service.GetCartCountByUserIdAsync(userId);
+            return Ok(count);
+        }
     }
 }
