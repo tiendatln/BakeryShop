@@ -65,7 +65,12 @@
                             <!-- Scripts -->
                             <script>
                                 $(document).ready(function () {
-                                    loadProducts(1);
+                                    const page = parseInt($(this).data('page'));
+                                    if (isNaN(page) || page < 1) {
+                                        loadProducts(1);
+                                    } else {
+                                        loadProducts(page);
+                                    }
                                 });
 
                                 function loadProducts(page) {
@@ -89,11 +94,18 @@
                                     container.empty();
 
                                     if (!data || data.length === 0) {
-                                        container.append(`
-                                            <tr>
-                                                <td colspan="8" class="text-center text-muted">No products found.</td>
-                                            </tr>`);
-                                        return;
+                                    container.append(`
+                                    <tr>
+                                        <div class="col-12 text-center">
+                                            <div style="padding: 4rem 2rem; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 24px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);">
+                                                <i class="fas fa-search" style="font-size: 4rem; color: #cbd5e0; margin-bottom: 2rem;"></i>
+                                                <h3 style="color: #4a5568; font-family: 'Playfair Display', serif; margin-bottom: 1rem;">No products found</h3>
+                                                <p style="color: #718096;">Try adjusting your search or browse different categories</p>
+                                            </div>
+                                        </div>
+                                    </tr>`);
+
+                                    return;
                                     }
 
                                     data.forEach(product => {
@@ -113,7 +125,7 @@
                                                 <td>
                                                     <div class="btn-group btn-group-sm">
                                                         <button class="btn btn-outline-primary" onclick="viewProduct(${product.productID})">Details</button>
-                                                        <button class="btn btn-outline-warning">Edit</button>
+                                                        <button class="btn btn-outline-warning" onclick="editProduct(${product.productID})">Edit</button>
                                                         <button class="btn btn-outline-danger" onclick="deleteProduct(${product.productID}, '${product.productName}')">Delete</button>
                                                     </div>
                                                 </td>
@@ -208,6 +220,7 @@
                                 <select class="form-select" id="categoryId" name="CategoryID" required>
                                     <option value="">Select Category</option>
                                     <option value="1">1</option>
+                                    <!-- Categories will be populated here -->
                                 </select>
                                 <div class="invalid-feedback">Please select a category</div>
                             </div>
@@ -338,6 +351,28 @@
 </style>
 
 <script>
+
+    // $(document).ready(function() {
+    //     Load categories
+    //     $.ajax({
+    //         url: '?handler=GetCategories',
+    //         type: 'GET',
+    //         success: function(data) {
+    //             const categorySelect = $('#categoryId, #categoryFilter');
+    //             categorySelect.empty();
+    //             categorySelect.append('<option value="">Select Category</option>');
+    //             data.forEach(category => {
+    //                 categorySelect.append(`<option value="1"</option>`);
+    //             });
+    //         },
+    //         error: function() {
+    //             console.error('Failed to load categories.');
+    //         }
+    //     });
+    // });
+
+
+
     // Search functionality
     document.getElementById('searchInput').addEventListener('keyup', function() {
         filterTable();
@@ -350,6 +385,7 @@
     document.getElementById('statusFilter').addEventListener('change', function() {
         filterTable();
     });
+
 
     function filterTable() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase();
@@ -382,15 +418,63 @@
     }
 
     // Edit product
-    function editProduct(productId) {
-        // In a real application, you would fetch product data via AJAX
-        document.getElementById('productModalLabel').textContent = 'Edit Product';
-        document.getElementById('productId').value = productId;
+        $(document).ready(function () {
+        // Mở modal để tạo mới
+        $('#btnAddProduct').click(function () {
+            resetForm();
+            $('#productModalLabel').text('Add New Product');
+            $('#productModal').modal('show');
+        });
 
-        // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('productModal'));
-        modal.show();
-    }
+        // Mở modal để chỉnh sửa
+        $('.btn-edit').click(function () {
+            const id = $(this).data('id');
+            $.get(`?handler=ProductDetail&productId=${id}`, function (data) {
+                $('#productModalLabel').text('Edit Product');
+                $('#productId').val(data.productID);
+                $('#productName').val(data.productName);
+                $('#categoryId').val(data.categoryID);
+                $('#description').val(data.description);
+                $('#price').val(data.price);
+                $('#stockQuantity').val(data.stockQuantity);
+                $('#isAvailable').prop('checked', data.isAvailable);
+                $('#imagePreview').show();
+                $('#previewImg').attr('src', `/${data.imageURL}`);
+                $('#productModal').modal('show');
+            });
+        });
+
+        // Gửi form (AJAX submit)
+        $('#productForm').submit(function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            const productId = $('#productId').val();
+            const handler = productId == 0 ? 'Create' : 'Update';
+
+            $.ajax({
+                url: `?handler=${handler}`,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function () {
+                    $('#productModal').modal('hide');
+                    location.reload(); // Hoặc dùng AJAX để cập nhật danh sách
+                },
+                error: function () {
+                    alert('Đã có lỗi xảy ra!');
+                }
+            });
+        });
+
+        function resetForm() {
+            $('#productForm')[0].reset();
+            $('#productId').val(0);
+            $('#imagePreview').hide();
+            $('#previewImg').attr('src', '');
+        }
+    });
 
     // View product
         function viewProduct(productID) {
@@ -439,6 +523,7 @@
     }
 
 
+
     // Delete product
 
         function deleteProduct(productId, productName) {
@@ -448,6 +533,8 @@
                 type: 'GET',
                 success: function(data) {
                     alert('Product has been deleted!');
+                    const page = parseInt($(this).data('page')) || 1;
+                    loadProducts(page); // Reload products
                 },
                 error: function() {
                     alert('Delete failed!');

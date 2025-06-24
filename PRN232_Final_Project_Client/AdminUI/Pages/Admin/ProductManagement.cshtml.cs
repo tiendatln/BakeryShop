@@ -21,24 +21,17 @@ namespace AdminUI.Pages.Admin
 
         public async Task OnGet()
         {
-            readProducts = (await _productService.GetAllProductsAsync()).ToList();
-            if (readProducts == null)
-            {
-                ModelState.AddModelError(string.Empty, "No products found.");
-            }
-            else
-            {
-                // You can pass the products to the view if needed
-                ViewData["Products"] = readProducts;
-            }
+            HttpContext.Session.SetString("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4gVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NTA2OTQ3MjMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.8JHrTOxGhpFP1qJE_Q8HcsjkHlnMYAzYwi5TNqNtv68"); // Set the active page in session
         }
 
         public async Task<IActionResult> OnGetAllProductAsync([FromQuery]int page)
         {
+            
+
+            var skip = (page - 1) * 10; // Calculate the number of products to skip based on the current page\
+
             var allproducts = await _productService.GetAllProductsAsync();
             var totalPages = (int)Math.Ceiling(allproducts.Count / 10f);
-
-            var skip = (page - 1) * 10; // Calculate the number of products to skip based on the current page
 
             var products = await _productService.GetProductPage(10, skip);
 
@@ -58,28 +51,43 @@ namespace AdminUI.Pages.Admin
         [BindProperty]
         public CreateProductDTO CreateProduct { get; set; } = new CreateProductDTO();
 
+        // Create product
         public async Task<IActionResult> OnPostCreateAsync(IFormFile ImageFile)
         {
-
-
             if (ImageFile != null && ImageFile.Length > 0)
             {
                 // Save the image to a specific path, e.g., wwwroot/images
-                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
-                Directory.CreateDirectory(folderPath);
+                var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
+                var userFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "../UserUI/wwwroot", "img/product");
                 var fileName = Path.GetFileName(ImageFile.FileName);
-                var filePath = Path.Combine(folderPath, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                var adminFilePath = Path.Combine(adminfolderPath, fileName);
+                var userFilePath = Path.Combine(userFolderPath, fileName);
+                if (!System.IO.File.Exists(adminFilePath))
                 {
-                    await ImageFile.CopyToAsync(stream); // Save the uploaded file
+                    System.IO.File.Delete(adminFilePath); // Delete existing file if it exists
+                    Directory.CreateDirectory(adminfolderPath);
+                    using (var stream = new FileStream(adminFilePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream); // Save the uploaded file
+                    }
                 }
+                if (!System.IO.File.Exists(userFilePath))
+                {
+                    System.IO.File.Delete(userFilePath); // Delete existing file if it exists
+                    Directory.CreateDirectory(userFolderPath);
+                    using (var stream = new FileStream(userFilePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream); // Save the uploaded file
+                    }
+                }
+
                 CreateProduct.ImageURL = $"img/product/{fileName}"; // Set the image URL
             }
             else
             {
                 CreateProduct.ImageURL = string.Empty; // Set default or empty if no image provided
             }
-            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4gVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NTA2ODk3MTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.tSzzyW6C-f0BKgXbZf-R1wkNywVmhEJQeiK6rChflso";
+            var token = HttpContext.Session.GetString("token");
             Console.WriteLine($"Token: {token}");
             var createdProduct = await _productService.CreateProductAsync(CreateProduct, token);
 
@@ -91,12 +99,30 @@ namespace AdminUI.Pages.Admin
             return RedirectToPage("ProductManagement");
         }
 
+        // Delete product
         public async Task<IActionResult> OnGetDeleteAsync(int productId)
         {
-            var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4gVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NTA2ODk3MTMsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.tSzzyW6C-f0BKgXbZf-R1wkNywVmhEJQeiK6rChflso";
+            var token = HttpContext.Session.GetString("token");
             Console.WriteLine($"Token: {token}");
             try
             {
+                var product = await _productService.GetProductByIdAsync(productId);
+
+                var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+                var userFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "../UserUI/wwwroot");
+                var adminFilePath = Path.Combine(adminfolderPath, product.ImageURL);
+                var userFilePath = Path.Combine(userFolderPath, product.ImageURL);
+
+                if (System.IO.File.Exists(adminFilePath))
+                {
+                    System.IO.File.Delete(adminFilePath); // Delete existing file if it exists
+                    
+                }
+                if (System.IO.File.Exists(userFilePath))
+                {
+                    System.IO.File.Delete(userFilePath); // Delete existing file if it exists
+                }
+
                 await _productService.DeleteProductAsync(productId, token);
                 return new JsonResult(new { success = true });
             }
@@ -106,6 +132,56 @@ namespace AdminUI.Pages.Admin
                 return Page();
             }
         }
+
+        [BindProperty]
+        public UpdateProductDTO UpdateProduct { get; set; } = new UpdateProductDTO();
+        //update product
+        public async Task<IActionResult> OnPostUpdateAsync(IFormFile ImageFile)
+        {
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                // Save the image to a specific path, e.g., wwwroot/images
+                var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
+                var userFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "../UserUI/wwwroot", "img/product");
+                var fileName = Path.GetFileName(ImageFile.FileName);
+                var adminFilePath = Path.Combine(adminfolderPath, fileName);
+                var userFilePath = Path.Combine(userFolderPath, fileName);
+                if (!System.IO.File.Exists(adminFilePath))
+                {
+                    System.IO.File.Delete(adminFilePath); // Delete existing file if it exists
+                    Directory.CreateDirectory(adminfolderPath);
+                    using (var stream = new FileStream(adminFilePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream); // Save the uploaded file
+                    }
+                }
+                if (!System.IO.File.Exists(userFilePath))
+                {
+                    System.IO.File.Delete(userFilePath); // Delete existing file if it exists
+                    Directory.CreateDirectory(userFolderPath);
+                    using (var stream = new FileStream(userFilePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream); // Save the uploaded file
+                    }
+                }
+                UpdateProduct.ImageURL = $"img/product/{fileName}"; // Set the image URL
+            }
+            else
+            {
+                UpdateProduct.ImageURL = string.Empty; // Set default or empty if no image provided
+            }
+            var token = HttpContext.Session.GetString("token");
+            Console.WriteLine($"Token: {token}");
+            var updatedProduct = await _productService.UpdateProductAsync(UpdateProduct, token);
+            if (updatedProduct == null)
+            {
+                ModelState.AddModelError(string.Empty, "Failed to update product.");
+                return Page();
+            }
+            return RedirectToPage("ProductManagement");
+        }
+
+
         public async Task<IActionResult> OnGetProductDetailAsync(int productId)
         {
             var product = await _productService.GetProductByIdAsync(productId);
@@ -115,5 +191,6 @@ namespace AdminUI.Pages.Admin
             }
             return new JsonResult(product);
         }
+
     }
 }
