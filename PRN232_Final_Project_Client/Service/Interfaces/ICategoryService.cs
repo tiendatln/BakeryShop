@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Service.Interfaces;
 
-namespace PRN232_Final_Project_Client.Service.Interfaces
+namespace Service.Interfaces
 {
     public interface ICategoryService
     {

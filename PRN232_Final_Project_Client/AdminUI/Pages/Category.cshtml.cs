@@ -1,7 +1,7 @@
 ﻿using DTOs.CategoryDTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using PRN232_Final_Project_Client.Service.Interfaces;
+using Service.Interfaces;
 using Service.Services;
 
 namespace PRN232_Final_Project_Client.Pages.Categories
