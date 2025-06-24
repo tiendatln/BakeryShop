@@ -43,5 +43,10 @@ namespace CartAPI.Services
                 await _repository.UpdateQuantity(cart);
             }
         }
+
+        public async Task<int> GetCartCountByUserIdAsync(int userId)
+        {
+            return await _repository.GetCartCountByUserIdAsync(userId);
+        }
     }
 }

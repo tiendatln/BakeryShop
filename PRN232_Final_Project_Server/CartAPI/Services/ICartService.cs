@@ -8,5 +8,7 @@ namespace CartAPI.Services
         Task AddCart(CartCreateDTO dto);
         Task DeleteCart(int cartID);
         Task UpdateQuantity(List<CartQuantityUpdateDTO> updates);
+
+        Task<int> GetCartCountByUserIdAsync(int userId);
     }
 }
