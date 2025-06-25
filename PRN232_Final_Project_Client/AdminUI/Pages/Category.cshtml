@@ -1,0 +1,152 @@
+﻿@page
+@model PRN232_Final_Project_Client.Pages.Categories.CategoryModel
+@{
+    ViewData["Title"] = "Category Management";
+}
+
+<h2>Category List</h2>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <div>@err.ErrorMessage</div>
+        }
+    </div>
+}
+
+<button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">+ Add Category</button>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model.Categories)
+        {
+            <tr>
+                <td>@c.CategoryID</td>
+                <td>@c.CategoryName</td>
+                <td>@c.Description</td>
+                <td>
+                    <button class="btn btn-warning btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editModal"
+                            data-id="@c.CategoryID"
+                            data-name="@c.CategoryName"
+                            data-desc="@c.Description">
+                        Edit
+                    </button>
+
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@c.CategoryID" style="display:inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Add Modal - FIXED -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Create">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="NewCategory.CategoryName" class="form-label">Category Name</label>
+                        <input asp-for="NewCategory.CategoryName" class="form-control" />
+                        <span asp-validation-for="NewCategory.CategoryName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NewCategory.Description" class="form-label">Description (Optional)</label>
+                        <textarea asp-for="NewCategory.Description" class="form-control" placeholder="Enter description (optional)"></textarea>
+                        <span asp-validation-for="NewCategory.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Create Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="Update">
+                <input type="hidden" asp-for="EditCategory.CategoryID" id="edit-id" />
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label asp-for="EditCategory.CategoryName" class="form-label">Category Name</label>
+                        <input asp-for="EditCategory.CategoryName" class="form-control" id="edit-name" />
+                        <span asp-validation-for="EditCategory.CategoryName" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="EditCategory.Description" class="form-label">Description</label>
+                        <textarea asp-for="EditCategory.Description" class="form-control" id="edit-desc" placeholder="Enter description (optional)"></textarea>
+                        <span asp-validation-for="EditCategory.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const editModal = document.getElementById('editModal');
+        editModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+            const desc = button.getAttribute('data-desc');
+
+            // Set giá trị cho form
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-name').value = name;
+            document.getElementById('edit-desc').value = desc || '';
+
+            // Set giá trị cho EditCategory binding
+            const categoryIdInput = document.querySelector('input[name="EditCategory.CategoryID"]');
+            const categoryNameInput = document.querySelector('input[name="EditCategory.CategoryName"]');
+            const categoryDescInput = document.querySelector('textarea[name="EditCategory.Description"]');
+
+            if (categoryIdInput) categoryIdInput.value = id;
+            if (categoryNameInput) categoryNameInput.value = name;
+            if (categoryDescInput) categoryDescInput.value = desc || '';
+        });
+
+        // Clear form when add modal is closed
+        const addModal = document.getElementById('addModal');
+        addModal.addEventListener('hidden.bs.modal', () => {
+            const form = addModal.querySelector('form');
+            form.reset();
+            // Clear validation messages
+            const validationSpans = form.querySelectorAll('.text-danger');
+            validationSpans.forEach(span => span.textContent = '');
+        });
+    </script>
+}

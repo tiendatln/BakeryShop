@@ -14,8 +14,9 @@ namespace ProductAndCategoryAPI.DTOs
         public int StockQuantity { get; set; }
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryID { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Today;
         [Required]
-        public IFormFile ImageURL { get; set; } = default;
+        public string ImageURL { get; set; } = string.Empty;
         public bool IsAvailable { get; set; } = true;
     }
 }

@@ -13,12 +13,27 @@ namespace CartAPI.Repositories
             _context = context;
         }
 
-        public Task AddCart(Cart cart)
+        public async Task AddCart(Cart cart)
         {
-            cart.LastUpdated = DateTime.UtcNow;
-            _context.Add(cart);
-            return _context.SaveChangesAsync();
+            var existingCart = await _context.Carts
+                .FirstOrDefaultAsync(c => c.UserID == cart.UserID && c.ProductID == cart.ProductID);
+
+            if (existingCart != null)
+            {
+                // Đã tồn tại, cập nhật lại số lượng
+                existingCart.Quantity = cart.Quantity;
+                existingCart.LastUpdated = DateTime.Now;
+            }
+            else
+            {
+                // Thêm mới
+                cart.LastUpdated = DateTime.Now;
+                _context.Add(cart);
+            }
+
+            await _context.SaveChangesAsync();
         }
+
 
         public async Task DeleteCart(int cartID)
         {
@@ -26,7 +41,7 @@ namespace CartAPI.Repositories
             if (cart != null)
             {
                 _context.Remove(cart);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
         }
 
@@ -38,12 +53,17 @@ namespace CartAPI.Repositories
         public async Task UpdateQuantity(Cart updateCart)
         {
             var cart = await _context.Carts.FindAsync(updateCart.CartID);
-            if(cart != null)
+            if (cart != null && cart.Quantity != updateCart.Quantity)
             {
                 cart.Quantity = updateCart.Quantity;
-                cart.LastUpdated = DateTime.UtcNow;
+                cart.LastUpdated = DateTime.Now;
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<int> GetCartCountByUserIdAsync(int userId)
+        {
+            return await _context.Carts.CountAsync(c => c.UserID == userId);
         }
     }
 }

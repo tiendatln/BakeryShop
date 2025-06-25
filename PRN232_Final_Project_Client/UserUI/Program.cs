@@ -1,4 +1,6 @@
 ﻿using Service.BaseService;
+using Service.Interfaces;
+using Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,12 @@ builder.Services.AddHttpClient<GatewayHttpClient>(client =>
 // Dependency Injection
 builder.Services.AddScoped<Service.Interfaces.IUserService, Service.Services.UserService>();
 builder.Services.AddScoped<Service.Interfaces.IProductService, Service.Services.ProuctService>();
+<<<<<<< HEAD
 builder.Services.AddScoped<Service.Interfaces.IFeedbackService, Service.Services.FeedbackService>();
+=======
+builder.Services.AddScoped<Service.Interfaces.ICartService, Service.Services.CartService>();
+
+>>>>>>> 384c9421d5e22f0f7e2bfce502d23bd29a5c3a68
 builder.Services.AddScoped<Service.Services.EmailService>();
 
 

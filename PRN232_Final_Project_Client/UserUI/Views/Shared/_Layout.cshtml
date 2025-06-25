@@ -440,7 +440,9 @@
                     <div class="navbar-icons">
                         <a href="/Cart" class="icon-link" aria-label="Shopping Cart">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="cart-badge">3</span>
+                            <span class="cart-badge">
+                                @(ViewBag.TotalCartCount ?? "!")
+                            </span>
                         </a>
 
                         <div class="dropdown">
