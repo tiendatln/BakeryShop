@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CartAPI.DTOs
+namespace DTOs.CartDTO
 {
     public class CartDTO
     {

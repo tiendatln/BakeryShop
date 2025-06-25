@@ -1,4 +1,4 @@
-﻿namespace CartAPI.DTOs
+﻿namespace DTOs.CartDTO
 {
     public class CartQuantityUpdateDTO
     {
