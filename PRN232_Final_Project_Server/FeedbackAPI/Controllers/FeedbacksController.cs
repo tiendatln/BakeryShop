@@ -33,7 +33,7 @@ namespace FeedbackAPI.Controllers
         }
 
         // GET: api/Feedbacks/5
-        [HttpGet("{id}")]
+        [HttpGet("{userId}")]
         public async Task<ActionResult<ReadFeedbackDTO>> GetById(int id)
         {
             var feedback = await _repository.GetByIdAsync(id);
@@ -51,6 +51,7 @@ namespace FeedbackAPI.Controllers
         }
 
         // POST: api/Feedbacks
+        [HttpGet("{userId}")]
         [HttpPost]
         public async Task<ActionResult<ReadFeedbackDTO>> Create([FromBody] CreateFeedbackDTO model)
         {
