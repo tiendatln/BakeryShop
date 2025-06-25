@@ -46,19 +46,21 @@ namespace UserUI.Controllers
             return View();
         }
 
-        
 
 
-        public async Task<IActionResult> SearchProductsAjax(string searchTerm, int categoryId)
+
+        public async Task<IActionResult> SearchProducts(string searchTerm, int categoryId, int pageNumper)
         {
-            if (!string.IsNullOrEmpty(searchTerm) && categoryId > 0)
+
+            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, 0, 0);
+            var totalPages = (int)Math.Ceiling(search.Count / 12f);
+
+            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, 12, (pageNumper - 1) * 12);
+            return Json(new
             {
-                var product = await _productService.GetProductsByCategoryAsync(categoryId);
-                var newPro = product.Where(p => p.ProductName.Contains(searchTerm));
-                return Json(newPro); // Trả JSON danh sách sản phẩm theo danh mục
-            }
-            var products = await _productService.SearchProductsAsync(searchTerm);
-            return Json(products); // Trả JSON danh sách sản phẩm
+                products = product,
+                totalPages = totalPages
+            });
         }
 
         public async Task<ActionResult> GetProductsByCategory(int categoryId)
@@ -66,6 +68,12 @@ namespace UserUI.Controllers
             var product = await _productService.GetProductsByCategoryAsync(categoryId);
 
             return Json(product); // Redirect to Index view with category products
+        }
+
+        public async Task<JsonResult> SearchSuggestions(string searchTerm)
+        {
+            var search = await _productService.SearchProductsOdataAsync(searchTerm, 0, 0, 4, 0);
+            return Json(search);
         }
     }
 }
