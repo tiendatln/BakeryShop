@@ -18,6 +18,6 @@ namespace ProductAndCategoryAPI.DTOs
         public int CategoryID { get; set; }
         public DateTime CreatedDate { get; set; } = default;
         public string ImageURL { get; set; } = string.Empty;
-        public bool IsAvailable { get; set; } = true;
+        public bool IsAvailable { get; set; } = default;
     }
 }
