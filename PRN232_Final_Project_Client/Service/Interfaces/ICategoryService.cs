@@ -14,5 +14,7 @@ namespace Service.Interfaces
         Task<bool> UpdateCategoryAsync(int id, UpdateCategoryDTO dto, string token);
         Task<bool> DeleteCategoryAsync(int id, string token);
         Task<List<ReadCategoryDTO>> SearchCategoriesAsync(string searchTerm);
+
+        Task<List<ReadCategoryDTO>> SearchCategoriesOdataAsync(string searchTerm, int take, int skip);
     }
 }

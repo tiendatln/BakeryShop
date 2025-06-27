@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.Interfaces;
+using Service.Interfaces;
 using Service.Services;
+using System.Net.Http;
 
 namespace PRN232_Final_Project_Client.Pages.Categories
 {
@@ -17,57 +19,36 @@ namespace PRN232_Final_Project_Client.Pages.Categories
 
         public List<ReadCategoryDTO> Categories { get; set; } = new();
 
-        [BindProperty]
-        public CreateCategoryDTO NewCategory { get; set; } = new CreateCategoryDTO();
+
 
         [BindProperty]
         public UpdateCategoryDTO EditCategory { get; set; } = new();
 
         public async Task OnGetAsync()
         {
-            Categories = await _categoryService.GetAllCategoriesAsync();
+            HttpContext.Session.SetString("token"
+              , "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQWRtaW4gVXNlciIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImFkbWluQGV4YW1wbGUuY29tIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQWRtaW4iLCJleHAiOjE3NTA5OTU3NTUsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcwMDkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTEyIn0.CoPvX26X3v8U-JE4fx7WyEoZ-z2MkhC7BjA31ayvv2s"); // Set the active page in session
+
+
         }
 
-        public async Task<IActionResult> OnGetAllCategoryAsync()
-        {
-            var categories = await _categoryService.GetAllCategoriesAsync();
-            return new JsonResult(categories);
-        }
-
+        [BindProperty]
+        public CreateCategoryDTO NewCategory { get; set; } = new();
         public async Task<IActionResult> OnPostCreateAsync()
         {
-            // Xử lý Description - đặt empty string nếu null
-            if (NewCategory != null && string.IsNullOrEmpty(NewCategory.Description))
+            // Debug trước khi validate
+            Console.WriteLine($"NewCategory.CategoryName: '{NewCategory?.CategoryName}'");
+            Console.WriteLine($"NewCategory.Description: '{NewCategory?.Description}'");
+            Console.WriteLine($"ModelState.IsValid: {ModelState.IsValid}");
+
+            // In ra tất cả ModelState entries
+            foreach (var ms in ModelState)
             {
-                NewCategory.Description = string.Empty;
+                Console.WriteLine($"Key: {ms.Key}, Valid: {ms.Value.ValidationState}");
             }
 
-            // Xóa tất cả lỗi validation và validate lại manual
-            ModelState.Clear();
-
-            // Validate manual chỉ cho CategoryName
-            if (NewCategory == null)
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Category data is required");
-                return await ReloadPage();
-            }
-
-            if (string.IsNullOrWhiteSpace(NewCategory.CategoryName))
-            {
-                ModelState.AddModelError("NewCategory.CategoryName", "Category name is required");
-                return await ReloadPage();
-            }
-
-            if (NewCategory.CategoryName.Length > 50)
-            {
-                ModelState.AddModelError("NewCategory.CategoryName", "Category name cannot exceed 50 characters");
-                return await ReloadPage();
-            }
-
-            // Validate Description nếu có giá trị
-            if (!string.IsNullOrEmpty(NewCategory.Description) && NewCategory.Description.Length > 255)
-            {
-                ModelState.AddModelError("NewCategory.Description", "Description cannot exceed 255 characters");
                 return await ReloadPage();
             }
 
@@ -80,52 +61,39 @@ namespace PRN232_Final_Project_Client.Pages.Categories
                 return await ReloadPage();
             }
 
-            return RedirectToPage("/Category");
+            return RedirectToPage();
         }
+
+        [BindProperty]
+        public int CategoryID { get; set; }
+
+        [BindProperty]
+        public string CategoryName { get; set; } = string.Empty;
+
+        [BindProperty]
+        public string? Description { get; set; }
 
         public async Task<IActionResult> OnPostUpdateAsync()
         {
-            // Xử lý Description cho Update
-            if (EditCategory != null && string.IsNullOrEmpty(EditCategory.Description))
-            {
-                EditCategory.Description = string.Empty;
-            }
+            Console.WriteLine($"CategoryID: {CategoryID}");
+            Console.WriteLine($"CategoryName: {CategoryName}");
+            Console.WriteLine($"Description: {Description}");
 
-            // Validate manual cho Update
-            ModelState.Clear();
-
-            if (EditCategory == null)
+            if (!ModelState.IsValid)
             {
-                ModelState.AddModelError("", "Category data is required");
-                return await ReloadPage();
-            }
-
-            if (EditCategory.CategoryID <= 0)
-            {
-                ModelState.AddModelError("EditCategory.CategoryID", "Category ID is required");
-                return await ReloadPage();
-            }
-
-            if (string.IsNullOrWhiteSpace(EditCategory.CategoryName))
-            {
-                ModelState.AddModelError("EditCategory.CategoryName", "Category name is required");
-                return await ReloadPage();
-            }
-
-            if (EditCategory.CategoryName.Length > 50)
-            {
-                ModelState.AddModelError("EditCategory.CategoryName", "Category name cannot exceed 50 characters");
-                return await ReloadPage();
-            }
-
-            if (!string.IsNullOrEmpty(EditCategory.Description) && EditCategory.Description.Length > 255)
-            {
-                ModelState.AddModelError("EditCategory.Description", "Description cannot exceed 255 characters");
                 return await ReloadPage();
             }
 
             var token = HttpContext.Session.GetString("token");
-            var result = await _categoryService.UpdateCategoryAsync(EditCategory.CategoryID, EditCategory, token);
+
+            var dto = new UpdateCategoryDTO
+            {
+                CategoryID = CategoryID,
+                CategoryName = CategoryName,
+                Description = Description ?? string.Empty
+            };
+
+            var result = await _categoryService.UpdateCategoryAsync(CategoryID, dto, token);
 
             if (!result)
             {
@@ -136,8 +104,11 @@ namespace PRN232_Final_Project_Client.Pages.Categories
             return RedirectToPage("/Category");
         }
 
+
+
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
+            ModelState.Clear();
             var token = HttpContext.Session.GetString("token");
             var result = await _categoryService.DeleteCategoryAsync(id, token);
 
@@ -145,6 +116,7 @@ namespace PRN232_Final_Project_Client.Pages.Categories
             {
                 ModelState.AddModelError(string.Empty, "Failed to delete category.");
                 return await ReloadPage();
+
             }
 
             return RedirectToPage("/Category");
@@ -155,5 +127,40 @@ namespace PRN232_Final_Project_Client.Pages.Categories
             Categories = await _categoryService.GetAllCategoriesAsync();
             return Page();
         }
+
+        public async Task<JsonResult> OnGetSearchAsync(string searchTerm, int pagenumber)
+        {
+            try
+            {
+                int pageSize = 5;
+                int skip = (pagenumber - 1) * pageSize;
+
+
+
+                // Nếu cần filter searchTerm thì filter ở đây (lấy list full rồi filter)
+                var filtered = await _categoryService.SearchCategoriesOdataAsync(searchTerm, 0, 0);
+
+                int totalCount = (int)Math.Ceiling(filtered.Count() / 5f);
+
+                // Lấy phân trang từ list filtered
+                var pagedCategories = await _categoryService.SearchCategoriesOdataAsync(searchTerm, 5, skip);
+
+                return new JsonResult(new
+                {
+                    categories = pagedCategories,
+                    totalCount = totalCount
+                });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new { error = "Lỗi khi tìm kiếm danh mục." }) { StatusCode = 500 };
+            }
+        }
+
+
+
+
+
+
     }
 }
