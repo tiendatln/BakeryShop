@@ -18,7 +18,10 @@ namespace ProductAndCategoryAPI.Repositories
         }
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.Category) // Include Category details if needed
+                .FirstOrDefaultAsync(p => p.ProductID == id);
+            return product;
         }
         public async Task<Product> CreateProductAsync(Product product)
         {
