@@ -80,7 +80,13 @@ builder.Services.AddAuthentication("Bearer")
     });
 
 // Authorization policies
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Customer", policy =>
+    {
+        policy.RequireRole("Customer");
+    });
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -111,10 +117,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication(); // ✅ Phải đặt trước UseAuthorization
-app.UseAuthorization();
-
 app.UseRouting();
 app.MapControllers();
+
+app.UseAuthentication(); // ✅ Phải đặt trước UseAuthorization
+app.UseAuthorization();
 
 app.Run();

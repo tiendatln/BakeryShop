@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -124,6 +125,7 @@ namespace UserAPI.Controllers
         // PUT: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut]
+        [Authorize("Customer")]
         public async Task<IActionResult> PutUser(UpdateUserProfileDTO updateUserProfileDTO)
         {
             // lấy userId từ token để kiểm tra quyền cập nhật và đảm bảo người dùng chỉ có thể cập nhật thông tin của chính mình

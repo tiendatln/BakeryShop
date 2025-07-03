@@ -116,7 +116,7 @@ namespace Service.Services
         {
             if (string.IsNullOrWhiteSpace(token)) return null;
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            AddBearerToken(token);
 
             var skip = (currentPage - 1) * pageSize;
             var filter = string.IsNullOrWhiteSpace(keyword)

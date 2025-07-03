@@ -113,8 +113,7 @@
                 const roleBadge = {
                     "Admin": "danger",
                     "Customer": "primary",
-                    "Coach": "success"
-                }[user.role] || "secondary";
+                }[user.Role] || "secondary";
 
                 const date = user.RegistrationDate ? new Date(user.registrationDate).toLocaleDateString() : "Không rõ";
 
