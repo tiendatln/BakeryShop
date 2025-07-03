@@ -3,6 +3,7 @@ using Service.BaseService;
 using Service.Interfaces;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json.Serialization;
 
 namespace Service.Services
 {
@@ -13,6 +14,12 @@ namespace Service.Services
         public UserService(GatewayHttpClient gateway)
         {
             _httpClient = gateway.Client;
+        }
+
+        private void AddBearerToken(string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = null;
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         public async Task<string?> LoginAsync(string email, string password)
@@ -78,16 +85,88 @@ namespace Service.Services
 
         public async Task<ReadUserDTO> GetUserInfoAsync(string token)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, "/users/info");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            AddBearerToken(token);
 
-            var response = await _httpClient.SendAsync(request);
+            var response = await _httpClient.GetAsync("/users/info");
 
             if (!response.IsSuccessStatusCode)
                 return null;
 
             var content = await response.Content.ReadFromJsonAsync<ReadUserDTO>();
             return content;
+        }
+
+        public async Task<bool> UpdateUserProfileAsync(string token, UpdateUserProfileDTO updateUserProfileDto)
+        {
+            AddBearerToken(token);
+
+            var response = await _httpClient.
+                PutAsJsonAsync("/users/update-profile", updateUserProfileDto);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Xử lý lỗi cập nhật
+                //throw new Exception("Failed to update user profile.");
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<string> GetUsersAsync(string token, string keyword, int currentPage, int pageSize)
+        {
+            if (string.IsNullOrWhiteSpace(token)) return null;
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            var skip = (currentPage - 1) * pageSize;
+            var filter = string.IsNullOrWhiteSpace(keyword)
+                ? ""
+                : $"$filter=contains(FullName,'{keyword}') or contains(Email,'{keyword}')&";
+
+            var url = $"/users/get?{filter}$top={pageSize}&$skip={skip}&$count=true";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(url);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Console.WriteLine($"API Error: {response.StatusCode}");
+                    return null;
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("API Response: " + content);
+
+                // Trả về trực tiếp content (JSON string)
+                return content;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<bool> ResetPasswordAsync(string email, string newPassword)
+        {
+            // create reset password DTO
+            var resetPasswordDto = new ResetPasswordDTO
+            {
+                Email = email,
+                NewPassword = newPassword
+            };
+
+            // send request to API
+            var response = await _httpClient.PostAsJsonAsync("/users/forgot-password", resetPasswordDto);
+            // read response content and print it to console
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(content);
+
+            if(!response.IsSuccessStatusCode)
+            {
+                return false; // return false if failed
+            }
+            // return true if success
+            return true;
         }
     }
 }
