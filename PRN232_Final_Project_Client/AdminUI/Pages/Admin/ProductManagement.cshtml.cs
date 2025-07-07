@@ -86,7 +86,7 @@
         public async Task OnGet()
         {
             HttpContext.Session.SetString("token"
-                , "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTEUgTkdVRU4gVElFTiBEQVQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0aWVuZGF0bGUyMjEyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzUwODc0NzQ5LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDA5IiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzExMiJ9.eVGXExXlQrpgC2tZMpwyx_FO0qN_aXOnK8Y6CIGswXA"); // Set the active page in session
+                , "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTEUgTkdVRU4gVElFTiBEQVQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0aWVuZGF0bGUyMjEyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzUxMTc2MTE0LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDA5IiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzExMiJ9.VDBKKMQ4hxpeqK469VNWmRMMSdQYxCkW3wv_lnAHjjE"); // Set the active page in session
         }
 
         // Delete product
@@ -165,13 +165,13 @@
         /// <param name="status">The status<see cref="bool"/></param>
         /// <param name="pageNumper">The pageNumper<see cref="int"/></param>
         /// <returns>The <see cref="Task{IActionResult}"/></returns>
-        public async Task<IActionResult> OnGetSearchProductsAsync(string searchTerm, int categoryId, int status, int pageNumber)
+        public async Task<IActionResult> OnGetSearchProductsAsync(string searchTerm, int categoryId, int status, double minPrice, double maxPrice, int pageNumber)
         {
 
-            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, status, 0, 0);
+            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, status, minPrice, maxPrice, 0, 0);
             var totalPages = (int)Math.Ceiling(search.Count / 10f);
 
-            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, status, 10, (pageNumber - 1) * 10);
+            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, status, minPrice, maxPrice, 10, (pageNumber - 1) * 10);
             return new JsonResult(new
             {
                 products = product,

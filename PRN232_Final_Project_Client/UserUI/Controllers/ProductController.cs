@@ -49,13 +49,13 @@ namespace UserUI.Controllers
 
 
 
-        public async Task<IActionResult> SearchProducts(string searchTerm, int categoryId, int pageNumper)
+        public async Task<IActionResult> SearchProducts(string searchTerm, int categoryId, double minPrice, double maxPrice, int pageNumper)
         {
 
-            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, 0, 0);
+            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, minPrice, maxPrice, 0, 0);
             var totalPages = (int)Math.Ceiling(search.Count / 12f);
 
-            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, 12, (pageNumper - 1) * 12);
+            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, minPrice, maxPrice, 12, (pageNumper - 1) * 12);
             return Json(new
             {
                 products = product,
@@ -70,9 +70,9 @@ namespace UserUI.Controllers
             return Json(product); // Redirect to Index view with category products
         }
 
-        public async Task<JsonResult> SearchSuggestions(string searchTerm)
+        public async Task<JsonResult> SearchSuggestions(string searchTerm, int categoryId, double minPrice, double maxPrice)
         {
-            var search = await _productService.SearchProductsOdataAsync(searchTerm, 0, 0, 4, 0);
+            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, minPrice, maxPrice, 4, 0);
             return Json(search);
         }
     }

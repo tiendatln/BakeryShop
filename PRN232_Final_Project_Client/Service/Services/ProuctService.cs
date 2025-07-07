@@ -111,16 +111,12 @@ namespace Service.Services
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
         }
 
-        public async Task<List<ReadProductDTO>> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, int take, int skip)
+        public async Task<List<ReadProductDTO>> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, double minPrice, double maxPrice, int take, int skip)
         {
             List<string> filtersList = new List<string>();
 
             if (categoryID != 0)
                 filtersList.Add($"CategoryID eq {categoryID}");
-
-            //if (price != 0)
-            //    filters += $"Price lt {price}";
-
             if (status < 0)
                 filtersList.Add($"IsAvailable eq {status}");
             if( 1 <= status && status <= 2)
@@ -128,6 +124,15 @@ namespace Service.Services
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 filtersList.Add($"contains(ProductName, '{searchTerm}')");
+            if (minPrice > 0)
+            {
+                filtersList.Add($"Price gt {minPrice}");
+            }
+            if (maxPrice > 0)
+            {
+                filtersList.Add($"Price lt {maxPrice}");
+            }
+            
 
 
             var filters = "$filter=";

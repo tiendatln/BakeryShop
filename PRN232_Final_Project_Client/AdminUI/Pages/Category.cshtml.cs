@@ -32,6 +32,12 @@ namespace PRN232_Final_Project_Client.Pages.Categories
 
         }
 
+        public async Task<IActionResult> OnGetAllCategoryAsync()
+        {
+            var Categories = await _categoryService.GetAllCategoriesAsync();
+            return new JsonResult(Categories);
+        }
+
         [BindProperty]
         public CreateCategoryDTO NewCategory { get; set; } = new();
         public async Task<IActionResult> OnPostCreateAsync()
