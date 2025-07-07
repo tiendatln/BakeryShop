@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartAPI", "CartAPI\CartAPI.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeedbackAPI", "FeedbackAPI\FeedbackAPI.csproj", "{FA4C0EE0-1E76-4769-91F3-35D5E538270A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderAPI", "OrderAPI\OrderAPI.csproj", "{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderAPI", "OrderAPI\OrderAPI.csproj", "{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotificationAPI", "NotificationAPI\NotificationAPI.csproj", "{7C78608F-1C81-40D8-B068-6D4BEE50C286}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8554B0B5-D64F-4CA9-9A6B-CF608737A02B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C78608F-1C81-40D8-B068-6D4BEE50C286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C78608F-1C81-40D8-B068-6D4BEE50C286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C78608F-1C81-40D8-B068-6D4BEE50C286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C78608F-1C81-40D8-B068-6D4BEE50C286}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

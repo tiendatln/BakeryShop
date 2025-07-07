@@ -79,7 +79,7 @@ builder.Services.AddAuthentication("Bearer")
         options.MapInboundClaims = false;
     });
 
-// Authorization policies
+// Authorization policies (cho phép Customer) để dùng trong Controller
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("Customer", policy =>
@@ -115,12 +115,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseRouting(); //✅ 1. Thêm dòng này để đảm bảo routing hoạt động
 
-app.UseRouting();
-app.MapControllers();
+//✅ 2. CORS configuration ( nếu dùng SignalR thì cần CORS )
 
-app.UseAuthentication(); // ✅ Phải đặt trước UseAuthorization
-app.UseAuthorization();
+// ✅ 3. Phải đặt sau UseRouting và trước MapControllers
+app.UseHttpsRedirection(); // dung để chuyển đổi HTTP sang HTTPS
+
+//✅ 4. User authentication and authorization
+app.UseAuthentication(); // ✅ Phải đặt trước UseAuthorization và sau UseRouting
+app.UseAuthorization(); // ✅ Phải đặt sau UseAuthentication và trước MapControllers
+
+// ✅5. Phải đặt sau UseRouting và trước MapHub
+app.MapControllers();  // Map url /odata/ODataUsers/ đến ODataUsersController
+
+//✅ 6. Map SignalR hubs (nếu có)
 
 app.Run();

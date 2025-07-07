@@ -28,6 +28,11 @@
 </div>
 
 @section Scripts {
+
+    <!-- ✅ Import thư viện SweetAlert2 & SignalR -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
     <script>
         let currentPage = 1;
         const pageSize = 5;
@@ -39,6 +44,36 @@
                 currentPage = 1;
                 loadUsers();
             });
+
+            // SignalR connection to reload when user updated
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7126/notificationHub")
+                .build();
+
+            connection.start()
+                .then(() => {
+                    console.log("✅ Đã kết nối đến Notification Hub");
+
+                    connection.on("ProfileUpdated", function (userId) {
+                        console.log(`👤 User ${userId} đã cập nhật hồ sơ.`);
+
+                        Swal.fire({
+                            title: '🔔 Có thay đổi dữ liệu!',
+                            text: 'Một người dùng vừa cập nhật hồ sơ. Bạn có muốn tải lại danh sách?',
+                            icon: 'info',
+                            showCancelButton: true,
+                            confirmButtonText: 'Tải lại',
+                            cancelButtonText: 'Để sau'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                loadUsers(); // Gọi lại danh sách người dùng
+                            }
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.error("❌ Không thể kết nối Hub:", err);
+                });
         });
 
         function loadUsers() {

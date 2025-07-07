@@ -8,11 +8,13 @@ namespace UserUI.Controllers
     {
         private readonly IUserService _userService;
         private readonly EmailService _emailService;
+        private readonly INotificationService _notificationService;
 
-        public CommonController(IUserService userService, EmailService emailService)
+        public CommonController(IUserService userService, EmailService emailService, INotificationService notificationService)
         {
             _userService = userService;
             _emailService = emailService;
+            _notificationService = notificationService;
         }
 
         // ***** login *****
@@ -197,6 +199,10 @@ namespace UserUI.Controllers
                 return RedirectToAction("Profile", "Common");
             }
             TempData["SuccessUpdateMessage"] = "Profile updated successfully.";
+
+            // Notify profile updated via SignalR
+            await _notificationService.NotifyProfileUpdatedAsync(userId);
+
             return RedirectToAction("Profile", "Common");
         }
 
