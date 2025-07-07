@@ -25,12 +25,19 @@
     }
 </style>
 
-@if (ViewData["SuccessMessage"] != null)
+@if (TempData["SuccessUpdateMessage"] != null)
 {
     <div class="alert alert-success" role="alert">
-        @ViewData["SuccessMessage"]
+        @TempData["SuccessUpdateMessage"]
     </div>
 }
+@if (TempData["ErrorUpdateMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["ErrorUpdateMessage"]
+    </div>
+}
+
 
 @if(Model  != null)
 {
@@ -40,18 +47,26 @@
             <h3>@Model.FullName</h3>
 
             <form id="profileForm" method="post" asp-controller="Common" asp-action="UpdateProfile">
+
+                <input type="hidden" name="userId" value="@Model.UserId" />
+
                 <div class="mb-3">
                     <label class="form-label"><strong>Email</strong></label>
                     <input type="email" class="form-control" id="email" name="email" value="@Model.Email" readonly>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label"><strong>Số điện thoại</strong></label>
-                    <input type="text" class="form-control" id="phone" name="phone" value="@Model.PhoneNumber" disabled required>
+                    <label class="form-label"><strong>FullName</strong></label>
+                    <input type="text" class="form-control" id="fullname" name="fullname" value="@Model.FullName" disabled required>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label"><strong>Địa chỉ</strong></label>
+                    <label class="form-label"><strong>Phone Number</strong></label>
+                    <input type="tel" class="form-control" id="phone" name="phone" value="@Model.PhoneNumber" disabled required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Address</strong></label>
                     <input type="text" class="form-control" id="address" name="address" value="@Model.Address" disabled required>
                 </div>
 
@@ -72,7 +87,7 @@
         let saveBtn = document.getElementById("saveBtn");
 
         inputs.forEach(input => {
-            if (input.id !== "email") { // Không cho phép chỉnh sửa email
+            if (input.type !== "hidden" && input.id !== "email") {
                 input.disabled = !input.disabled;
             }
         });

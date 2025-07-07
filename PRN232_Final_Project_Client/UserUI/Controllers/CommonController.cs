@@ -8,11 +8,13 @@ namespace UserUI.Controllers
     {
         private readonly IUserService _userService;
         private readonly EmailService _emailService;
+        private readonly INotificationService _notificationService;
 
-        public CommonController(IUserService userService, EmailService emailService)
+        public CommonController(IUserService userService, EmailService emailService, INotificationService notificationService)
         {
             _userService = userService;
             _emailService = emailService;
+            _notificationService = notificationService;
         }
 
         // ***** login *****
@@ -102,7 +104,7 @@ namespace UserUI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Verify()
+        public IActionResult Verify()
         {
             // get category in header
             /*var categories = (await _categoryRepo.GetAll()).ToList();
@@ -168,6 +170,127 @@ namespace UserUI.Controllers
             }
 
             return View(user);
+        }
+
+        // ***** Update Profile *****
+        [HttpPost]
+        public async Task<IActionResult> UpdateProfile(int userId, string email, string fullname, string phone,
+            string address)
+        {
+            // Get user token from session
+            string token = HttpContext.Session.GetString("UserToken");
+
+            // create UpdateUserProfileDTO
+            var updateUserProfileDto = new DTOs.UserDTO.UpdateUserProfileDTO
+            {
+                UserId = userId,
+                Email = email,
+                FullName = fullname,
+                PhoneNumber = phone,
+                Address = address,
+                Role = "Customer" // User role, default is "Customer"
+            };
+
+            // call user service to update profile
+            var result = await _userService.UpdateUserProfileAsync(token, updateUserProfileDto);
+            if(!result)
+            {
+                TempData["ErrorUpdateMessage"] = "Failed to update profile. Please try again.";
+                return RedirectToAction("Profile", "Common");
+            }
+            TempData["SuccessUpdateMessage"] = "Profile updated successfully.";
+
+            // Notify profile updated via SignalR
+            await _notificationService.NotifyProfileUpdatedAsync(userId);
+
+            return RedirectToAction("Profile", "Common");
+        }
+
+        // ***** Forgot Password *****
+        [HttpGet]
+        public IActionResult Forgot()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SendResetCode()
+        {
+            // get email from Form send by Ajax
+            string email = Request.Form["email"];
+
+            if (string.IsNullOrEmpty(email))
+            {
+                TempData["ForgotErrorMessage"] = "Email is required.";
+                return RedirectToAction("Forgot", "Common");
+            }
+
+            // Check if user exists
+            var userExists = await _userService.CheckUserExists(email);
+            if (!userExists)
+            {
+                TempData["ForgotErrorMessage"] = "Email not found.";
+                return RedirectToAction("Forgot", "Common");
+            }
+
+            // Generate reset code
+            string resetCode = new Random().Next(100000, 999999).ToString(); // Mã xác nhận 6 số
+            string emailBody = $"Your password reset code is: <b>{resetCode}</b>";
+            bool emailSent = await _emailService.SendEmailAsync(email, "Reset Your Password", emailBody);
+            if (!emailSent)
+            {
+                TempData["ErrorMessage"] = "Failed to send reset code. Please try again.";
+                return RedirectToAction("Forgot", "Common");
+            }
+
+            // Save reset code to session
+            HttpContext.Session.SetString("ResetCode", resetCode);
+            // Save email to session
+            HttpContext.Session.SetString("ResetEmail", email);
+
+            return Content("Mã xác nhận đã được gửi!"); ;
+        }
+
+        [HttpPost]
+        public IActionResult VerifyResetCode()
+        {
+            string code = Request.Form["code"];
+
+            // Get reset code from session
+            string storedCode = HttpContext.Session.GetString("ResetCode");
+
+            if (string.IsNullOrEmpty(storedCode) || code != storedCode)
+            {
+                return Content("Mã xác nhận không hợp lệ!");
+            }
+
+            return Content("Mã xác nhận hợp lệ!"); // Chuyển hướng đến trang đặt lại mật khẩu
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword()
+        {
+            // Get email and new password from Form send by Ajax
+            string email = HttpContext.Session.GetString("ResetEmail");
+            string newPassword = Request.Form["newPassword"];
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(newPassword))
+            {
+                return Content("Email và mật khẩu mới là bắt buộc.");
+            }
+
+            // Call user service to reset password
+            var result = await _userService.ResetPasswordAsync(email, newPassword);
+            if (!result)
+            {
+                return Content("Đặt lại mật khẩu không thành công. Vui lòng thử lại.");
+            }
+
+            // Xóa reset code khỏi session
+            HttpContext.Session.Remove("ResetCode");
+            HttpContext.Session.Remove("ResetEmail");
+
+            return Content("Mật khẩu đã được đặt lại thành công! Vui lòng đăng nhập.");
         }
     }
 }

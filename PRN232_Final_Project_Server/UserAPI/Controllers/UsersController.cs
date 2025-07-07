@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -24,7 +27,58 @@ namespace UserAPI.Controllers
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
+        // Reset password
+        // POST: api/Users/reset-password
+        [HttpPost("reset-password")]
+        public async Task<ActionResult> ResetPassword(ResetPasswordDTO resetPasswordDTO)
+        {
+            if (resetPasswordDTO == null)
+            {
+                return BadRequest("Invalid reset password data.");
+            }
+
+            // check email exists
+            var checkEmailExist = await _userService.IsEmailExistsAsync(resetPasswordDTO.Email);
+            if (!checkEmailExist)
+            {
+                return NotFound("Email does not exist.");
+            }
+
+            // Reset password
+            var result = await _userService.ResetPasswordAsync(resetPasswordDTO);
+            if(result == false)
+            {
+                return BadRequest("Failed to reset password. Please check your email or new password.");
+            }
+
+            return Ok("Password reset successfully.");
+        }
+
+        // OData sẽ tự động tìm phương thức này để xử lý GET cho EntitySet "ODataUsers"
+        // Bạn không cần [HttpGet] ở đây nữa vì ODataController sẽ xử lý.
+        [HttpGet("Get")] // api/Users/Get
+        public IActionResult GetAndCount(int top, int skip) // Tên phương thức là "Get"
+        {
+            var readUserDTO = _userService.GetAllUsers();
+            var count = readUserDTO.Count();
+
+            // Phân trang
+            if (skip < 0 || top <= 0)
+            {
+                return BadRequest("Invalid pagination parameters.");
+            }
+
+            readUserDTO = readUserDTO.Skip(skip).Take(top);
+
+            return Ok(new
+            {
+                data = readUserDTO,
+                totalUser = count
+            });
+        }
+
         // POST: api/Users/validate
+        // Dùng để xác thực người dùng khi đăng nhập gọi từ AuthAPI
         [HttpPost("validate")]
         public async Task<ActionResult<UserValidateResultDTO>> ValidateUser(UserValidateDTO userValidateDTO)
         {
@@ -54,15 +108,6 @@ namespace UserAPI.Controllers
             return Ok(exists);
         }
 
-
-        // GET: api/Users
-        [HttpGet]
-        [EnableQuery]
-        public IQueryable<ReadUserDTO> GetUsers()
-        {
-            return _userService.GetAllUsers();
-        }
-
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ReadUserDTO>> GetUser(int id)
@@ -77,18 +122,21 @@ namespace UserAPI.Controllers
             return Ok(readUserDTO);
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, UpdateUserProfileDTO updateUserProfileDTO)
+        [HttpPut]
+        [Authorize("Customer")]
+        public async Task<IActionResult> PutUser(UpdateUserProfileDTO updateUserProfileDTO)
         {
-            if (id != updateUserProfileDTO.UserId)
+            // lấy userId từ token để kiểm tra quyền cập nhật và đảm bảo người dùng chỉ có thể cập nhật thông tin của chính mình
+            var userIdFromToken = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+
+            if (userIdFromToken != updateUserProfileDTO.UserId)
             {
-                return BadRequest();
+                return Forbid(); // Người dùng không được phép cập nhật thông tin của người khác
             }
 
             await _userService.UpdateUserAsync(updateUserProfileDTO);
-
             return NoContent();
         }
 
