@@ -51,16 +51,8 @@ namespace UserUI.Controllers
 
         public async Task<IActionResult> SearchProducts(string searchTerm, int categoryId, double minPrice, double maxPrice, int pageNumper)
         {
-
-            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, minPrice, maxPrice, 0, 0);
-            var totalPages = (int)Math.Ceiling(search.Count / 12f);
-
             var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, minPrice, maxPrice, 12, (pageNumper - 1) * 12);
-            return Json(new
-            {
-                products = product,
-                totalPages = totalPages
-            });
+            return Content(product, "application/json");
         }
 
         public async Task<ActionResult> GetProductsByCategory(int categoryId)
@@ -70,10 +62,5 @@ namespace UserUI.Controllers
             return Json(product); // Redirect to Index view with category products
         }
 
-        public async Task<JsonResult> SearchSuggestions(string searchTerm, int categoryId, double minPrice, double maxPrice)
-        {
-            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, minPrice, maxPrice, 4, 0);
-            return Json(search);
-        }
     }
 }

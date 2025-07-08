@@ -589,7 +589,7 @@
         }
 
             .form-control-custom:focus {
-                border-color: #667eea;
+                border-color: #ff6b35;
                 box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25), 0 8px 25px rgba(0, 0, 0, 0.1);
                 background: rgba(255, 255, 255, 1);
                 transform: translateY(-2px);
@@ -609,7 +609,7 @@
         }
 
         .input-wrapper:focus-within .input-icon {
-            color: #667eea;
+            color: #ff6b35;
         }
 
         .suggestion-list {
@@ -640,7 +640,7 @@
         }
 
             .suggestion-item:hover {
-                background: linear-gradient(135deg, #667eea, #764ba2);
+                background: linear-gradient(135deg, #ff6b35, #f39c12);
                 color: white;
             }
 
@@ -654,7 +654,7 @@
             }
 
             .suggestion-item.active {
-                background: linear-gradient(135deg, #667eea, #764ba2);
+                background: linear-gradient(135deg, #ff6b35, #f39c12);
                 color: white;
             }
     </style>
@@ -845,21 +845,22 @@
                 }
 
                 $.ajax({
-                    url: '/Product/SearchSuggestions', // thay bằng API gợi ý của bạn
+                    url: '/Product/SearchProducts', // thay bằng API gợi ý của bạn
                     type: 'GET',
                     data: {
                         searchTerm: query,
                         categoryId: $('.category-link.active').data('category-id') || 0,
                         minPrice: $('#globalSearchInputPriceMin').val() || 0,
-                        maxPrice: $('#globalSearchInputPriceMax').val() || 1000000 // giá tối đa
+                        maxPrice: $('#globalSearchInputPriceMax').val() || 1000000, // giá tối đa
+                        pageNumper: 1,
                     },
                     success: function (data) {
                         let html = '';
-                        if (data && data.length > 0) {
-                            data.forEach(function (item) {
+                        if (data.value && data.value.length > 0) {
+                            data.value.forEach(function (item) {
                                 html += `<li class="suggestion-item">
                                     <i class="fas fa-box" style="margin-right: 10px; color: #6c757d;"></i>
-                                    ${item.productName}
+                                    ${item.ProductName}
                                 </li>`;
                             });
                             $('#suggestionList').html(html).show();
@@ -948,8 +949,9 @@
                         pageNumper: page || 1
                     },
                     success: function (data) {
-                        renderProducts(data.products);
-                        renderPagination(data.totalPages, page);
+                        renderProducts(data.value);
+                        const totalPages = Math.ceil(data["@@odata.count"] / 12); // Assuming 12 products per page
+                        renderPagination(totalPages, page);
                     },
                     error: function () {
                         showError('Failed to load products. Please try again later.');
@@ -978,16 +980,16 @@
                 }
 
                 data.forEach(function (product, index) {
-                    if(product.stockQuantity > 0){
+                    if(product.StockQuantity > 0){
                         const html = `
                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
-                        <a class="product-card fade-in scroll-reveal" href="/Detail/Index?productId=${product.productID}" style=" animation-delay: ${index * 0.1}s;">
+                        <a class="product-card fade-in scroll-reveal" href="/Detail/Index?productId=${product.ProductID}" style=" animation-delay: ${index * 0.1}s;">
                             <div class="product-image">
-                                <img src="${product.imageURL}" alt="${product.productName}" loading="lazy">
+                                <img src="${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
                             </div>
                             <div class="product-info">
-                                <h3 class="product-name">${product.productName}</h3>
-                                <div class="product-price">$${product.price}</div>
+                                <h3 class="product-name">${product.ProductName}</h3>
+                                <div class="product-price">$${product.Price}</div>
                                 <button class="add-to-cart-btn" onclick="event.preventDefault(); addRipple(event);">
                                     <i class="fas fa-shopping-cart"></i> Add to Cart
                                 </button>
@@ -999,12 +1001,12 @@
                         const html=`<div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
             <div class="product-card">
                 <div class="product-image">
-                    <img src="${product.imageURL}" alt="${product.productName}" loading="lazy">
+                    <img src="${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
                     <div class="out-of-stock-overlay">HẾT HÀNG</div>
                 </div>
                 <div class="product-info">
-                    <h3 class="product-name">${product.productName}</h3>
-                    <div class="product-price">$${product.price}</div>
+                    <h3 class="product-name">${product.ProductName}</h3>
+                    <div class="product-price">$${product.Price}</div>
                     <button class="add-to-cart-btn" disabled>
                         <i class="fas fa-ban"></i> Hết Hàng
                     </button>

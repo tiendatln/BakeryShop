@@ -65,10 +65,21 @@
         /// The OnGet
         /// </summary>
         /// <returns>The <see cref="Task"/></returns>
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
-          
+            var token = HttpContext.Session.GetString("AdminToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToPage("/Admin/Login");
+            }
+
+            // Nếu hợp lệ, tiếp tục xử lý logic ở đây
+            return Page(); // Trả về trang hiện tại
         }
+
+
+
+
         // Delete product
 
         /// <summary>
