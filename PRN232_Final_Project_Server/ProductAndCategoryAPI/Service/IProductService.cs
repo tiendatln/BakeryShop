@@ -13,6 +13,7 @@ namespace ProductAndCategoryAPI.Service
         Task<IEnumerable<ReadProductDTO>> GetProductsByCategoryIdAsync(int categoryId);
         Task<IEnumerable<ReadProductDTO>> SearchProductsAsync(string searchTerm);
 
-        IQueryable<Product> GetAvailableProductsAsync();
+        IQueryable<Product> GetAllProductForOData();
+        IQueryable<ReadProductDTO> GetAllProduct(); 
     }
 }

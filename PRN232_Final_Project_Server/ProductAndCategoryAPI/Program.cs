@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OData.ModelBuilder;
 using ProductAndCategoryAPI.Data;
 using ProductAndCategoryAPI.DTOs;
+using ProductAndCategoryAPI.Models;
 using ProductAndCategoryAPI.Repositories;
 using ProductAndCategoryAPI.Service;
 
@@ -18,7 +19,7 @@ odataBuilder.EntitySet<ReadCategoryDTO>("Categories")
     .EntityType.HasKey(c => c.CategoryID);
 builder.Services.AddControllers().AddOData( options => options
 .AddRouteComponents("odata",odataBuilder.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(100));
-
+odataBuilder.EntitySet<Product>("OdataProduct");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

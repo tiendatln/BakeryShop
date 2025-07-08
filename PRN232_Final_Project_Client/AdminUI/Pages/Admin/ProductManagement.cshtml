@@ -327,8 +327,9 @@
             success: function (data) {
                 console.log(page);
                 const container = $('#productTableBody');
-                renderProducts(data.products, container);
-                renderPagination(data.totalPages, page);
+                renderProducts(data.value, container);
+                const mathPage = Math.ceil(data["@@odata.count"] / 10); 
+                renderPagination(mathPage, page);
             },
             error: function () {
                 console.error('Failed to load products.');
@@ -389,12 +390,12 @@
         var No = 1;
         data.forEach(product => {
             // Map category name if not already present
-            if (!product.categoryName && categoryMap[product.categoryID]) {
-                product.categoryName = categoryMap[product.categoryID];
+            if (!product.CategoryName && categoryMap[product.CategoryID]) {
+                product.CategoryName = categoryMap[product.CategoryID];
             }
 
-            const imageHtml = product.imageURL
-                ? `<img src="/${product.imageURL}" class="img-thumbnail" style="width:50px;height:50px;" alt="${product.productName}">`
+            const imageHtml = product.ImageURL
+                ? `<img src="/${product.ImageURL}" class="img-thumbnail" style="width:50px;height:50px;" alt="${product.ProductName}">`
                 : `<div class="bg-light text-center d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
                      <i class="fas fa-image text-muted"></i>
                    </div>`;
@@ -403,31 +404,31 @@
                 <tr>
                     <td>${No}</td>
                     <td>${imageHtml}</td>
-                    <td><strong>${product.productName}</strong></td>
-                    <td>${product.categoryName || 'N/A'}</td>
-                    <td class="text-success fw-bold">$${product.price}</td>
+                    <td><strong>${product.ProductName}</strong></td>
+                    <td>${product.CategoryName || 'N/A'}</td>
+                    <td class="text-success fw-bold">$${product.Price}</td>
                     <td>
-                        <span class="badge ${product.stockQuantity > 5 ? "bg-success" : "bg-danger"}">
-                            ${product.stockQuantity}
+                        <span class="badge ${product.StockQuantity > 5 ? "bg-success" : "bg-danger"}">
+                            ${product.StockQuantity}
                         </span>
                     </td>
                     <td>
-                        <span class="badge ${product.isAvailable ? "bg-success" : "bg-secondary"}">
-                            ${product.isAvailable ? "In Stock" : "Out of Stock"}
+                        <span class="badge ${product.IsAvailable ? "bg-success" : "bg-secondary"}">
+                            ${product.IsAvailable ? "In Stock" : "Out of Stock"}
                         </span>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-primary" onclick="viewProduct(${product.productID})"
+                            <button class="btn btn-outline-primary" onclick="viewProduct(${product.ProductID})"
                                     title="View Details">
                                 <i class="fas fa-eye"></i> Details
                             </button>
-                            <button class="btn btn-outline-warning" onclick="editProduct(${product.productID})"
+                            <button class="btn btn-outline-warning" onclick="editProduct(${product.ProductID})"
                                     title="Edit Product">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="btn btn-outline-danger" onclick="deleteProduct(${product.productID}, '${product.productName.replace(/'/g, "\\'")}'); return false;"
-                                    title="Delete Product">
+                                <button class="btn btn-outline-danger" onclick="deleteProduct(${product.ProductID}, '${product.ProductName.replace(/'/g, "\\'")}'); return false;"
+                                title="Delete Product">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>

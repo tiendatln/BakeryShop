@@ -58,7 +58,7 @@ namespace ProductAndCategoryAPI.Repositories
         }
 
 
-        public IQueryable<Product> GetAvailableProductsAsync()
+        public IQueryable<Product> GetAllProduct()
         {
             return _context.Products.AsQueryable();
         }

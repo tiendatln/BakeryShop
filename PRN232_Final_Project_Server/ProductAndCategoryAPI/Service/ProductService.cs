@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ProductAndCategoryAPI.DTOs;
 using ProductAndCategoryAPI.Models;
 using ProductAndCategoryAPI.Repositories;
@@ -60,10 +61,13 @@ namespace ProductAndCategoryAPI.Service
             return _mapper.Map<IEnumerable<ReadProductDTO>>(products);
         }
 
-
-        public IQueryable<Product> GetAvailableProductsAsync()
+        public IQueryable<Product> GetAllProductForOData()
         {
-            return _productRepository.GetAvailableProductsAsync();
+            return _productRepository.GetAllProduct();
+        }
+        public IQueryable<ReadProductDTO> GetAllProduct()
+        {
+            return _productRepository.GetAllProduct().ProjectTo<ReadProductDTO>(_mapper.ConfigurationProvider);
         }
     }
 }

@@ -111,7 +111,7 @@ namespace Service.Services
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
         }
 
-        public async Task<List<ReadProductDTO>> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, double minPrice, double maxPrice, int take, int skip)
+        public async Task<string> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, double minPrice, double maxPrice, int take, int skip)
         {
             List<string> filtersList = new List<string>();
 
@@ -135,7 +135,7 @@ namespace Service.Services
             
 
 
-            var filters = "$filter=";
+            var filters = "&filter=";
             if (filtersList.Count > 0)
             {
                 filters += string.Join(" and ", filtersList);
@@ -146,9 +146,10 @@ namespace Service.Services
             }
             if(take > 0)
             filters += $"&$top={take}&$skip={skip}";
-            var response = await _httpClient.GetAsync($"/products/Get?{filters}");
+            var response = await _httpClient.GetAsync($"/products/odata?$count=true{filters}");
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
+            var data = await response.Content.ReadAsStringAsync();
+            return data;
         }
     }
 }
