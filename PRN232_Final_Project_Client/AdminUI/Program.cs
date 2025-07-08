@@ -1,4 +1,7 @@
-﻿var builder = WebApplication.CreateBuilder(args);
+﻿using Service.Interfaces;
+using Service.Services;
+
+var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -21,6 +24,7 @@ builder.Services.AddHttpClient<Service.BaseService.GatewayHttpClient>(client =>
 builder.Services.AddScoped<Service.Interfaces.IUserService, Service.Services.UserService>();
 builder.Services.AddScoped<Service.Interfaces.IProductService, Service.Services.ProuctService>();
 builder.Services.AddScoped<Service.Interfaces.ICategoryService, Service.Services.CategoryService>();
+builder.Services.AddScoped<Service.Interfaces.IFeedbackService, Service.Services.FeedbackService>();
 
 builder.Services.AddScoped<Service.Services.EmailService>();
 

@@ -298,7 +298,6 @@
                     <h3 for="description" style="font-size: 30px">FEEDBACK HERE!</h3>
 
                     <input type="hidden" name="FeedbackID" value="@(ViewBag.CustomerFeedback?.FeedbackID ?? 0)" />
-                    <p>DEBUG: FeedbackID = @ViewBag.CustomerFeedback?.FeedbackID</p>
                     <textarea id="description" name="Description" class="form-control" rows="6">@(
                     ViewBag.CustomerFeedback != null ? ViewBag.CustomerFeedback.Description : ""
                 )</textarea>

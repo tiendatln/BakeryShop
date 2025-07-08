@@ -1,14 +1,21 @@
 ﻿using DTOs.FeedbackDTO;
+using DTOs.UserDTO;
 using Service.BaseService;
 using Service.Interfaces;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
 namespace Service.Services
 {
     public class FeedbackService : IFeedbackService
     {
         private readonly HttpClient _client;
-        public FeedbackService(GatewayHttpClient gateway) => _client = gateway.Client;
+
+        public FeedbackService(GatewayHttpClient gateway)
+        {
+            _client = gateway.Client;
+            
+        }
 
         private void AddBearerToken(string token)
         {
@@ -48,6 +55,12 @@ namespace Service.Services
             var resp = await _client.DeleteAsync($"/feedbacks/del");
             return resp.IsSuccessStatusCode;
         }
-    
+
+      
+        public Task<bool> DeleteAsync(int userId, string token)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

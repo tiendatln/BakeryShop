@@ -1,0 +1,72 @@
+﻿@page
+@model AdminUI.Pages.Admin.UserFeedbackModel
+@{
+    ViewData["Title"] = "Quản lý phản hồi người dùng";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">💬 Quản lý phản hồi người dùng</h2>
+
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Người gửi</th>
+                <th>Email</th>
+                <th>Nội dung</th>
+                <th>Ngày gửi</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.FeedbackList.Any())
+            {
+                int index = 1;
+                foreach (var fb in Model.FeedbackList)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@fb.FullName</td>
+                        <td>@fb.Email</td>
+                        <td>@fb.Description</td>  
+                        <td>@fb.SubmittedDate</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" onclick="deleteFeedback(@fb.FeedbackID)">
+                                <i class="bi bi-trash"></i> Xóa
+                            </button>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr><td colspan="6" class="text-center">Không có phản hồi nào.</td></tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function deleteFeedback(id) {
+            if (!confirm("Bạn có chắc chắn muốn xóa phản hồi này?")) return;
+
+            $.ajax({
+                url: `/Admin/UserFeedbackManagement?id=${id}&handler=Delete`,
+                method: 'GET',
+                success: function (res) {
+                    if (res.success) {
+                        alert("🗑️ Xóa phản hồi thành công!");
+                        location.reload();
+                    } else {
+                        alert("❌ Không thể xóa phản hồi.");
+                    }
+                },
+                error: function () {
+                    alert("🚫 Lỗi kết nối server.");
+                }
+            });
+        }
+    </script>
+}

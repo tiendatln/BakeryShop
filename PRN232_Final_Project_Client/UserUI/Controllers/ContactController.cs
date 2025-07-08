@@ -2,16 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Service.Interfaces;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 
 namespace UserUI.Controllers
 {
-    public class ContactController : Controller
-    {
-        private readonly IFeedbackService _feedbackService;
+        public class ContactController : Controller
+        {
+            private readonly IFeedbackService _feedbackService;
 
-        public ContactController(IFeedbackService feedbackService) =>
-            _feedbackService = feedbackService;
+            public ContactController(IFeedbackService feedbackService)
+            {
+                _feedbackService = feedbackService;
+            }
 
         /* ----------------- Trang Contact ------------------------------- */
         public async Task<IActionResult> Index()
@@ -33,7 +36,6 @@ namespace UserUI.Controllers
                 ViewBag.CustomerFeedback = customerFeedback;
 
             Console.WriteLine("Final Token: " + token);
-
 
             return View(list);
         }
