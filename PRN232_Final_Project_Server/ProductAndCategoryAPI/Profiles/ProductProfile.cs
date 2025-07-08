@@ -12,7 +12,7 @@ namespace ProductAndCategoryAPI.Profiles
             CreateMap<UpdateProductDTO, Product>();
             CreateMap<Product, ReadProductDTO>();
             CreateMap<Product, UpdateProductDTO>();
-
+            CreateMap<ReadProductDTO, Product>();
         }
     }
 }

@@ -18,6 +18,7 @@
         /// </summary>
         private readonly IProductService _productService;
 
+    
         #endregion
 
         #region Constructors
@@ -35,25 +36,6 @@
 
         #region Properties
 
-        //public async Task<IActionResult> OnGetAllProductAsync([FromQuery] int page)
-        //{
-
-        //    var allproducts = await _productService.GetAllProductsAsync();
-        //    var totalPages = (int)Math.Ceiling(allproducts.Count / 10f);
-
-        //    var products = await _productService.GetProductPage(10, skip);
-
-        //    if (products == null || !products.Any())
-        //    {
-        //        return new JsonResult(new { success = false, message = "No products found." });
-        //    }
-
-        //    return new JsonResult(new
-        //    {
-        //        products = products,
-        //        totalPages = totalPages
-        //    });
-        //}
 
         /// <summary>
         /// Gets or sets the CreateProduct
@@ -83,11 +65,20 @@
         /// The OnGet
         /// </summary>
         /// <returns>The <see cref="Task"/></returns>
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            HttpContext.Session.SetString("token"
-                , "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiTEUgTkdVRU4gVElFTiBEQVQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJ0aWVuZGF0bGUyMjEyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwiZXhwIjoxNzUwODc0NzQ5LCJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3MDA5IiwiYXVkIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzExMiJ9.eVGXExXlQrpgC2tZMpwyx_FO0qN_aXOnK8Y6CIGswXA"); // Set the active page in session
+            var token = HttpContext.Session.GetString("AdminToken");
+            if (string.IsNullOrEmpty(token))
+            {
+                return RedirectToPage("/Admin/Login");
+            }
+
+            // Nếu hợp lệ, tiếp tục xử lý logic ở đây
+            return Page(); // Trả về trang hiện tại
         }
+
+
+
 
         // Delete product
 
@@ -98,7 +89,7 @@
         /// <returns>The <see cref="Task{IActionResult}"/></returns>
         public async Task<IActionResult> OnGetDeleteAsync(int productId)
         {
-            var token = HttpContext.Session.GetString("token");
+            var token = HttpContext.Session.GetString("AdminToken");
             Console.WriteLine($"Token: {token}");
             try
             {
@@ -165,18 +156,11 @@
         /// <param name="status">The status<see cref="bool"/></param>
         /// <param name="pageNumper">The pageNumper<see cref="int"/></param>
         /// <returns>The <see cref="Task{IActionResult}"/></returns>
-        public async Task<IActionResult> OnGetSearchProductsAsync(string searchTerm, int categoryId, int status, int pageNumber)
+        public async Task<IActionResult> OnGetSearchProductsAsync(string searchTerm, int categoryId, int status, double minPrice, double maxPrice, int pageNumber)
         {
-
-            var search = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, status, 0, 0);
-            var totalPages = (int)Math.Ceiling(search.Count / 10f);
-
-            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, status, 10, (pageNumber - 1) * 10);
-            return new JsonResult(new
-            {
-                products = product,
-                totalPages = totalPages
-            });
+            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, status, minPrice, maxPrice, 10, (pageNumber - 1) * 10);
+            //var totalPages = (int)Math.Ceiling(product. / 10f);
+            return Content(product, "application/json");
         }
 
         // Create product
@@ -219,7 +203,7 @@
             {
                 CreateProduct.ImageURL = string.Empty; // Set default or empty if no image provided
             }
-            var token = HttpContext.Session.GetString("token");
+            var token = HttpContext.Session.GetString("AdminToken");
             Console.WriteLine($"Token: {token}");
             var createdProduct = await _productService.CreateProductAsync(CreateProduct, token);
 
@@ -279,7 +263,7 @@
                     return Page();
                 }
             }
-            var token = HttpContext.Session.GetString("token");
+            var token = HttpContext.Session.GetString("AdminToken");
             Console.WriteLine($"Token: {token}");
             var updatedProduct = await _productService.UpdateProductAsync(UpdateProduct, token);
             if (updatedProduct == null)

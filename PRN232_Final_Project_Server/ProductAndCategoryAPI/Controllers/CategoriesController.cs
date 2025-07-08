@@ -34,7 +34,7 @@ namespace ProductAndCategoryAPI.Controllers
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ReadCategoryDTO>> GetCategory(int id)
+        public async Task<ActionResult<ReadCategoryDTO>> GetCategory([FromQuery] int id)
         {
             var category = await _category.GetCategoryByIdAsync(id);
             if (category == null)
@@ -96,7 +96,7 @@ namespace ProductAndCategoryAPI.Controllers
 
         // GET: api/Categories/search?searchTerm=abc
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<ReadCategoryDTO>>> SearchCategory(string searchTerm)
+        public async Task<ActionResult<IEnumerable<ReadCategoryDTO>>> SearchCategory([FromQuery] string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -111,6 +111,7 @@ namespace ProductAndCategoryAPI.Controllers
 
             return Ok(categories);
         }
+
 
         // GET: api/Categories/Get
         [HttpGet("Get")]

@@ -51,7 +51,7 @@ namespace ProductAndCategoryAPI.Repositories
             if (category == null)
                 return false;
 
-            
+
             var hasProducts = await _context.Products.AnyAsync(p => p.CategoryID == id);
             if (hasProducts)
                 return false;
@@ -81,7 +81,7 @@ namespace ProductAndCategoryAPI.Repositories
         {
             return await _context.Categories
                 .Where(c => c.CategoryName.Contains(searchTerm) || c.Description.Contains(searchTerm))
-                .Include(c => c.Products)
+
                 .ToListAsync();
         }
 

@@ -5,36 +5,36 @@
     ViewData["Title"] = "Product Management";
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+@* <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet"> *@
 <style>
-        .search-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    .search-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
 
-        .input-group-text {
-            background: #007bff;
-            border: none;
-            color: white;
-        }
+    .input-group-text {
+        background: #007bff;
+        border: none;
+        color: white;
+    }
 
-        .form-control, .form-select {
-            border: 1px solid #ddd;
-            padding: 10px 12px;
-        }
+    .form-control, .form-select {
+        border: 1px solid #ddd;
+        padding: 10px 12px;
+    }
 
         .form-control:focus, .form-select:focus {
             border-color: #007bff;
             box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
         }
 
-        .input-group .form-control {
-            border-left: none;
-        }
+    .input-group .form-control {
+        border-left: none;
+    }
 </style>
 <div class="container-fluid">
     <div class="row">
@@ -50,28 +50,62 @@
                 </div>
                 <div class="card-body">
                     <!-- Search and Filter -->
-                    <form id="search" method="get">
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-search"></i>
-                                    </span>
-                                    <input type="text" class="form-control" id="searchInput" placeholder="Search products...">
+                    <form method="GET" id="search" style="padding: 15px;">
+                        <div class="form-section">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="searchInput" class="form-label">
+                                        <i class="fas fa-box me-1"></i>
+                                        Product Name
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="searchInput" name="search" placeholder="Enter product name...">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="categoryFilter" class="form-label">
+                                        <i class="fas fa-tags me-1"></i>
+                                        Category
+                                    </label>
+                                    <select class="form-select" id="categoryFilter" name="category">
+                                  
+                                    </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <select class="form-select" id="categoryFilter">
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select class="form-select" id="statusFilter">
-                                    <option value="0">All Status</option>
-                                    <option value="1">In Stock</option>
-                                    <option value="2">Out of Stock</option>
-                                </select>
-                            </div>
+                        </div>
 
+                        <div class="form-section">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="statusFilter" class="form-label">
+                                        <i class="fas fa-clipboard-check me-1"></i>
+                                        Stock Status
+                                    </label>
+                                    <select class="form-select" id="statusFilter" name="status">
+                                        <option value="0">All Status</option>
+                                        <option value="1">In Stock</option>
+                                        <option value="2">Out of Stock</option>
+                                        <option value="low_stock">Low Stock</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="minPrice" class="form-label">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        Min Price
+                                    </label>
+                                    <input type="number" class="form-control" id="minPrice" name="min_price" placeholder="0" min="0" step="0.01">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="maxPrice" class="form-label">
+                                        <i class="fas fa-dollar-sign me-1"></i>
+                                        Max Price
+                                    </label>
+                                    <input type="number" class="form-control" id="maxPrice" name="max_price" placeholder="1000" min="0" step="0.01">
+                                </div>
+                            </div>
                         </div>
                     </form>
 
@@ -80,7 +114,7 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-dark">
                                 <tr>
-                                    <th>ID</th>
+                                    <th>No.</th>
                                     <th>Image</th>
                                     <th>Product Name</th>
                                     <th>Category</th>
@@ -272,7 +306,7 @@
     });
 
     // Search and filter functionality
-    $('#searchInput, #categoryFilter, #statusFilter').on('input change', function () {
+    $('#searchInput, #categoryFilter, #statusFilter, #minPrice, #maxPrice').on('input change', function () {
         showLoading();
         loadProducts(1); // Load first page on search/filter change
     });
@@ -286,13 +320,16 @@
                 searchTerm: $('#searchInput').val(),
                 categoryId: $('#categoryFilter').val(),
                 status: $('#statusFilter').val(),
+                minPrice: $('#minPrice').val(),
+                maxPrice: $('#maxPrice').val(),
                 pageNumber: page,
             },
             success: function (data) {
                 console.log(page);
                 const container = $('#productTableBody');
-                renderProducts(data.products, container);
-                renderPagination(data.totalPages, page);
+                renderProducts(data.value, container);
+                const mathPage = Math.ceil(data["@@odata.count"] / 10); 
+                renderPagination(mathPage, page);
             },
             error: function () {
                 console.error('Failed to load products.');
@@ -350,48 +387,48 @@
     // Render individual product rows
     function renderProductRows(data, container, categoryMap) {
         container.empty();
-
+        var No = 1;
         data.forEach(product => {
             // Map category name if not already present
-            if (!product.categoryName && categoryMap[product.categoryID]) {
-                product.categoryName = categoryMap[product.categoryID];
+            if (!product.CategoryName && categoryMap[product.CategoryID]) {
+                product.CategoryName = categoryMap[product.CategoryID];
             }
 
-            const imageHtml = product.imageURL
-                ? `<img src="/${product.imageURL}" class="img-thumbnail" style="width:50px;height:50px;" alt="${product.productName}">`
+            const imageHtml = product.ImageURL
+                ? `<img src="/${product.ImageURL}" class="img-thumbnail" style="width:50px;height:50px;" alt="${product.ProductName}">`
                 : `<div class="bg-light text-center d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
                      <i class="fas fa-image text-muted"></i>
                    </div>`;
 
             const html = `
                 <tr>
-                    <td>${product.productID}</td>
+                    <td>${No}</td>
                     <td>${imageHtml}</td>
-                    <td><strong>${product.productName}</strong></td>
-                    <td>${product.categoryName || 'N/A'}</td>
-                    <td class="text-success fw-bold">$${product.price}</td>
+                    <td><strong>${product.ProductName}</strong></td>
+                    <td>${product.CategoryName || 'N/A'}</td>
+                    <td class="text-success fw-bold">$${product.Price}</td>
                     <td>
-                        <span class="badge ${product.stockQuantity > 5 ? "bg-success" : "bg-danger"}">
-                            ${product.stockQuantity}
+                        <span class="badge ${product.StockQuantity > 5 ? "bg-success" : "bg-danger"}">
+                            ${product.StockQuantity}
                         </span>
                     </td>
                     <td>
-                        <span class="badge ${product.isAvailable ? "bg-success" : "bg-secondary"}">
-                            ${product.isAvailable ? "In Stock" : "Out of Stock"}
+                        <span class="badge ${product.IsAvailable ? "bg-success" : "bg-secondary"}">
+                            ${product.IsAvailable ? "In Stock" : "Out of Stock"}
                         </span>
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <button class="btn btn-outline-primary" onclick="viewProduct(${product.productID})"
+                            <button class="btn btn-outline-primary" onclick="viewProduct(${product.ProductID})"
                                     title="View Details">
                                 <i class="fas fa-eye"></i> Details
                             </button>
-                            <button class="btn btn-outline-warning" onclick="editProduct(${product.productID})"
+                            <button class="btn btn-outline-warning" onclick="editProduct(${product.ProductID})"
                                     title="Edit Product">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="btn btn-outline-danger" onclick="deleteProduct(${product.productID}, '${product.productName.replace(/'/g, "\\'")}'); return false;"
-                                    title="Delete Product">
+                                <button class="btn btn-outline-danger" onclick="deleteProduct(${product.ProductID}, '${product.ProductName.replace(/'/g, "\\'")}'); return false;"
+                                title="Delete Product">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
@@ -399,99 +436,11 @@
                 </tr>
             `;
             container.append(html);
+            No++; // Increment product number
         });
     }
 
-    // Render pagination controls
-    function renderPagination(totalPages, currentPage) {
-        const pagination = $('.pagination');
-        pagination.empty();
-
-        if (totalPages <= 1) return; // Don't show pagination if only one page
-
-        // Previous button
-        pagination.append(`
-            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${currentPage - 1}" title="Previous Page">
-                    <i class="fas fa-chevron-left"></i>
-                </a>
-            </li>
-        `);
-
-        // Page numbers with smart pagination (show max 5 pages)
-        let startPage = Math.max(1, currentPage - 2);
-        let endPage = Math.min(totalPages, startPage + 4);
-
-        // Adjust start page if we're near the end
-        if (endPage - startPage < 4) {
-            startPage = Math.max(1, endPage - 4);
-        }
-
-        // First page and ellipsis
-        if (startPage > 1) {
-            pagination.append(`
-                <li class="page-item">
-                    <a class="page-link" href="#" data-page="1">1</a>
-                </li>
-            `);
-            if (startPage > 2) {
-                pagination.append(`
-                    <li class="page-item disabled">
-                        <span class="page-link">...</span>
-                    </li>
-                `);
-            }
-        }
-
-        // Page numbers
-        for (let i = startPage; i <= endPage; i++) {
-            pagination.append(`
-                <li class="page-item ${i === currentPage ? 'active' : ''}">
-                    <a class="page-link" href="#" data-page="${i}">${i}</a>
-                </li>
-            `);
-        }
-
-        // Last page and ellipsis
-        if (endPage < totalPages) {
-            if (endPage < totalPages - 1) {
-                pagination.append(`
-                    <li class="page-item disabled">
-                        <span class="page-link"></span>
-                    </li>
-                `);
-            }
-            pagination.append(`
-                <li class="page-item">
-                    <a class="page-link" href="#" data-page="${totalPages}">${totalPages}</a>
-                </li>
-            `);
-        }
-
-        // Next button
-        pagination.append(`
-            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-                <a class="page-link" href="#" data-page="${currentPage + 1}" title="Next Page">
-                    <i class="fas fa-chevron-right"></i>
-                </a>
-            </li>
-        `);
-
-        // Event binding for pagination clicks
-        $('.page-link').off('click').on('click', function (e) {
-            e.preventDefault();
-            const page = parseInt($(this).data('page'));
-            if (!isNaN(page) && page !== currentPage) {
-                sessionStorage.setItem('currentPage', page);
-                console.log(`Loading page ${page}`);
-                console.log(`Search term: ${$('#searchInput').val()}`);
-                console.log(`Category filter: ${$('#categoryFilter').val()}`);
-                console.log(`Status filter: ${$('#statusFilter').val()}`);
-                console.log(`Current page: ${sessionStorage.getItem("currentPage")}`);
-                loadProducts(page);
-            }
-        });
-    }
+    
 
     // Load categories for dropdowns
     $(document).ready(function() {
@@ -755,5 +704,256 @@
                 }
             });
         }
+    }
+
+        function renderPagination(totalPages, currentPage) {
+        const pagination = $('.pagination');
+        pagination.empty();
+
+        // Don't show pagination if only one page
+        if (totalPages <= 1) return;
+
+        // Add modern styling classes
+        pagination.addClass('modern-pagination d-flex justify-content-center align-items-center gap-2');
+
+        // Previous button with modern design
+        const isPrevDisabled = currentPage === 1;
+        pagination.append(`
+            <li class="page-item prev-btn ${isPrevDisabled ? 'disabled' : ''}">
+                <a class="page-link modern-nav-btn ${isPrevDisabled ? 'disabled' : ''}"
+                   href="#"
+                   data-page="${currentPage - 1}"
+                   title="Previous Page"
+                   ${isPrevDisabled ? 'tabindex="-1"' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                    <span class="nav-text d-none d-md-inline ms-1">Previous</span>
+                </a>
+            </li>
+        `);
+
+        // Smart pagination logic - show max 7 pages for better UX
+        const maxVisiblePages = 4;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+        // Adjust start page if we're near the end
+        if (endPage - startPage < maxVisiblePages - 1) {
+            startPage = Math.max(1, endPage - maxVisiblePages + 1);
+        }
+
+        // First page with ellipsis logic
+        if (startPage > 1) {
+            pagination.append(`
+                <li class="page-item">
+                    <a class="page-link modern-page-btn" href="#" data-page="1">1</a>
+                </li>
+            `);
+
+            if (startPage > 2) {
+                pagination.append(`
+                    <li class="page-item">
+                        <span class="page-link modern-ellipsis">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </span>
+                    </li>
+                `);
+            }
+        }
+
+        // Main page numbers
+        for (let i = startPage; i <= endPage; i++) {
+            const isActive = i === currentPage;
+            pagination.append(`
+                <li class="page-item ${isActive ? 'active' : ''}">
+                    <a class="page-link modern-page-btn ${isActive ? 'active' : ''}"
+                       href="#"
+                       data-page="${i}"
+                       ${isActive ? 'aria-current="page"' : ''}>
+                        ${i}
+                    </a>
+                </li>
+            `);
+        }
+
+        // Last page with ellipsis logic
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                pagination.append(`
+                    <li class="page-item">
+                        <span class="page-link modern-ellipsis">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </span>
+                    </li>
+                `);
+            }
+
+            pagination.append(`
+                <li class="page-item">
+                    <a class="page-link modern-page-btn" href="#" data-page="${totalPages}">${totalPages}</a>
+                </li>
+            `);
+        }
+
+        // Next button with modern design
+        const isNextDisabled = currentPage === totalPages;
+        pagination.append(`
+            <li class="page-item next-btn ${isNextDisabled ? 'disabled' : ''}">
+                <a class="page-link modern-nav-btn ${isNextDisabled ? 'disabled' : ''}"
+                   href="#"
+                   data-page="${currentPage + 1}"
+                   title="Next Page"
+                   ${isNextDisabled ? 'tabindex="-1"' : ''}>
+                    <span class="nav-text d-none d-md-inline me-1">Next</span>
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+        `);
+
+        // Page info indicator (optional - can be hidden on mobile)
+        pagination.append(`
+            <li class="page-item page-info d-none d-lg-block ms-3">
+                <span class="page-link modern-info">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Page ${currentPage} of ${totalPages}
+                </span>
+            </li>
+        `);
+
+        // Modern event binding with smooth transitions
+        $('.page-link').off('click.pagination').on('click.pagination', function (e) {
+            e.preventDefault();
+
+            const $this = $(this);
+            const page = parseInt($this.data('page'));
+
+            // Ignore clicks on disabled buttons or ellipsis
+            if ($this.hasClass('disabled') || $this.hasClass('modern-ellipsis') || isNaN(page) || page === currentPage) {
+                return;
+            }
+
+            // Add loading state
+            $this.addClass('loading');
+            $this.find('i').addClass('fa-spin');
+
+            // Store current page
+            const currentPageData = {
+                page: page,
+                searchTerm: $('#searchInput').val() || '',
+                category: $('#categoryFilter').val() || '',
+                status: $('#statusFilter').val() || '',
+                timestamp: Date.now()
+            };
+
+            // Use modern storage approach (remove sessionStorage dependency)
+            window.paginationState = currentPageData;
+
+            console.log(`🚀 Loading page ${page}`, currentPageData);
+
+            // Smooth page transition
+            setTimeout(() => {
+                loadProducts(page);
+
+                // Remove loading state after a brief delay
+                setTimeout(() => {
+                    $('.page-link').removeClass('loading');
+                    $('.page-link i').removeClass('fa-spin');
+                }, 300);
+            }, 150);
+        });
+
+        // Add keyboard navigation
+        pagination.on('keydown.pagination', '.page-link', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                $(this).click();
+            }
+        });
+    }
+
+    // Optional: Add modern CSS styles (can be added to your CSS file)
+    const modernPaginationStyles = `
+    <style>
+    .modern-pagination {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --primary-color: #3b82f6;
+        --primary-hover: #2563eb;
+        --secondary-color: #6b7280;
+        --border-color: #e5e7eb;
+        --hover-bg: #f3f4f6;
+        --active-bg: var(--primary-color);
+        --disabled-color: #9ca3af;
+        --border-radius: 8px;
+        --transition: all 0.2s ease-in-out;
+    }
+
+    .modern-page-btn, .modern-nav-btn {
+        border: 1px solid var(--border-color) !important;
+        border-radius: var(--border-radius) !important;
+        padding: 8px 12px !important;
+        margin: 0 2px !important;
+        transition: var(--transition) !important;
+        font-weight: 500 !important;
+        color: var(--secondary-color) !important;
+        background: white !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+    }
+
+    .modern-page-btn:hover:not(.disabled):not(.active),
+    .modern-nav-btn:hover:not(.disabled) {
+        background: var(--hover-bg) !important;
+        border-color: var(--primary-color) !important;
+        color: var(--primary-color) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+    }
+
+    .modern-page-btn.active {
+        background: var(--active-bg) !important;
+        border-color: var(--primary-color) !important;
+        color: white !important;
+        box-shadow: 0 2px 8px rgba(59,130,246,0.3) !important;
+    }
+
+    .modern-nav-btn.disabled {
+        color: var(--disabled-color) !important;
+        cursor: not-allowed !important;
+        opacity: 0.5;
+    }
+
+    .modern-ellipsis {
+        border: none !important;
+        background: transparent !important;
+        color: var(--secondary-color) !important;
+        cursor: default !important;
+        padding: 8px 4px !important;
+    }
+
+    .modern-info {
+        background: var(--hover-bg) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: var(--border-radius) !important;
+        color: var(--secondary-color) !important;
+        font-size: 0.875rem !important;
+        cursor: default !important;
+    }
+
+    .page-link.loading {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .nav-text {
+        font-size: 0.875rem;
+    }
+
+    </style>
+    `;
+
+    // Inject styles if not already present
+    if (!document.querySelector('#modern-pagination-styles')) {
+        const styleElement = document.createElement('div');
+        styleElement.id = 'modern-pagination-styles';
+        styleElement.innerHTML = modernPaginationStyles;
+        document.head.appendChild(styleElement);
     }
 </script>

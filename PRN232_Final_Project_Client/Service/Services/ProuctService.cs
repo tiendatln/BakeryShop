@@ -111,16 +111,12 @@ namespace Service.Services
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
         }
 
-        public async Task<List<ReadProductDTO>> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, int take, int skip)
+        public async Task<string> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, double minPrice, double maxPrice, int take, int skip)
         {
             List<string> filtersList = new List<string>();
 
             if (categoryID != 0)
                 filtersList.Add($"CategoryID eq {categoryID}");
-
-            //if (price != 0)
-            //    filters += $"Price lt {price}";
-
             if (status < 0)
                 filtersList.Add($"IsAvailable eq {status}");
             if( 1 <= status && status <= 2)
@@ -128,9 +124,18 @@ namespace Service.Services
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 filtersList.Add($"contains(ProductName, '{searchTerm}')");
+            if (minPrice > 0)
+            {
+                filtersList.Add($"Price gt {minPrice}");
+            }
+            if (maxPrice > 0)
+            {
+                filtersList.Add($"Price lt {maxPrice}");
+            }
+            
 
 
-            var filters = "$filter=";
+            var filters = "&filter=";
             if (filtersList.Count > 0)
             {
                 filters += string.Join(" and ", filtersList);
@@ -141,9 +146,10 @@ namespace Service.Services
             }
             if(take > 0)
             filters += $"&$top={take}&$skip={skip}";
-            var response = await _httpClient.GetAsync($"/products/Get?{filters}");
+            var response = await _httpClient.GetAsync($"/products/odata?$count=true{filters}");
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
+            var data = await response.Content.ReadAsStringAsync();
+            return data;
         }
     }
 }

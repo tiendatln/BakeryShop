@@ -90,6 +90,21 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
+      "DownstreamPathTemplate": "/odata/OdataProduct",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/products/odata",
+      "UpstreamHttpMethod": [ "GET" ],
+      "Forwarding": {
+        "Query": true
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/Products/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -101,21 +116,7 @@
       "UpstreamPathTemplate": "/products/{id}",
       "UpstreamHttpMethod": [ "GET" ]
     },
-    {
-      "DownstreamPathTemplate": "/api/Products/Get",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7016
-        }
-      ],
-      "UpstreamPathTemplate": "/products/Get",
-      "UpstreamHttpMethod": [ "GET" ],
-      "Forwarding": {
-        "Query": true
-      }
-    },
+
 
     // === CART API ===
     {
@@ -373,6 +374,21 @@
 
     },
     {
+      "DownstreamPathTemplate": "/api/Categories/Get",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7016
+        }
+      ],
+      "UpstreamPathTemplate": "/categories/Get",
+      "UpstreamHttpMethod": [ "GET" ],
+      "Forwarding": {
+        "Query": true
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/Categories/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -387,36 +403,9 @@
         "AuthenticationProviderKey": "Bearer"
       }
     },
-    {
-      "DownstreamPathTemplate": "/api/Categories/search",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7016
-        }
-      ],
-      "UpstreamPathTemplate": "/categories/search",
-      "UpstreamHttpMethod": [ "GET" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/Categories/Get",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "localhost",
-          "Port": 7016
-        }
-      ],
-      "UpstreamPathTemplate": "/categories/odata",
-      "UpstreamHttpMethod": [ "GET" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer"
-      }
-    },
+
+
+
     {
       "DownstreamPathTemplate": "/api/Categories",
       "DownstreamScheme": "https",

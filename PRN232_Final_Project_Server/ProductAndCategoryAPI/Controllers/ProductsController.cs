@@ -137,14 +137,5 @@ namespace ProductAndCategoryAPI.Controllers
             }
             return Ok(products);
         }
-
-        // GET: api/Products/Get
-        [HttpGet("Get")]
-        [EnableQuery]
-        public IQueryable<Product> GetAvailableProducts()
-        {
-            return _product.GetAvailableProductsAsync();
-
-        }
     }
 }
