@@ -21,6 +21,7 @@ IEdmModel GetEdmModel()
 }
 
 // 2. Add OData services
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers().AddOData(options =>
 {
     options
@@ -42,8 +43,9 @@ builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI xxxxxxat https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
@@ -55,9 +57,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseRouting();
 app.MapControllers();
 
 app.Run();

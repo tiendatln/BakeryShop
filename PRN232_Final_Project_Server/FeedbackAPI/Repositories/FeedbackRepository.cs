@@ -56,5 +56,9 @@ namespace FeedbackAPI.Repositories
         {
             return _context.Feedbacks.AsQueryable();
         }
+        public IQueryable<Feedback> GetFeedbacksByUserId(int userId)
+        {
+            return _context.Feedbacks.Where(f => f.UserID == userId);
+        }
     }
 }
