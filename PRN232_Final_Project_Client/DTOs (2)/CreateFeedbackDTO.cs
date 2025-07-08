@@ -1,14 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FeedbackAPI.DTOs
+namespace DTOs.FeedbackDTO
 {
-    public class UpdateFeedbackDTO
+    public class CreateFeedbackDTO
     {
         [Required]
         public int UserID { get; set; }
-
-        [Required]
-        public int FeedbackID { get; set; }
 
         [Required]
         [StringLength(1000)]
