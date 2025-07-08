@@ -1,0 +1,210 @@
+﻿@page
+@model AdminUI.Pages.Admin.UserManagementModel
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">📋 Quản lý người dùng</h2>
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" id="searchInput" class="form-control" placeholder="🔍 Tìm theo tên hoặc email..." />
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary w-100" id="searchBtn">
+                <i class="bi bi-search"></i> Tìm
+            </button>
+        </div>
+    </div>
+
+    <div id="userTableContainer">
+        <div class="text-center my-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <!-- ✅ Import thư viện SweetAlert2 & SignalR -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        let currentPage = 1;
+        const pageSize = 5;
+
+        $(document).ready(function () {
+            loadUsers();
+
+            $('#searchBtn').click(function () {
+                currentPage = 1;
+                loadUsers();
+            });
+
+            // SignalR connection to reload when user updated
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("https://localhost:7126/notificationHub")
+                .build();
+
+            connection.start()
+                .then(() => {
+                    console.log("✅ Đã kết nối đến Notification Hub");
+
+                    connection.on("ProfileUpdated", function (userId) {
+                        console.log(`👤 User ${userId} đã cập nhật hồ sơ.`);
+
+                        Swal.fire({
+                            title: '🔔 Có thay đổi dữ liệu!',
+                            text: 'Một người dùng vừa cập nhật hồ sơ. Bạn có muốn tải lại danh sách?',
+                            icon: 'info',
+                            showCancelButton: true,
+                            confirmButtonText: 'Tải lại',
+                            cancelButtonText: 'Để sau'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                loadUsers(); // Gọi lại danh sách người dùng
+                            }
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.error("❌ Không thể kết nối Hub:", err);
+                });
+        });
+
+        function loadUsers() {
+            const keyword = $('#searchInput').val();
+            const url = `/Admin/UserManagement?handler=Users&keyword=${encodeURIComponent(keyword)}&currentPage=${currentPage}&pageSize=${pageSize}`;
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("Dữ liệu trả về từ server:", data);
+
+                    if (!data || !Array.isArray(data.value)) {
+                        $('#userTableContainer').html('<div class="alert alert-warning">Không nhận được dữ liệu người dùng.</div>');
+                        return;
+                    }
+
+                    const users = data.value;
+                    const totalCount = data["@@odata.count"] // Fallback nếu không có count
+
+                    renderUserTable(users, totalCount);
+                },
+                error: function (xhr) {
+                    let message = "Không thể tải danh sách người dùng.";
+                    if (xhr.responseJSON?.error)
+                        message += "<br><strong>Lỗi:</strong> " + xhr.responseJSON.error;
+                    else if (xhr.responseText) {
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                            if (errorData.message) {
+                                message += "<br><strong>Lỗi API:</strong> " + errorData.message;
+                            } else {
+                                message += "<br><strong>Phản hồi lỗi:</strong> " + xhr.responseText;
+                            }
+                        } catch (e) {
+                            message += "<br><strong>Phản hồi lỗi:</strong> " + xhr.responseText;
+                        }
+                    }
+                    $('#userTableContainer').html(`<div class="alert alert-danger">${message}</div>`);
+                }
+            });
+        }
+
+        function renderUserTable(users, totalCount) {
+            debugger; // <--- Giữ debugger ở đây để kiểm tra
+
+            if (users.length === 0) {
+                $('#userTableContainer').html('<div class="alert alert-warning">Không tìm thấy người dùng nào.</div>');
+                return;
+            }
+
+            let html = `<div class="table-responsive">
+                                <table class="table table-bordered table-striped align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Họ tên</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Vai trò</th>
+                                        <th>Ngày đăng ký</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+
+            for (let i = 0; i < users.length; i++) {
+                const user = users[i];
+
+                const roleBadge = {
+                    "Admin": "danger",
+                    "Customer": "primary",
+                }[user.Role] || "secondary";
+
+                const date = user.RegistrationDate ? new Date(user.registrationDate).toLocaleDateString() : "Không rõ";
+
+                html += `<tr>
+                                    <td>${(currentPage - 1) * pageSize + i + 1}</td>
+                                    <td>${user.FullName}</td>
+                                    <td>${user.Email}</td>
+                                    <td>${user.PhoneNumber}</td>
+                                    <td>${user.Address}</td>
+                                    <td><span class="badge bg-${roleBadge}">${user.Role}</span></td>
+                                    <td>${date}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="banUser(${user.UserId})">
+                                            <i class="bi bi-slash-circle"></i> Cấm
+                                        </button>
+                                    </td>
+                                </tr>`;
+            }
+
+            html += `</tbody></table></div>`;
+
+            // Pagination
+            const totalPages = Math.ceil(totalCount / pageSize);
+            html += '<nav><ul class="pagination justify-content-center mt-3">';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+                                    <button class="page-link" onclick="goToPage(${i})">${i}</button>
+                                 </li>`;
+            }
+            html += '</ul></nav>';
+
+            $('#userTableContainer').html(html);
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            loadUsers();
+        }
+
+        function banUser(userId) {
+            if (!confirm('Bạn có chắc muốn cấm người dùng này?')) return;
+
+            $.ajax({
+                url: `/api/Users/${userId}/ban`,
+                type: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + 'Context.Session.GetString("AdminToken")'
+                },
+                success: function () {
+                    alert('Đã cấm người dùng.');
+                    loadUsers();
+                },
+                error: function () {
+                    alert('Lỗi khi cấm người dùng.');
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,94 @@
+﻿@page
+@model AdminUI.Pages.Admin.LoginModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+        min-height: 100vh;
+    }
+
+    .login-card {
+        background-color: white;
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        padding: 2.5rem;
+        width: 100%;
+        max-width: 420px;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(115, 103, 240, 0.25);
+    }
+
+    .login-title {
+        font-weight: 600;
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        color: #3f3d56;
+    }
+
+    .login-btn {
+        background: #7367F0;
+        border: none;
+    }
+
+        .login-btn:hover {
+            background: #6259e0;
+        }
+</style>
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="login-card">
+        <h3 class="text-center login-title">🔐 Đăng nhập</h3>
+
+        @if (Model.ErrorMessage != null)
+        {
+            <div class="alert alert-danger text-center">@Model.ErrorMessage</div>
+        }
+
+        <form method="post" novalidate>
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label">Email</label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label">Mật khẩu</label>
+                <div class="input-group">
+                    <input asp-for="Input.Password" type="password" class="form-control" id="passwordInput" />
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1">
+                        <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Input.Password" class="text-danger small"></span>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary login-btn">Đăng nhập</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            const passwordInput = document.getElementById("passwordInput");
+            const icon = document.getElementById("togglePasswordIcon");
+
+            const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+            passwordInput.setAttribute("type", type);
+
+            // Đổi icon
+            icon.classList.toggle("bi-eye");
+            icon.classList.toggle("bi-eye-slash");
+        });
+    </script>
+}

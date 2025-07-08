@@ -28,6 +28,7 @@ builder.Services.AddScoped<Service.Interfaces.IProductService, Service.Services.
 builder.Services.AddScoped<Service.Interfaces.ICartService, Service.Services.CartService>();
 builder.Services.AddScoped<Service.Interfaces.IFeedbackService, Service.Services.FeedbackService>();
 builder.Services.AddScoped<Service.Services.EmailService>();
+builder.Services.AddScoped<Service.Interfaces.INotificationService, Service.Services.NotificationService>();
 
 
 

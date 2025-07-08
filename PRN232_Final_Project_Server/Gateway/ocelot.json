@@ -247,7 +247,7 @@
     },
     // === USER API ===
     {
-      "DownstreamPathTemplate": "/api/Users",
+      "DownstreamPathTemplate": "/odata/ODataUsers",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -255,7 +255,7 @@
           "Port": 7227
         }
       ],
-      "UpstreamPathTemplate": "/users",
+      "UpstreamPathTemplate": "/users/get",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
@@ -309,6 +309,52 @@
         }
       ],
       "UpstreamPathTemplate": "/users/register",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Users",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users/update-profile",
+      "UpstreamHttpMethod": [ "PUT" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/Users/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users/{userId}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      },
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Users/reset-password",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7227
+        }
+      ],
+      "UpstreamPathTemplate": "/users/forgot-password",
       "UpstreamHttpMethod": [ "POST" ]
     },
 
@@ -425,7 +471,6 @@
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
       }
     },
-
     // === FEEDBACK API ===
 
     // ✅ Get all feedbacks
@@ -525,14 +570,14 @@
       }
     }
   ],
-    "GlobalConfiguration": {
-      "BaseUrl": "https://localhost:7112"
-    },
-    "Logging": {
-      "LogLevel": {
-        "Default": "Debug",
-        "Microsoft": "Warning",
-        "Ocelot": "Debug"
-      }
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7112"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft": "Warning",
+      "Ocelot": "Debug"
     }
   }
+}

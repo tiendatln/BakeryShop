@@ -24,6 +24,6 @@ namespace Service.Interfaces
 
         public Task<List<ReadProductDTO>> GetProductPage(int take, int skip);
 
-        public Task<List<ReadProductDTO>> SearchProductsOdataAsync(string searchTerm, int categoryID, bool status);
+        public Task<List<ReadProductDTO>> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, int take, int skip);
     }
 }

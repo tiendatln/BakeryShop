@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserUI", "UserUI\UserUI.csproj", "{64B4D94B-F8AF-4EFA-90DB-2937ACB1F787}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserUI", "UserUI\UserUI.csproj", "{64B4D94B-F8AF-4EFA-90DB-2937ACB1F787}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdminUI", "AdminUI\AdminUI.csproj", "{97FF15A4-1ECA-4627-A3C0-3ACE072E75BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdminUI", "AdminUI\AdminUI.csproj", "{97FF15A4-1ECA-4627-A3C0-3ACE072E75BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Service\Service.csproj", "{F8EB617A-6F3F-482C-82CD-ED6A11A7D3F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{F8EB617A-6F3F-482C-82CD-ED6A11A7D3F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTOs", "DTOs\DTOs.csproj", "{830EAF17-7D52-4664-8EA6-BA9FE7B249D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTOs", "DTOs\DTOs.csproj", "{830EAF17-7D52-4664-8EA6-BA9FE7B249D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

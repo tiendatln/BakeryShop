@@ -111,7 +111,7 @@ namespace Service.Services
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
         }
 
-        public async Task<List<ReadProductDTO>> SearchProductsOdataAsync(string searchTerm, int categoryID, bool status)
+        public async Task<List<ReadProductDTO>> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, int take, int skip)
         {
             List<string> filtersList = new List<string>();
 
@@ -121,11 +121,14 @@ namespace Service.Services
             //if (price != 0)
             //    filters += $"Price lt {price}";
 
-            //if (status == true || status == false)
-            //    filters += $"IsAvailable eq {status.ToString().ToLower()}";
+            if (status < 0)
+                filtersList.Add($"IsAvailable eq {status}");
+            if( 1 <= status && status <= 2)
+                filtersList.Add($"IsAvailable eq {(status == 1 ? "true" : "false")}");
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
                 filtersList.Add($"contains(ProductName, '{searchTerm}')");
+
 
             var filters = "$filter=";
             if (filtersList.Count > 0)
@@ -136,6 +139,8 @@ namespace Service.Services
             {
                 filters += "true"; // Trả về tất cả nếu không có bộ lọc nào
             }
+            if(take > 0)
+            filters += $"&$top={take}&$skip={skip}";
             var response = await _httpClient.GetAsync($"/products/Get?{filters}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
