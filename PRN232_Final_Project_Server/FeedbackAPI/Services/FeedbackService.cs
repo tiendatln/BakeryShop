@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using FeedbackAPI.Data;
 using FeedbackAPI.DTOs;
 using FeedbackAPI.Models;
 using FeedbackAPI.Repositories.Interface;
 using FeedbackAPI.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 
-namespace FeedbackAPI.Services.Interface
+namespace FeedbackAPI.Services
 {
     public class FeedbackService : IFeedbackService
     {
@@ -18,15 +20,32 @@ namespace FeedbackAPI.Services.Interface
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<ReadFeedbackDTO>> GetAllAsync()
+        public IQueryable<ReadFeedbackDTO> GetAllFeedbacks()
         {
-            var feedbacks = await _repo.GetAllAsync();
-            return _mapper.Map<IEnumerable<ReadFeedbackDTO>>(feedbacks);
+            return _repo.GetAllFeedbacks()
+                        .ProjectTo<ReadFeedbackDTO>(_mapper.ConfigurationProvider);
         }
-
-        public async Task<ReadFeedbackDTO?> GetByIdAsync(int id)
+        public async Task<ReadFeedbackDTO> CheckExistFBById(int userId)
         {
-            var feedback = await _repo.GetByIdAsync(id);
+            var entity = await _repo.GetAllFeedbacks().FirstOrDefaultAsync(f => f.UserID == userId);
+
+            if (entity == null)
+            {
+                // Người dùng chưa từng feedback
+                return new ReadFeedbackDTO
+                {
+                    UserID = userId,
+                    Description = "",
+                    SubmittedDate = DateTime.MinValue
+                };
+            }
+
+            // Người dùng đã feedback, dùng AutoMapper hoặc manual mapping
+            return _mapper.Map<ReadFeedbackDTO>(entity);
+        }
+        public async Task<ReadFeedbackDTO?> GetByUserIdAsync(int userId)
+        {
+            var feedback = await _repo.GetFeedbacksByUserId(userId).FirstOrDefaultAsync();
             return feedback == null ? null : _mapper.Map<ReadFeedbackDTO>(feedback);
         }
 
@@ -45,16 +64,13 @@ namespace FeedbackAPI.Services.Interface
             return true;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteByUserIdAsync(int userId)
         {
-            if (!await _repo.ExistsAsync(id)) return false;
-            await _repo.DeleteAsync(id);
-            return true;
-        }
+            var feedback = await _repo.GetFeedbacksByUserId(userId).FirstOrDefaultAsync();
+            if (feedback == null) return false;
 
-        public IQueryable<ReadFeedbackDTO> GetAllFeedbacks()
-        {
-            return _repo.GetAllFeedbacks().ProjectTo<ReadFeedbackDTO>(_mapper.ConfigurationProvider);
+            await _repo.DeleteAsync(feedback.FeedbackID);
+            return true;
         }
     }
 }

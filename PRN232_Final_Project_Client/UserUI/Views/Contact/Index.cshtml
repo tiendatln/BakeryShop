@@ -276,13 +276,19 @@
                     {
                         <p class="text-muted text-center">No feedback available yet.</p>
                     }
+
                 </div>
             </div>
         </div>
     </section>
+    @{
+        var actionName = ViewBag.CustomerFeedback != null ? "Update" : "SubmitFeedback";
+    }
+
     <div class="contact-form">
         <h3>CONTACT</h3>
-        <form asp-action="SubmitFeedback" asp-controller="Contact" method="post">
+
+        <form asp-action="@actionName" asp-controller="Contact" method="post">
             <div class="row mb-3">
                 <p class="contact-text">
                     We are always ready to listen and support you. If you have any questions, requests, or feedback,
@@ -290,14 +296,18 @@
                 </p>
                 <div class="col-md-12">
                     <h3 for="description" style="font-size: 30px">FEEDBACK HERE!</h3>
-                    <textarea id="description" name="suggestion" class="form-control" style="border: 2px solid #000; " rows="6">
-                        @(ViewBag.CustomerFeedback != null ? ViewBag.CustomerFeedback.Description : "")
-                </textarea>
+
+                    <input type="hidden" name="FeedbackID" value="@(ViewBag.CustomerFeedback?.FeedbackID ?? 0)" />
+                    <p>DEBUG: FeedbackID = @ViewBag.CustomerFeedback?.FeedbackID</p>
+                    <textarea id="description" name="Description" class="form-control" rows="6">@(
+                    ViewBag.CustomerFeedback != null ? ViewBag.CustomerFeedback.Description : ""
+                )</textarea>
                 </div>
             </div>
             <button type="submit">Feedback</button>
         </form>
     </div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
              const carousel = document.querySelector("#feedbackCarousel");

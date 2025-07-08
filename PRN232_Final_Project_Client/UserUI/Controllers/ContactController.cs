@@ -1,7 +1,8 @@
 ﻿using DTOs.FeedbackDTO;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Service.Interfaces;
+using System.Security.Claims;
 
 namespace UserUI.Controllers
 {
@@ -9,56 +10,68 @@ namespace UserUI.Controllers
     {
         private readonly IFeedbackService _feedbackService;
 
-        public ContactController(IFeedbackService feedbackService)
-        {
+        public ContactController(IFeedbackService feedbackService) =>
             _feedbackService = feedbackService;
-        }
 
-        // GET: /Contact
+        /* ----------------- Trang Contact ------------------------------- */
         public async Task<IActionResult> Index()
         {
-            var token = HttpContext.Session.GetString("UserToken");
-            if (string.IsNullOrEmpty(token))
+            var token = HttpContext.Session.GetString("UserToken"); // ✅ Lấy token từ session
+
+            Console.WriteLine("Token: " + token);
+            foreach (var key in HttpContext.Session.Keys)
             {
-                return RedirectToAction("Login", "Common");
+                Console.WriteLine($"Session[{key}] = {HttpContext.Session.GetString(key)}");
             }
-            var feedbacks = await _feedbackService.GetAllAsync(token);
-            return View(feedbacks); 
+            if (string.IsNullOrEmpty(token))
+                return RedirectToAction("Login", "Common");
+
+            var list = await _feedbackService.GetAllAsync(token);               // ✅ truyền token
+
+            var customerFeedback = await _feedbackService.GetByUserIdAsync(token);
+            if (customerFeedback != null)
+                ViewBag.CustomerFeedback = customerFeedback;
+
+            Console.WriteLine("Final Token: " + token);
+
+
+            return View(list);
         }
 
+        /* ----------------- Submit -------------------------------------- */
         [HttpPost]
         public async Task<IActionResult> SubmitFeedback(CreateFeedbackDTO dto)
         {
             var token = HttpContext.Session.GetString("UserToken");
-            if (string.IsNullOrEmpty(token)) return Unauthorized();                     
-            var success = await _feedbackService.CreateAsync(dto, token);
-            if (!success)
-            {
-                ModelState.AddModelError("", "Gửi phản hồi thất bại!");
-            }
+            if (string.IsNullOrEmpty(token)) return Unauthorized();
+
+            var ok = await _feedbackService.CreateAsync(dto, token); // ✅ truyền token
+            if (!ok) ModelState.AddModelError("", "Gửi phản hồi thất bại!");
 
             return RedirectToAction("Index");
         }
 
+        /* ----------------- Update -------------------------------------- */
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Update(UpdateFeedbackDTO dto)
         {
             var token = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(token)) return Unauthorized();
 
-            await _feedbackService.DeleteAsync(id, token);
+            await _feedbackService.UpdateAsync(dto, token);
             return RedirectToAction("Index");
         }
 
+
+        /* ----------------- Delete -------------------------------------- */
         [HttpPost]
-        public async Task<IActionResult> Update(int id, UpdateFeedbackDTO dto)
+        public async Task<IActionResult> Delete()
         {
             var token = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(token)) return Unauthorized();
 
-            await _feedbackService.UpdateAsync(id, dto, token);
+            await _feedbackService.DeleteAsync(token); // ✅ truyền token
             return RedirectToAction("Index");
         }
-
     }
 }

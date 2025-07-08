@@ -11,6 +11,7 @@ namespace FeedbackAPI.Repositories.Interface
         Task UpdateAsync(Feedback feedback);
         Task DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
+        IQueryable<Feedback> GetFeedbacksByUserId(int userId);
         IQueryable<Feedback> GetAllFeedbacks();
     }
 }

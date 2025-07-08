@@ -1,94 +1,64 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FeedbackAPI.Data;
-using FeedbackAPI.Models;
-using FeedbackAPI.DTOs;
+﻿using FeedbackAPI.DTOs;
 using FeedbackAPI.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 
 namespace FeedbackAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class FeedbacksController : ControllerBase
     {
-        private readonly IFeedbackService _repository;
+        private readonly IFeedbackService _service;
 
-        public FeedbacksController(IFeedbackService repository)
+        public FeedbacksController(IFeedbackService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
-        // GET: api/Users
+        // GET: api/Feedbacks
         [HttpGet]
         [EnableQuery]
-        public IQueryable<ReadFeedbackDTO> GetFeedbacks()
+        public IQueryable<ReadFeedbackDTO> GetAll()
         {
-            return _repository.GetAllFeedbacks();
+            return _service.GetAllFeedbacks();
         }
 
-        // GET: api/Feedbacks/5
+        // GET: api/Feedbacks/user/5
         [HttpGet("{userId}")]
-        public async Task<ActionResult<ReadFeedbackDTO>> GetById(int id)
+        public async Task<ActionResult<ReadFeedbackDTO>> GetByUserId(int userId)
         {
-            var feedback = await _repository.GetByIdAsync(id);
-            if (feedback == null) return NotFound();
-
-            var dto = new ReadFeedbackDTO
-            {
-                FeedbackID = feedback.FeedbackID,
-                UserID = feedback.UserID,
-                Description = feedback.Description,
-                SubmittedDate = feedback.SubmittedDate
-            };
-
+            var dto = await _service.CheckExistFBById(userId);
             return Ok(dto);
         }
 
-        // POST: api/Feedbacks
-        [HttpGet("{userId}")]
-        [HttpPost]
-        public async Task<ActionResult<ReadFeedbackDTO>> Create([FromBody] CreateFeedbackDTO model)
+        // POST: api/Feedbacks/user/5
+        [HttpPost("{userId}")]
+        public async Task<ActionResult<ReadFeedbackDTO>> Create(int userId, [FromBody] CreateFeedbackDTO model)
         {
-            var newId = await _repository.CreateAsync(model);
-
-            var created = new ReadFeedbackDTO
-            {
-
-                UserID = model.UserID,
-                Description = model.Description,
-                SubmittedDate = DateTime.UtcNow
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = newId }, created);
+            model.UserID = userId;
+            var created = await _service.CreateAsync(model);
+            return CreatedAtAction(nameof(GetByUserId), new { userId = created.UserID }, created);
         }
 
         // PUT: api/Feedbacks/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateFeedbackDTO model)
+        [HttpPut("{userId}/{feedbackId}")]
+        public async Task<IActionResult> Update(int userId, int feedbackId, [FromBody] UpdateFeedbackDTO model)
         {
-            if (id != model.FeedbackID)
+            if (feedbackId != model.FeedbackID)
                 return BadRequest("Mismatched ID");
-
-            var result = await _repository.UpdateAsync(model);
-            if (!result) return NotFound();
-
-            return NoContent();
+            Console.WriteLine($"Route ID: {feedbackId}, Model.FeedbackID: {model.FeedbackID}"); 
+            model.UserID = userId;
+            var updated = await _service.UpdateAsync(model);
+            return updated ? NoContent() : NotFound();
         }
 
-        // DELETE: api/Feedbacks/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        // DELETE: api/Feedbacks/user/5
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteByUserId(int userId)
         {
-            var result = await _repository.DeleteAsync(id);
-            if (!result) return NotFound();
-
-            return NoContent();
+            var deleted = await _service.DeleteByUserIdAsync(userId);
+            return deleted ? NoContent() : NotFound();
         }
     }
 }

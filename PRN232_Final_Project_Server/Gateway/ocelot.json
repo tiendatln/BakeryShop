@@ -424,11 +424,11 @@
       "RouteClaimsRequirement": {
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
       }
-    }
-  ],
+    },
+
     // === FEEDBACK API ===
 
-    // GET all (Admin + Customer)
+    // ✅ Get all feedbacks
     {
       "DownstreamPathTemplate": "/api/Feedbacks",
       "DownstreamScheme": "https",
@@ -438,17 +438,14 @@
           "Port": 7028
         }
       ],
-      "UpstreamPathTemplate": "/feedback",
+      "UpstreamPathTemplate": "/feedbacks",
       "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
       }
     },
 
-    // POST (Create) - only Customer
+    // ✅ Get feedback by userId
     {
       "DownstreamPathTemplate": "/api/Feedbacks/{userId}",
       "DownstreamScheme": "https",
@@ -458,22 +455,19 @@
           "Port": 7028
         }
       ],
-      "UpstreamPathTemplate": "/feedback",
-      "UpstreamHttpMethod": [ "POST" ],
+      "UpstreamPathTemplate": "/feedbacks/info",
+      "UpstreamHttpMethod": [ "GET" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },
-      "RouteClaimsRequirement": {
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
       },
       "ChangeDownstreamPathTemplate": {
         "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }
     },
 
-    // GET by ID - Admin + Customer
+    // ✅ Post feedback by userId
     {
-      "DownstreamPathTemplate": "/api/Feedbacks/{id}",
+      "DownstreamPathTemplate": "/api/Feedbacks/{userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -481,19 +475,19 @@
           "Port": 7028
         }
       ],
-      "UpstreamPathTemplate": "/feedback/{id}",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamPathTemplate": "/feedbacks/add",
+      "UpstreamHttpMethod": [ "POST" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "RouteClaimsRequirement": {
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }
     },
 
-    // PUT (Update) - only Customer
+    // ✅ Update feedback by feedbackId
     {
-      "DownstreamPathTemplate": "/api/Feedbacks/{id}",
+      "DownstreamPathTemplate": "/api/Feedbacks/{userId}/{feedbackId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -501,19 +495,19 @@
           "Port": 7028
         }
       ],
-      "UpstreamPathTemplate": "/feedback/{id}",
+      "UpstreamPathTemplate": "/feedbacks/up/{feedbackId}",
       "UpstreamHttpMethod": [ "PUT" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "RouteClaimsRequirement": {
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }
     },
 
-    // DELETE - Admin + Customer
+    // ✅ Delete feedback by userId
     {
-      "DownstreamPathTemplate": "/api/Feedbacks/{id}",
+      "DownstreamPathTemplate": "/api/Feedbacks/{userId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -521,22 +515,24 @@
           "Port": 7028
         }
       ],
-      "UpstreamPathTemplate": "/feedback/{id}",
+      "UpstreamPathTemplate": "/feedbacks/del",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
       },
-      "RouteClaimsRequirement": {
-        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }
+    }
+  ],
     "GlobalConfiguration": {
-        "BaseUrl": "https://localhost:7112"
+      "BaseUrl": "https://localhost:7112"
     },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Debug",
-      "Microsoft": "Warning",
-      "Ocelot": "Debug"
+    "Logging": {
+      "LogLevel": {
+        "Default": "Debug",
+        "Microsoft": "Warning",
+        "Ocelot": "Debug"
+      }
     }
   }
-}
