@@ -49,17 +49,11 @@ namespace Service.Services
             return resp.IsSuccessStatusCode;
         }
 
-        public async Task<bool> DeleteAsync(string token)
+        public async Task<bool> DeleteAsync(int userId, string token)
         {
             AddBearerToken(token);
-            var resp = await _client.DeleteAsync($"/feedbacks/del");
+            var resp = await _client.DeleteAsync($"/feedbacks/del/{userId}");
             return resp.IsSuccessStatusCode;
-        }
-
-      
-        public Task<bool> DeleteAsync(int userId, string token)
-        {
-            throw new NotImplementedException();
         }
 
     }

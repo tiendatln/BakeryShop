@@ -561,11 +561,11 @@
           "Port": 7028
         }
       ],
-      "UpstreamPathTemplate": "/feedbacks/del",
+      "UpstreamPathTemplate": "/feedbacks/del/{userId}",
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },      
+      },
       "RouteClaimsRequirement": {
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
       },

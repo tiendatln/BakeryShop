@@ -12,7 +12,7 @@ namespace Service.Interfaces
 
         Task<bool> CreateAsync(CreateFeedbackDTO dto, string token);
         Task<bool> UpdateAsync(UpdateFeedbackDTO dto, string token);
-        Task<bool> DeleteAsync(string token);
+        Task<bool> DeleteAsync(int userId, string token);
 
     }
 }
