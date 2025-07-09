@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System.Security.Cryptography;
 using System.Text;
 using UserAPI.DTOs;
@@ -23,6 +24,12 @@ namespace UserAPI.Service
         public IQueryable<ReadUserDTO> GetAllUsers()
         {
             return _userRepository.GetAllUsers().ProjectTo<ReadUserDTO>(_mapper.ConfigurationProvider);
+        }
+
+        public IQueryable<User> GetAllUsersForOData()
+        {
+            // Trả về IQueryable<User> để OData có thể truy vấn
+            return _userRepository.GetAllUsers();
         }
 
         public async Task<ReadUserDTO> GetUserByIdAsync(int id)
@@ -109,17 +116,27 @@ namespace UserAPI.Service
 
         public async Task<ReadUserDTO> UpdateUserAsync(UpdateUserProfileDTO updateUserProfileDTO)
         {
-            var user = _mapper.Map<User>(updateUserProfileDTO);
+            // Kiểm tra người dùng có tồn tại không
+            var existingUser = await _userRepository.GetUserByIdAsync(updateUserProfileDTO.UserId);
+            if (existingUser == null)
+            {
+                return null; // Người dùng không tồn tại
+            }
+            // Map dữ liệu từ DTO sang mô hình User
+            var updatedUser = _mapper.Map<User>(updateUserProfileDTO);
+            updatedUser.RegistrationDate = existingUser.RegistrationDate; // Giữ nguyên ngày đăng ký
+            updatedUser.PasswordHash = existingUser.PasswordHash; // Giữ nguyên mật khẩu
+            updatedUser.PasswordSalt = existingUser.PasswordSalt; // Giữ nguyên salt
 
-            var result = await _userRepository.UpdateUserAsync(user);
+            var result = await _userRepository.UpdateUserAsync(updatedUser);
             if (result == null)
             {
                 return null; // Người dùng không tồn tại
             }
 
             // Map dữ liệu sang DTO kết quả
-            ReadUserDTO updatedUser = _mapper.Map<ReadUserDTO>(result);
-            return updatedUser;
+            ReadUserDTO readUserDTO = _mapper.Map<ReadUserDTO>(result);
+            return readUserDTO;
         }
 
         public async Task<bool> IsEmailExistsAsync(string email)
@@ -130,6 +147,25 @@ namespace UserAPI.Service
                 return false; // Email không tồn tại
             }
             return true; // Email đã tồn tại
+        }
+
+        public async Task<bool> ResetPasswordAsync(ResetPasswordDTO resetPasswordDTO)
+        {
+            // Kiểm tra email có tồn tại không
+            var user = await _userRepository.GetUserByEmailAsync(resetPasswordDTO.Email);
+            if (user == null)
+            {
+                return false; // Người dùng không tồn tại
+            }
+
+            // Tạo password hash và salt mới
+            CreatePasswordHash(resetPasswordDTO.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            // Cập nhật thông tin người dùng
+            var updatedUser = await _userRepository.UpdateUserAsync(user);
+            return updatedUser != null; // Trả về true nếu cập nhật thành công
         }
     }
 }

@@ -1,0 +1,80 @@
+﻿@page
+@model AdminUI.Pages.Admin.DashboardModel
+@{
+    ViewData["Title"] = "Trang quản trị";
+}
+
+<style>
+    .transition-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+    }
+
+        .transition-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.15);
+        }
+
+    .card-body .display-4 {
+        font-size: 3rem;
+    }
+
+    .btn-outline-primary, .btn-outline-success, .btn-outline-warning {
+        width: 120px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }
+</style>
+
+<div class="container py-5">
+    <h2 class="mb-5 text-center fw-bold text-primary-emphasis">
+        👋 Xin chào, @User.Identity.Name!
+    </h2>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 text-center transition-card">
+                <div class="card-body py-5">
+                    <div class="display-4 mb-3">🛒</div>
+                    <h5 class="card-title fw-semibold mb-2">Quản lý sản phẩm</h5>
+                    <p class="card-text text-muted">Thêm, chỉnh sửa và quản lý sản phẩm một cách dễ dàng.</p>
+                    <a asp-page="/Admin/ProductManagement" class="btn btn-outline-primary mt-3">Truy cập</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 text-center transition-card">
+                <div class="card-body py-5">
+                    <div class="display-4 mb-3">📁</div>
+                    <h5 class="card-title fw-semibold mb-2">Quản lý danh mục</h5>
+                    <p class="card-text text-muted">Tổ chức danh mục hợp lý để dễ tìm kiếm sản phẩm.</p>
+                    <a asp-page="/Category" class="btn btn-outline-success mt-3">Truy cập</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 text-center transition-card">
+                <div class="card-body py-5">
+                    <div class="display-4 mb-3">👥</div>
+                    <h5 class="card-title fw-semibold mb-2">Quản lý người dùng</h5>
+                    <p class="card-text text-muted">Xem và quản lý danh sách người dùng trong hệ thống.</p>
+                    <a asp-page="/Admin/UserManagement" class="btn btn-outline-warning mt-3">Truy cập</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-lg h-100 text-center transition-card">
+                <div class="card-body py-5">
+                    <div class="display-4 mb-3">🗣️</div>
+                    <h5 class="card-title fw-semibold mb-2">Quản lí phản hồi người dùng</h5>
+                    <p class="card-text text-muted">Xem và xử lý các góp ý từ khách hàng.</p>
+                    <a asp-page="/Admin/UserFeedback" class="btn btn-outline-dark mt-3">Truy cập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

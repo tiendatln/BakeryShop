@@ -18,7 +18,10 @@ namespace ProductAndCategoryAPI.Repositories
         }
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            return await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.Category) // Include Category details if needed
+                .FirstOrDefaultAsync(p => p.ProductID == id);
+            return product;
         }
         public async Task<Product> CreateProductAsync(Product product)
         {
@@ -51,13 +54,11 @@ namespace ProductAndCategoryAPI.Repositories
         public async Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm)
         {
             return await _context.Products
-                .Where(p => p.ProductName.Contains(searchTerm)
-                || p.ProductID.ToString().Contains(searchTerm) || p.Price.ToString().Contains(searchTerm))
-                .ToListAsync();
+                .Where(p => p.ProductName.Contains(searchTerm)).ToListAsync();
         }
 
 
-        public IQueryable<Product> GetAvailableProductsAsync()
+        public IQueryable<Product> GetAllProduct()
         {
             return _context.Products.AsQueryable();
         }

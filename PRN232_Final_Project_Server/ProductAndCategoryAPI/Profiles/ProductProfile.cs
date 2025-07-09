@@ -11,6 +11,8 @@ namespace ProductAndCategoryAPI.Profiles
             CreateMap<CreateProductDTO, Product>();
             CreateMap<UpdateProductDTO, Product>();
             CreateMap<Product, ReadProductDTO>();
+            CreateMap<Product, UpdateProductDTO>();
+            CreateMap<ReadProductDTO, Product>();
         }
     }
 }

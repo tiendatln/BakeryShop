@@ -32,6 +32,12 @@
 </head>
 
 <body>
+    @if (TempData["ForgotErrorMessage"] != null)
+    {
+        <div class="alert alert-danger text-center mt-3">
+            @TempData["ForgotErrorMessage"]
+        </div>
+    }
     <div class="background">
         <div class="container2">
             <div class="form-section">

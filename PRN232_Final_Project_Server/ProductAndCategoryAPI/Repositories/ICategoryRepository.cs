@@ -12,8 +12,6 @@ namespace ProductAndCategoryAPI.Repositories
 
         Task<bool> CategoryExistsAsync(int id);
         Task<bool> CategoryNameExistsAsync(string categoryName, int? excludeId = null);
-
-      
         Task<IEnumerable<Category>> SearchCategoriesAsync(string searchTerm); 
         IQueryable<Category> GetAvailableCategoriesAsync();
         Task<Category?> UpdateCategoryAsync(int id, Category category); 

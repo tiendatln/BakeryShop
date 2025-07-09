@@ -9,7 +9,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Services 
+namespace Service.Services
 {
     public class ProuctService : IProductService
     {
@@ -64,21 +64,23 @@ namespace Service.Services
             return await response.Content.ReadFromJsonAsync<ReadProductDTO>();
         }
 
-        public async Task<ReadProductDTO> UpdateProductAsync(UpdateProductDTO productDto, string token)
+        //Update
+        public async Task<UpdateProductDTO> UpdateProductAsync(UpdateProductDTO productDto, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
             var response = await _httpClient.PutAsJsonAsync($"/products/{productDto.ProductID}", productDto);
             response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<ReadProductDTO>();
+            return await response.Content.ReadFromJsonAsync<UpdateProductDTO>();
         }
 
+        //Delete
         public async Task DeleteProductAsync(int productId, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.DeleteAsync($"/products/{productId}");
             response.EnsureSuccessStatusCode();
         }
-
 
         public async Task<ReadProductDTO> GetProductByIdAsync(int productId)
         {
@@ -93,6 +95,8 @@ namespace Service.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
         }
+
+        //Search
         public async Task<List<ReadProductDTO>> SearchProductsAsync(string searchTerm)
         {
             var response = await _httpClient.GetAsync($"/products/search?searchKey={Uri.EscapeDataString(searchTerm)}");
@@ -105,6 +109,47 @@ namespace Service.Services
             var response = await _httpClient.GetAsync($"/products/Get?$top={take}&$skip={skip}");
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
+        }
+
+        public async Task<string> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, double minPrice, double maxPrice, int take, int skip)
+        {
+            List<string> filtersList = new List<string>();
+
+            if (categoryID != 0)
+                filtersList.Add($"CategoryID eq {categoryID}");
+            if (status < 0)
+                filtersList.Add($"IsAvailable eq {status}");
+            if( 1 <= status && status <= 2)
+                filtersList.Add($"IsAvailable eq {(status == 1 ? "true" : "false")}");
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+                filtersList.Add($"contains(ProductName, '{searchTerm}')");
+            if (minPrice > 0)
+            {
+                filtersList.Add($"Price gt {minPrice}");
+            }
+            if (maxPrice > 0)
+            {
+                filtersList.Add($"Price lt {maxPrice}");
+            }
+            
+
+
+            var filters = "&filter=";
+            if (filtersList.Count > 0)
+            {
+                filters += string.Join(" and ", filtersList);
+            }
+            else
+            {
+                filters += "true"; // Trả về tất cả nếu không có bộ lọc nào
+            }
+            if(take > 0)
+            filters += $"&$top={take}&$skip={skip}";
+            var response = await _httpClient.GetAsync($"/products/odata?$count=true{filters}");
+            response.EnsureSuccessStatusCode();
+            var data = await response.Content.ReadAsStringAsync();
+            return data;
         }
     }
 }

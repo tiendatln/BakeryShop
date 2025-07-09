@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Service.Interfaces;
 
-namespace PRN232_Final_Project_Client.Service.Interfaces
+namespace Service.Interfaces
 {
     public interface ICategoryService
     {
@@ -14,5 +14,7 @@ namespace PRN232_Final_Project_Client.Service.Interfaces
         Task<bool> UpdateCategoryAsync(int id, UpdateCategoryDTO dto, string token);
         Task<bool> DeleteCategoryAsync(int id, string token);
         Task<List<ReadCategoryDTO>> SearchCategoriesAsync(string searchTerm);
+
+        Task<List<ReadCategoryDTO>> SearchCategoriesOdataAsync(string searchTerm, int take, int skip);
     }
 }

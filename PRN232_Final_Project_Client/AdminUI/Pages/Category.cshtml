@@ -18,6 +18,10 @@
 
 <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addModal">+ Add Category</button>
 
+<div class="mb-3">
+    <input id="searchInput" type="text" class="form-control" placeholder="Search by category name..." />
+</div>
+
 <table class="table table-bordered table-striped">
     <thead>
         <tr>
@@ -27,51 +31,33 @@
             <th>Action</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var c in Model.Categories)
-        {
-            <tr>
-                <td>@c.CategoryID</td>
-                <td>@c.CategoryName</td>
-                <td>@c.Description</td>
-                <td>
-                    <button class="btn btn-warning btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editModal"
-                            data-id="@c.CategoryID"
-                            data-name="@c.CategoryName"
-                            data-desc="@c.Description">
-                        Edit
-                    </button>
-
-                    <form method="post" asp-page-handler="Delete" asp-route-id="@c.CategoryID" style="display:inline">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
+    <tbody id="categoryTableBody">
     </tbody>
 </table>
+<nav>
+    <ul class="pagination justify-content-center mt-4" id="paginationContainer"></ul>
+</nav>
 
-<!-- Add Modal - FIXED -->
+<!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" asp-page-handler="Create">
+                @Html.AntiForgeryToken()
                 <div class="modal-header">
                     <h5 class="modal-title">Add New Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label asp-for="NewCategory.CategoryName" class="form-label">Category Name</label>
-                        <input asp-for="NewCategory.CategoryName" class="form-control" />
-                        <span asp-validation-for="NewCategory.CategoryName" class="text-danger"></span>
+                        <label class="form-label">Category Name</label>
+                        <input class="form-control" name="CategoryName" required />
+                        <span class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="NewCategory.Description" class="form-label">Description (Optional)</label>
-                        <textarea asp-for="NewCategory.Description" class="form-control" placeholder="Enter description (optional)"></textarea>
-                        <span asp-validation-for="NewCategory.Description" class="text-danger"></span>
+                        <label class="form-label">Description (Optional)</label>
+                        <textarea class="form-control" name="Description"></textarea>
+                        <span class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -88,21 +74,22 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form method="post" asp-page-handler="Update">
-                <input type="hidden" asp-for="EditCategory.CategoryID" id="edit-id" />
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="CategoryID" id="edit-id" />
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Category</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label asp-for="EditCategory.CategoryName" class="form-label">Category Name</label>
-                        <input asp-for="EditCategory.CategoryName" class="form-control" id="edit-name" />
-                        <span asp-validation-for="EditCategory.CategoryName" class="text-danger"></span>
+                        <label class="form-label">Category Name</label>
+                        <input class="form-control" name="CategoryName" id="edit-name" required />
+                        <span class="text-danger"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="EditCategory.Description" class="form-label">Description</label>
-                        <textarea asp-for="EditCategory.Description" class="form-control" id="edit-desc" placeholder="Enter description (optional)"></textarea>
-                        <span asp-validation-for="EditCategory.Description" class="text-danger"></span>
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" name="Description" id="edit-desc"></textarea>
+                        <span class="text-danger"></span>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -114,39 +101,182 @@
     </div>
 </div>
 
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the category "<span id="delete-category-name"></span>"?</p>
+                <p class="text-danger">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="post" style="display: inline;" asp-page-handler="Delete">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="delete-category-id" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
+        // Edit modal event handler
         const editModal = document.getElementById('editModal');
         editModal.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
-            const id = button.getAttribute('data-id');
-            const name = button.getAttribute('data-name');
-            const desc = button.getAttribute('data-desc');
-
-            // Set giá trị cho form
-            document.getElementById('edit-id').value = id;
-            document.getElementById('edit-name').value = name;
-            document.getElementById('edit-desc').value = desc || '';
-
-            // Set giá trị cho EditCategory binding
-            const categoryIdInput = document.querySelector('input[name="EditCategory.CategoryID"]');
-            const categoryNameInput = document.querySelector('input[name="EditCategory.CategoryName"]');
-            const categoryDescInput = document.querySelector('textarea[name="EditCategory.Description"]');
-
-            if (categoryIdInput) categoryIdInput.value = id;
-            if (categoryNameInput) categoryNameInput.value = name;
-            if (categoryDescInput) categoryDescInput.value = desc || '';
+            document.getElementById('edit-id').value = button.getAttribute('data-id');
+            document.getElementById('edit-name').value = button.getAttribute('data-name');
+            document.getElementById('edit-desc').value = button.getAttribute('data-desc');
         });
 
-        // Clear form when add modal is closed
+        // Delete modal event handler
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const categoryId = button.getAttribute('data-id');
+            const categoryName = button.getAttribute('data-name');
+
+            document.getElementById('delete-category-id').value = categoryId;
+            document.getElementById('delete-category-name').textContent = categoryName;
+        });
+
+        // Reset add modal when hidden
         const addModal = document.getElementById('addModal');
         addModal.addEventListener('hidden.bs.modal', () => {
             const form = addModal.querySelector('form');
             form.reset();
-            // Clear validation messages
-            const validationSpans = form.querySelectorAll('.text-danger');
-            validationSpans.forEach(span => span.textContent = '');
+            form.querySelectorAll('.text-danger').forEach(span => span.textContent = '');
+        });
+
+        $(document).ready(function () {
+            const pageSize = 5;
+            let currentPage = 1;
+            let currentSearchTerm = '';
+
+            // Load categories with pagination and search
+            function loadCategories(page, searchTerm) {
+                $.ajax({
+                    url: '?handler=Search',
+                    type: 'GET',
+                    data: {
+                        searchTerm: searchTerm,
+                        pagenumber: page
+                    },
+                    success: function (result) {
+                        renderTable(result.categories);
+                        renderPagination(result.totalCount, page);
+                        currentPage = page;
+                        currentSearchTerm = searchTerm;
+                    },
+                    error: function () {
+                        $('#categoryTableBody').html('<tr><td colspan="4">Error loading data.</td></tr>');
+                        $('#paginationContainer').empty();
+                    }
+                });
+            }
+
+            // Render table with improved delete button
+            function renderTable(categories) {
+                const tableBody = $('#categoryTableBody');
+                tableBody.empty();
+                if (!categories || categories.length === 0) {
+                    tableBody.html('<tr><td colspan="4">No matching categories found.</td></tr>');
+                    return;
+                }
+                categories.forEach(function (c) {
+                    const row = `
+                        <tr>
+                            <td>${c.categoryID}</td>
+                            <td>${c.categoryName}</td>
+                            <td>${c.description || ''}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm me-2"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editModal"
+                                        data-id="${c.categoryID}"
+                                        data-name="${c.categoryName}"
+                                        data-desc="${c.description || ''}">
+                                    Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal"
+                                        data-id="${c.categoryID}"
+                                        data-name="${c.categoryName}">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>`;
+                    tableBody.append(row);
+                });
+            }
+
+
+                   // Render pagination
+        function renderPagination(totalPages, currentPage) {
+            const paginationContainer = $('#paginationContainer');
+            paginationContainer.empty();
+
+            if (totalPages === 0) return;
+
+            const prevDisabled = currentPage === 1 ? 'disabled' : '';
+            paginationContainer.append(`<li class="page-item ${prevDisabled}"><a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a></li>`);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const activeClass = (i === currentPage) ? 'active' : '';
+                paginationContainer.append(`<li class="page-item ${activeClass}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`);
+            }
+
+            const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+            paginationContainer.append(`<li class="page-item ${nextDisabled}"><a class="page-link" href="#" data-page="${currentPage + 1}">Next</a></li>`);
+        }
+
+            // Pagination click handler
+            $('#paginationContainer').on('click', 'a.page-link', function (e) {
+                e.preventDefault();
+                const page = parseInt($(this).data('page'));
+                if (page && page !== currentPage && page > 0) {
+                    loadCategories(page, currentSearchTerm);
+                }
+            });
+
+            // Search input handler
+            $('#searchInput').on('keyup', function () {
+                const searchTerm = $(this).val().trim();
+                loadCategories(1, searchTerm);
+            });
+
+            // Handle form submissions with success/error feedback
+            $('form').on('submit', function(e) {
+                const form = $(this);
+                const submitBtn = form.find('button[type="submit"]');
+                submitBtn.prop('disabled', true).text('Processing...');
+
+                setTimeout(() => {
+                    submitBtn.prop('disabled', false);
+                    // Reset button text based on action
+                    if (submitBtn.hasClass('btn-success')) {
+                        submitBtn.text('Create Category');
+                    } else if (submitBtn.hasClass('btn-warning')) {
+                        submitBtn.text('Update');
+                    } else if (submitBtn.hasClass('btn-danger')) {
+                        submitBtn.text('Delete');
+                    }
+                }, 2000);
+            });
+
+            // Initial load
+            loadCategories(1, '');
         });
     </script>
 }

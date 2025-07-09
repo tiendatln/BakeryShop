@@ -4,12 +4,12 @@ using FeedbackAPI.Models;
 namespace FeedbackAPI.Services.Interface
 {
     public interface IFeedbackService
-    {
-        Task<IEnumerable<ReadFeedbackDTO>> GetAllAsync();
-        Task<ReadFeedbackDTO?> GetByIdAsync(int id);
+    {   
+        IQueryable<ReadFeedbackDTO> GetAllFeedbacks(); // Cho OData
+        Task<ReadFeedbackDTO?> GetByUserIdAsync(int userId); // Feedback cá nhân
         Task<ReadFeedbackDTO> CreateAsync(CreateFeedbackDTO dto);
         Task<bool> UpdateAsync(UpdateFeedbackDTO dto);
-        Task<bool> DeleteAsync(int id);
-        IQueryable<ReadFeedbackDTO> GetAllFeedbacks();
+        Task<bool> DeleteByUserIdAsync(int userId);
+        Task<ReadFeedbackDTO> CheckExistFBById(int userId);
     }
 }
