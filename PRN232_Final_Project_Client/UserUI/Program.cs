@@ -26,10 +26,9 @@ builder.Services.AddHttpClient<GatewayHttpClient>(client =>
 builder.Services.AddScoped<Service.Interfaces.IUserService, Service.Services.UserService>();
 builder.Services.AddScoped<Service.Interfaces.IProductService, Service.Services.ProuctService>();
 builder.Services.AddScoped<Service.Interfaces.ICartService, Service.Services.CartService>();
+builder.Services.AddScoped<Service.Interfaces.IOrderService, Service.Services.OrderService>();  
 
 builder.Services.AddScoped<Service.Services.EmailService>();
-
-
 
 var app = builder.Build();
 

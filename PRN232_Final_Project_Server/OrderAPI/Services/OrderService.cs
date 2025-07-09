@@ -26,12 +26,32 @@ namespace OrderAPI.Services
             return _mapper.Map<IEnumerable<ReadOrderDTO>>(orders);
         }
 
-        // Method to get an orders by ID
-        public async Task<ReadOrderDTO> GetOrderByIdAsync(int id)
+        // Method to get all orders as IQueryable
+        public IQueryable<Order> GetAllOrderQueryable()
         {
-            var order = await _orderRepo.GetOrderById(id);
-            if (order == null) return null;
-            return _mapper.Map<ReadOrderDTO>(order);
+            var orders = _orderRepo.GetAllOrderQueryable();
+            return orders;
+        }
+
+        // Method to get an orders by userID
+        public async Task<IEnumerable<ReadOrderDTO>> GetOrderByUserIdAsync(int userId)
+        {
+            var orders = await _orderRepo.GetOrderByUserId(userId);
+            return _mapper.Map<IEnumerable<ReadOrderDTO>>(orders);
+        }
+
+        // Method to get an orders by userID as IQueryable
+        public IQueryable<Order> GetOrderByUserIdQueryable(int userId)
+        {
+            var orders = _orderRepo.GetOrderByUserIdQueryable(userId);
+            /*return _mapper.ProjectTo<ReadOrderDTO>(orders);*/
+            return orders;
+        }
+
+        // Method to get an orders by userID with CountAsync
+        public async Task<int> GetOrderCountByUserIdAsync(int userId)
+        {
+            return await _orderRepo.GetOrderCountByUserIdAsync(userId);
         }
 
         // Method to get orders details by orders ID
@@ -71,7 +91,7 @@ namespace OrderAPI.Services
         }
 
         // Method to add orders detail to an existing orders
-        public async Task<ReadOrderDetailDTO> AddOrderDetailAsync(int orderId, CreateOrderDetailDTO createOrderDetailDto)
+/*        public async Task<ReadOrderDetailDTO> AddOrderDetailAsync(int orderId, CreateOrderDetailDTO createOrderDetailDto)
         {
             var orderDetail = _mapper.Map<OrderDetail>(createOrderDetailDto);
             orderDetail.OrderID = orderId;
@@ -92,7 +112,7 @@ namespace OrderAPI.Services
                 if (updatedOrderDetail == null) return null;
 
                 // Update total amount
-                var order = await _orderRepo.GetOrderById(orderId);
+                var order = await _orderRepo.GetOrderByUserId(orderId);
                 if (order != null)
                 {
                     order.TotalAmount += (updatedOrderDetail.Quantity - oldQuantity) * updatedOrderDetail.UnitPrice;
@@ -106,7 +126,7 @@ namespace OrderAPI.Services
             var createdOrderDetail = await _orderDetailRepo.CreateOrderDetail(orderDetail);
             if (createdOrderDetail == null) return null;
 
-            var existingOrder = await _orderRepo.GetOrderById(orderId);
+            var existingOrder = await _orderRepo.GetOrderByUserId(orderId);
             if (existingOrder != null)
             {
                 existingOrder.TotalAmount += createdOrderDetail.Quantity * createdOrderDetail.UnitPrice;
@@ -114,11 +134,11 @@ namespace OrderAPI.Services
             }
 
             return _mapper.Map<ReadOrderDetailDTO>(createdOrderDetail);
-        }
+        }*/
 
 
         // Method to update an existing orders
-        public async Task<ReadOrderDTO> UpdateOrderAsync(int id, UpdateOrderDTO updateOrderDTO)
+/*        public async Task<ReadOrderDTO> UpdateOrderAsync(int id, UpdateOrderDTO updateOrderDTO)
         {
             var order = _mapper.Map<Order>(updateOrderDTO);
             order.OrderID = id; // Ensure the ID is set for the update
@@ -126,9 +146,9 @@ namespace OrderAPI.Services
             if (updatedOrder == null) return null;
             return _mapper.Map<ReadOrderDTO>(updatedOrder);
         }
-
+*/
         // Method to update an orders detail
-        public async Task<ReadOrderDetailDTO> UpdateOrderDetailAsync(int id, UpdateOrderDetailDTO updateOrderDetailDTO)
+/*        public async Task<ReadOrderDetailDTO> UpdateOrderDetailAsync(int id, UpdateOrderDetailDTO updateOrderDetailDTO)
         {
             // Get the current quantity of orders detail 
             var currentOrderDetail = await _orderDetailRepo.GetOrderDetailById(id);
@@ -140,7 +160,7 @@ namespace OrderAPI.Services
             var updatedQuantity = updateOrderDetailDTO.Quantity;
             if (updatedOrderDetail == null) return null;
             // If orders detail is updated, update the orders's total amount
-            var order = await _orderRepo.GetOrderById(updatedOrderDetail.OrderID);
+            var order = await _orderRepo.GetOrderByUserId(updatedOrderDetail.OrderID);
             if (order != null)
             {
                 // Calculate the difference in quantity
@@ -149,7 +169,7 @@ namespace OrderAPI.Services
                 order.TotalAmount += quantityDifference * updatedOrderDetail.UnitPrice;
             }
             return _mapper.Map<ReadOrderDetailDTO>(updatedOrderDetail);
-        }
+        }*/
         
         // Method to delete an orders
         public async Task<bool> DeleteOrderAsync(int id)
@@ -158,7 +178,7 @@ namespace OrderAPI.Services
         }
 
         // Method to delete an orders detail
-        public async Task<bool> DeleteOrderDetailAsync(int orderDetailId)
+/*        public async Task<bool> DeleteOrderDetailAsync(int orderDetailId)
         {
             var orderDetail = await _orderDetailRepo.GetOrderDetailById(orderDetailId);
             if (orderDetail == null) return false;
@@ -172,7 +192,7 @@ namespace OrderAPI.Services
             // Get all remaining order details of the order
             var remainingDetails = await _orderDetailRepo.GetOrderDetailsByOrderId(orderId);
 
-            var order = await _orderRepo.GetOrderById(orderId);
+            var order = await _orderRepo.GetOrderByUserId(orderId);
             if (order == null) return false;
 
             if (remainingDetails == null || !remainingDetails.Any())
@@ -187,7 +207,7 @@ namespace OrderAPI.Services
             await _orderRepo.UpdateOrder(orderId, order);
 
             return true;
-        }
+        }*/
 
         // Method to get all orders as IQueryable
         /*public Task<IQueryable<ReadOrderDTO>> GetAllOrdersQueryableAsync()

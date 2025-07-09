@@ -71,6 +71,11 @@ builder.Services.AddHttpClient("CartAPI", client =>
     client.BaseAddress = new Uri("https://localhost:7027/api/Cart/"); // Adjust the base address as needed
 });
 
+builder.Services.AddHttpClient("OrderAPI", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7254/api/Orders/"); // Adjust the base address as needed
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
