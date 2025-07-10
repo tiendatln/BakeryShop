@@ -69,7 +69,8 @@ namespace FeedbackAPI.Services
             var feedback = await _repo.GetFeedbacksByUserId(userId).FirstOrDefaultAsync();
             if (feedback == null) return false;
 
-            await _repo.DeleteAsync(feedback.FeedbackID);
+            await _repo.DeleteAsync(feedback.FeedbackID); // ✅ Truyền đúng ID của Feedback
+            Console.WriteLine(" ",feedback.FeedbackID);    
             return true;
         }
     }

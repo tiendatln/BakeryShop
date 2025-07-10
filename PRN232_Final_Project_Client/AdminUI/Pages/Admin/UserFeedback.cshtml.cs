@@ -90,7 +90,7 @@ namespace AdminUI.Pages.Admin
 
             int userId = userIdElement.GetInt32();
             var result = await _feedbackService.DeleteAsync(userId, token);
-
+            Console.WriteLine($"❗ Đang cố xoá feedback của userId = {userId}");
             return new JsonResult(new { success = result });
         }
     }

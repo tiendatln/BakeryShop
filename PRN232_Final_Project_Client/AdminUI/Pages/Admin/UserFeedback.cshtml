@@ -14,7 +14,7 @@
     <table class="table table-bordered table-hover align-middle">
         <thead class="table-light">
             <tr>
-                <th>#</th>
+                <th>ID</th>
                 <th>Người gửi</th>
                 <th>Email</th>
                 <th>Nội dung</th>
@@ -29,7 +29,7 @@
                 foreach (var fb in Model.FeedbackList)
                 {
                     <tr>
-                        <td>@index</td>
+                        <td>@fb.UserID</td>
                         <td>@fb.FullName</td>
                         <td>@fb.Email</td>
                         <td>@fb.Description</td>
