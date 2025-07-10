@@ -4,7 +4,7 @@ namespace Service.Interfaces
 {
     public interface IUserService
     {
-        Task<string?> LoginAsync(string email, string password);
+        Task<string?> LoginAsync(string email, string password, string role);
 
         Task<bool> CheckUserExists(string email);
 

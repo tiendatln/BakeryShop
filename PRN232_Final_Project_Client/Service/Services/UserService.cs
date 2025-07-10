@@ -22,12 +22,13 @@ namespace Service.Services
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public async Task<string?> LoginAsync(string email, string password)
+        public async Task<string?> LoginAsync(string email, string password, string role)
         {
             var loginRequest = new LoginRequest
             {
                 Email = email,
-                Password = password
+                Password = password,
+                Role = role
             };
 
             var response = await _httpClient.PostAsJsonAsync("/auth/login", loginRequest);
