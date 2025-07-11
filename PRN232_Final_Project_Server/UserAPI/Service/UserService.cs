@@ -83,6 +83,15 @@ namespace UserAPI.Service
                 };
             }
 
+            if(!string.Equals(user.Role, dto.Role, StringComparison.OrdinalIgnoreCase))
+            {
+                return new UserValidateResultDTO
+                {
+                    IsValid = false,
+                    ErrorMessage = "Không được phép đăng nhập do khác Role."
+                };
+            }
+
             // Map dữ liệu sang DTO kết quả
             UserValidateResultDTO result = _mapper.Map<UserValidateResultDTO>(user);
             result.IsValid = true;

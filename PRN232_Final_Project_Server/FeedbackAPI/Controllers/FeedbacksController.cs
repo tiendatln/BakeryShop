@@ -58,6 +58,7 @@ namespace FeedbackAPI.Controllers
         public async Task<IActionResult> DeleteByUserId(int userId)
         {
             var deleted = await _service.DeleteByUserIdAsync(userId);
+            Console.WriteLine($"❗ Đang cố xoá feedback của userId = {userId}");
             return deleted ? NoContent() : NotFound();
         }
     }

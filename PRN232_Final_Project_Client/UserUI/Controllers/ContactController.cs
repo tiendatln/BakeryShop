@@ -45,6 +45,7 @@ namespace UserUI.Controllers
         public async Task<IActionResult> SubmitFeedback(CreateFeedbackDTO dto)
         {
             var token = HttpContext.Session.GetString("UserToken");
+            Console.WriteLine("*******************Token khi SubmitFeedback: " + token);
             if (string.IsNullOrEmpty(token)) return Unauthorized();
 
             var ok = await _feedbackService.CreateAsync(dto, token); // ✅ truyền token
@@ -58,6 +59,8 @@ namespace UserUI.Controllers
         public async Task<IActionResult> Update(UpdateFeedbackDTO dto)
         {
             var token = HttpContext.Session.GetString("UserToken");
+            Console.WriteLine("************Token khi UpdateFeedback: " + token); // 👈 check
+
             if (string.IsNullOrEmpty(token)) return Unauthorized();
 
             await _feedbackService.UpdateAsync(dto, token);
@@ -65,15 +68,5 @@ namespace UserUI.Controllers
         }
 
 
-        /* ----------------- Delete -------------------------------------- */
-        [HttpPost]
-        public async Task<IActionResult> Delete()
-        {
-            var token = HttpContext.Session.GetString("UserToken");
-            if (string.IsNullOrEmpty(token)) return Unauthorized();
-
-            await _feedbackService.DeleteAsync(token); // ✅ truyền token
-            return RedirectToAction("Index");
-        }
     }
 }

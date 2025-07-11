@@ -282,7 +282,9 @@
         </div>
     </section>
     @{
-        var actionName = ViewBag.CustomerFeedback != null ? "Update" : "SubmitFeedback";
+        var actionName = (ViewBag.CustomerFeedback != null && ViewBag.CustomerFeedback.FeedbackID > 0)
+        ? "Update"
+        : "SubmitFeedback";
     }
 
     <div class="contact-form">
@@ -296,8 +298,10 @@
                 </p>
                 <div class="col-md-12">
                     <h3 for="description" style="font-size: 30px">FEEDBACK HERE!</h3>
-
-                    <input type="hidden" name="FeedbackID" value="@(ViewBag.CustomerFeedback?.FeedbackID ?? 0)" />
+                    @if (ViewBag.CustomerFeedback != null && ViewBag.CustomerFeedback.FeedbackID > 0)
+                    {
+                        <input type="hidden" name="FeedbackID" value="@ViewBag.CustomerFeedback.FeedbackID" />
+                    }
                     <textarea id="description" name="Description" class="form-control" rows="6">@(
                     ViewBag.CustomerFeedback != null ? ViewBag.CustomerFeedback.Description : ""
                 )</textarea>

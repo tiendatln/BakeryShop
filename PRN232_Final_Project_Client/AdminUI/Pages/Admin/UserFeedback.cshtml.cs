@@ -75,13 +75,22 @@ namespace AdminUI.Pages.Admin
             }).ToList();
         }
 
-        public async Task<IActionResult> OnGetDeleteAsync(int userId)
+        public async Task<IActionResult> OnPostDeleteAsync()
         {
             var token = HttpContext.Session.GetString("AdminToken");
             if (string.IsNullOrEmpty(token))
                 return new JsonResult(new { success = false, message = "Missing token" });
 
-            var result = await _feedbackService.DeleteAsync(token);
+            using var reader = new StreamReader(Request.Body);
+            var body = await reader.ReadToEndAsync();
+
+            using var doc = JsonDocument.Parse(body);
+            if (!doc.RootElement.TryGetProperty("userId", out var userIdElement))
+                return new JsonResult(new { success = false, message = "Missing userId" });
+
+            int userId = userIdElement.GetInt32();
+            var result = await _feedbackService.DeleteAsync(userId, token);
+            Console.WriteLine($"❗ Đang cố xoá feedback của userId = {userId}");
             return new JsonResult(new { success = result });
         }
     }

@@ -48,7 +48,7 @@ namespace AdminUI.Pages.Admin
             }
 
             // Gọi API để xác thực người dùng
-            var token = await _userService.LoginAsync(Input.Email, Input.Password);
+            var token = await _userService.LoginAsync(Input.Email, Input.Password, "Admin"); // "Admin" là vai trò cần xác thực
             if (string.IsNullOrEmpty(token))
             {
                 ErrorMessage = "Email hoặc mật khẩu không đúng.";

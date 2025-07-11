@@ -33,7 +33,7 @@ namespace UserUI.Controllers
                 return View();
             }
 
-            var token = await _userService.LoginAsync(email, password);
+            var token = await _userService.LoginAsync(email, password, "Customer"); // "Customer" is the default role for users
             if (string.IsNullOrEmpty(token))
             {
                 TempData["ErrorMessage"] = "Invalid email or password.";
