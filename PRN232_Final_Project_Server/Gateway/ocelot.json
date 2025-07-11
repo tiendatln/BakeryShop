@@ -565,7 +565,7 @@
       "UpstreamHttpMethod": [ "DELETE" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer"
-      },      
+      },
       "RouteClaimsRequirement": {
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
       },
@@ -618,6 +618,7 @@
       }
     },
 
+    // get order by userId
     {
       "DownstreamPathTemplate": "/odata/ODataOrders",
       "UpstreamPathTemplate": "/OrderAdmin/all",
@@ -656,6 +657,54 @@
       },
       "RouteClaimsRequirement": {
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      }
+    },
+
+    // post order
+    {
+      "DownstreamPathTemplate": "/api/Orders/{userId}",
+      "UpstreamPathTemplate": "/OrderHistory/add",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7254
+        }
+      ],
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      },
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+
+    // post order detail
+    {
+      "DownstreamPathTemplate": "/api/Orders/{orderId}/OrderDetails",
+      "UpstreamPathTemplate": "/OrderDetails/create",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7254
+        }
+      ],
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      },
+      "ChangeDownstreamPathTemplate": {
+        "orderId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
       }
     }
   ],

@@ -12,11 +12,14 @@ namespace UserUI.Controllers
     {
         private readonly ICartService _cartService;
         private readonly IProductService _productService;
+        private readonly IUserService _userService;
 
-        public CartController(ICartService cartService, IProductService productService)
+        public CartController(ICartService cartService, IProductService productService, IUserService userService)
         {
             _cartService = cartService;
             _productService = productService;
+            _userService = userService;
+
         }
         // GET: /Cart
 
@@ -200,6 +203,8 @@ namespace UserUI.Controllers
             var token = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(token)) return RedirectToAction("Login", "Common");
 
+            var user = await _userService.GetUserInfoAsync(token);
+
             if (cartIds == null || cartIds.Count == 0)
             {
                 TempData["OrderErrors"] = "No cart selected!";
@@ -219,6 +224,7 @@ namespace UserUI.Controllers
             ViewBag.CartItems = selectedCarts;
             ViewBag.Products = selectedProducts;
             ViewBag.CartIDs = cartIds;
+            ViewBag.User = user;
 
             return View("Checkout");
         }

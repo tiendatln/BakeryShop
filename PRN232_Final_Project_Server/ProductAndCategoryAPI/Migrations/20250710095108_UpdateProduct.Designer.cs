@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductAndCategoryAPI.Data;
 
@@ -11,9 +12,11 @@ using ProductAndCategoryAPI.Data;
 namespace ProductAndCategoryAPI.Migrations
 {
     [DbContext(typeof(ProductAndCategoryDbContext))]
-    partial class ProductAndCategoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250710095108_UpdateProduct")]
+    partial class UpdateProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -25,32 +25,6 @@ namespace OrderAPI.Controllers
             _orderService = orderService;
         }
 
-        // GET: api/Orders
-        /*        [HttpGet]
-                [EnableQuery(PageSize = 8)]
-                public async Task<ActionResult<IQueryable<ReadOrderDTO>>> GetOrders()
-                {
-                    var orders = await _orderService.GetAllOrderAsync();
-                    if (orders == null || !orders.Any())
-                    {
-                        return NotFound("No orders found.");
-                    }
-                    return Ok(orders);
-                }*/
-
-        // GET: api/Orders/Queryable
-        /*[HttpGet("Queryable")]
-        [EnableQuery(PageSize = 8)]
-        public IQueryable<ReadOrderDTO> GetOrdersQueryable()
-        {
-            var orders = _orderService.GetAllOrderQueryable();
-            if (orders == null || !orders.Any())
-            {
-                return Enumerable.Empty<ReadOrderDTO>().AsQueryable();
-            }
-            return orders;
-        }*/
-
         [HttpGet("Queryable")]
         [EnableQuery]
         public IActionResult GetOrdersQueryable()
@@ -122,10 +96,10 @@ namespace OrderAPI.Controllers
                 }*/
 
         // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(CreateOrderDTO order)
+        [HttpPost("{userId}")]
+        public async Task<ActionResult<Order>> PostOrder(int userId, CreateOrderDTO order)
         {
+            order.UserID = userId; // gán userId từ Ocelot route
             var createdOrder = await _orderService.CreateOrderAsync(order);
             return Ok(createdOrder);
         }
@@ -174,16 +148,16 @@ namespace OrderAPI.Controllers
 
         // Method to add a new order detail
         // POST: api/Orders/5/OrderDetails
-        /*        [HttpPost("{id}/OrderDetails")]
-                public async Task<ActionResult<ReadOrderDetailDTO>> PostOrderDetail(int id, CreateOrderDetailDTO orderDetail)
-                {
-                    var createdOrderDetail = await _orderService.AddOrderDetailAsync(id, orderDetail);
-                    if (createdOrderDetail == null)
-                    {
-                        return BadRequest("Failed to create order detail.");
-                    }
-                    return CreatedAtAction(nameof(GetOrderDetailById), new { id = createdOrderDetail.OrderDetailID }, createdOrderDetail);
-                }*/
+        [HttpPost("{id}/OrderDetails")]
+        public async Task<ActionResult<ReadOrderDetailDTO>> PostOrderDetail(int id, CreateOrderDetailDTO orderDetail)
+        {
+            var createdOrderDetail = await _orderService.AddOrderDetailAsync(id, orderDetail);
+            if (createdOrderDetail == null)
+            {
+                return BadRequest("Failed to create order detail.");
+            }
+            return CreatedAtAction(nameof(GetOrderDetailById), new { id = createdOrderDetail.OrderDetailID }, createdOrderDetail);
+        }
 
         // Method to update an existing order detail
         // PUT: api/Orders/5/OrderDetails

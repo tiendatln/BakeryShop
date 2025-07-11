@@ -91,86 +91,51 @@ namespace OrderAPI.Services
         }
 
         // Method to add orders detail to an existing orders
-/*        public async Task<ReadOrderDetailDTO> AddOrderDetailAsync(int orderId, CreateOrderDetailDTO createOrderDetailDto)
+        public async Task<ReadOrderDetailDTO> AddOrderDetailAsync(int orderId, CreateOrderDetailDTO createOrderDetailDto)
         {
             var orderDetail = _mapper.Map<OrderDetail>(createOrderDetailDto);
-            orderDetail.OrderID = orderId;
 
-            // Get all existing order details for this order
-            var existingOrderDetails = await _orderDetailRepo.GetOrderDetailsByOrderId(orderId);
-
-            // Check if an existing order detail has the same ProductID and UnitPrice
-            var matchingDetail = existingOrderDetails
-                .FirstOrDefault(od => od.ProductID == orderDetail.ProductID && od.UnitPrice == orderDetail.UnitPrice);
-
-            if (matchingDetail != null)
-            {
-                var oldQuantity = matchingDetail.Quantity;
-                matchingDetail.Quantity += orderDetail.Quantity;
-
-                var updatedOrderDetail = await _orderDetailRepo.UpdateOrderDetail(matchingDetail.OrderDetailID, matchingDetail);
-                if (updatedOrderDetail == null) return null;
-
-                // Update total amount
-                var order = await _orderRepo.GetOrderByUserId(orderId);
-                if (order != null)
-                {
-                    order.TotalAmount += (updatedOrderDetail.Quantity - oldQuantity) * updatedOrderDetail.UnitPrice;
-                    await _orderRepo.UpdateOrder(orderId, order);
-                }
-
-                return _mapper.Map<ReadOrderDetailDTO>(updatedOrderDetail);
-            }
-
-            // No matching detail found, so create a new one
             var createdOrderDetail = await _orderDetailRepo.CreateOrderDetail(orderDetail);
             if (createdOrderDetail == null) return null;
 
-            var existingOrder = await _orderRepo.GetOrderByUserId(orderId);
-            if (existingOrder != null)
-            {
-                existingOrder.TotalAmount += createdOrderDetail.Quantity * createdOrderDetail.UnitPrice;
-                await _orderRepo.UpdateOrder(orderId, existingOrder);
-            }
-
             return _mapper.Map<ReadOrderDetailDTO>(createdOrderDetail);
-        }*/
+        }
 
 
         // Method to update an existing orders
-/*        public async Task<ReadOrderDTO> UpdateOrderAsync(int id, UpdateOrderDTO updateOrderDTO)
-        {
-            var order = _mapper.Map<Order>(updateOrderDTO);
-            order.OrderID = id; // Ensure the ID is set for the update
-            var updatedOrder = await _orderRepo.UpdateOrder(id, order);
-            if (updatedOrder == null) return null;
-            return _mapper.Map<ReadOrderDTO>(updatedOrder);
-        }
-*/
+        /*        public async Task<ReadOrderDTO> UpdateOrderAsync(int id, UpdateOrderDTO updateOrderDTO)
+                {
+                    var order = _mapper.Map<Order>(updateOrderDTO);
+                    order.OrderID = id; // Ensure the ID is set for the update
+                    var updatedOrder = await _orderRepo.UpdateOrder(id, order);
+                    if (updatedOrder == null) return null;
+                    return _mapper.Map<ReadOrderDTO>(updatedOrder);
+                }
+        */
         // Method to update an orders detail
-/*        public async Task<ReadOrderDetailDTO> UpdateOrderDetailAsync(int id, UpdateOrderDetailDTO updateOrderDetailDTO)
-        {
-            // Get the current quantity of orders detail 
-            var currentOrderDetail = await _orderDetailRepo.GetOrderDetailById(id);
-            var currentQuantity = currentOrderDetail?.Quantity ?? 0;
-            
-            var orderDetail = _mapper.Map<OrderDetail>(updateOrderDetailDTO);
-            orderDetail.OrderDetailID = id; // Ensure the ID is set for the update
-            var updatedOrderDetail = await _orderDetailRepo.UpdateOrderDetail(id, orderDetail);
-            var updatedQuantity = updateOrderDetailDTO.Quantity;
-            if (updatedOrderDetail == null) return null;
-            // If orders detail is updated, update the orders's total amount
-            var order = await _orderRepo.GetOrderByUserId(updatedOrderDetail.OrderID);
-            if (order != null)
-            {
-                // Calculate the difference in quantity
-                var quantityDifference = updatedQuantity - currentQuantity;
-                // Update the total amount based on the difference
-                order.TotalAmount += quantityDifference * updatedOrderDetail.UnitPrice;
-            }
-            return _mapper.Map<ReadOrderDetailDTO>(updatedOrderDetail);
-        }*/
-        
+        /*        public async Task<ReadOrderDetailDTO> UpdateOrderDetailAsync(int id, UpdateOrderDetailDTO updateOrderDetailDTO)
+                {
+                    // Get the current quantity of orders detail 
+                    var currentOrderDetail = await _orderDetailRepo.GetOrderDetailById(id);
+                    var currentQuantity = currentOrderDetail?.Quantity ?? 0;
+
+                    var orderDetail = _mapper.Map<OrderDetail>(updateOrderDetailDTO);
+                    orderDetail.OrderDetailID = id; // Ensure the ID is set for the update
+                    var updatedOrderDetail = await _orderDetailRepo.UpdateOrderDetail(id, orderDetail);
+                    var updatedQuantity = updateOrderDetailDTO.Quantity;
+                    if (updatedOrderDetail == null) return null;
+                    // If orders detail is updated, update the orders's total amount
+                    var order = await _orderRepo.GetOrderByUserId(updatedOrderDetail.OrderID);
+                    if (order != null)
+                    {
+                        // Calculate the difference in quantity
+                        var quantityDifference = updatedQuantity - currentQuantity;
+                        // Update the total amount based on the difference
+                        order.TotalAmount += quantityDifference * updatedOrderDetail.UnitPrice;
+                    }
+                    return _mapper.Map<ReadOrderDetailDTO>(updatedOrderDetail);
+                }*/
+
         // Method to delete an orders
         public async Task<bool> DeleteOrderAsync(int id)
         {

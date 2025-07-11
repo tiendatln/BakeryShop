@@ -11,5 +11,7 @@ namespace Service.Interfaces
     {
         Task<string> GetOrdersAsync(string token, int top, int skip);
         Task<List<ReadOrderDetailDTO>> GetOrderDetailAsync(int orderId, string token, int top, int skip);
+        Task<int?> CreateOrderAsync(CreateOrderDTO order, string token);
+        Task<bool> CreateOrderDetailAsync(CreateOrderDetailDTO orderDetail, int orderId, string token);
     }
 }

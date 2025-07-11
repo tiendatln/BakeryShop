@@ -208,27 +208,74 @@
             color: white;
         }
 
-        /* Action Button */
-        .btn-details {
-            background: linear-gradient(135deg, #ff6200, #ff8c00);
-            border: none;
+        .btn-view-detail {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
             color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.85rem;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(255, 98, 0, 0.3);
         }
 
-            .btn-details:hover {
-                background: linear-gradient(135deg, #e55a00, #ff7c00);
+            /* Hiệu ứng hover chính */
+            .btn-view-detail:hover {
+                background: linear-gradient(135deg, #ff5722, #ff7043);
                 transform: translateY(-2px);
-                box-shadow: 0 4px 16px rgba(255, 98, 0, 0.4);
-                color: white;
+                box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
             }
+
+            /* Hiệu ứng ripple khi hover */
+            .btn-view-detail::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+
+            .btn-view-detail:hover::before {
+                width: 300px;
+                height: 300px;
+            }
+
+            /* Hiệu ứng khi click */
+            .btn-view-detail:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+            }
+
+            /* Hiệu ứng focus */
+            .btn-view-detail:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+            }
+
+            /* Hiệu ứng loading/disabled */
+            .btn-view-detail:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            /* Phiên bản với hiệu ứng glow */
+            .btn-view-detail.glow-effect {
+                animation: glow 2s ease-in-out infinite alternate;
+            }
+
 
         /* Total Amount Styling */
         .total-amount {
@@ -293,7 +340,7 @@
                 </ol>
             </nav>
         </div>
-    </div>
+    </div>  
 
     <div class="container" id="orderContentContainer">
         <div class="table-container">
@@ -320,6 +367,11 @@
                 <!-- Phân trang sẽ được tạo động trong script -->
             </ul>
         </nav>
+
+        <form id="detailForm" method="post" action="/Order/HistoryDetail">
+            <input type="hidden" name="orderJson" id="orderJson" />
+        </form>
+
     </div>
 
     <!-- Bootstrap JS -->
@@ -410,7 +462,13 @@
                             <td><span class="status-badge ${paymentMethodClass}">${order.PaymentMethod}</span></td>
                             <td><span class="status-badge ${paymentStatusClass}">${order.PaymentStatus}</span></td>
                             <td><span class="total-amount">${formattedTotalAmount}</span></td>
-                            <td><a href="/Order/Details/${order.OrderID}" class="btn btn-sm btn-details">Details</a></td>
+                            <td>
+                                <button class="btn btn-sm btn-view-detail" data-order='${JSON.stringify(order)}'>
+                                    View Detail
+                                </button>
+                            </td>
+
+
                         </tr>`;
                     tbody.append(row);
                 });
@@ -433,6 +491,16 @@
             if (currentPage < totalPages) {
                 pagination.append(`<li class="page-item"><a class="page-link" href="?page=${currentPage + 1}">Next</a></li>`);
             }
+
+            $(document).on("click", ".btn-view-detail", function () {
+                const orderData = $(this).data("order"); // là object rồi nếu dùng jQuery 3.5+
+
+                // Nếu bị lỗi undefined: const orderData = JSON.parse($(this).attr("data-order"));
+                $("#orderJson").val(JSON.stringify(orderData));
+                $("#detailForm").submit();
+            });
+
+
         });
     </script>
 </body>

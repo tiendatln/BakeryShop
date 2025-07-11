@@ -278,6 +278,7 @@
                 selectedCartIds.forEach(id => {
                     $("#selectedCartInputs").append(`<input type="hidden" name="cartIds" value="${id}">`);
                 });
+                console.log("List Cart ID: ", selectedCartIds);
                 this.submit();
             });
 

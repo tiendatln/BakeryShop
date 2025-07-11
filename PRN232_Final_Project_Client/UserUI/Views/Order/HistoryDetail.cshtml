@@ -1,13 +1,11 @@
-﻿
-@using System.Linq
+﻿@using System.Linq
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
 @{
-    var orders = (List<DTOs.OrderDTO.ReadOrderDetailDTO>)ViewBag.OrderDetails;
-    var products = (List<DTOs.ProductDTO.ReadProductDTO>)ViewBag.Products;
-    var userId = ViewData["UserID"] as string;
+    var order = ViewBag.Order as string;
+    var products = ViewBag.Products as List<DTOs.ProductDTO.ReadProductDTO>;
 }
 
 <head>
@@ -22,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="~/css/Cart.css" asp-append-version="true">
+@*     <link rel="stylesheet" href="~/css/Cart.css" asp-append-version="true"> *@
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -31,6 +29,119 @@
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <style>
+        body {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8d9 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #ff6200 0%, #ff8c00 50%, #ffa500 100%);
+            padding: 3rem 0;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 8px 32px rgba(255, 98, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="90" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>');
+                animation: float 6s ease-in-out infinite;
+            }
+
+        .header-cart {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb-container .breadcrumb {
+            background: transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb-item a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .breadcrumb-item a:hover {
+                color: #ffe0b2;
+                transform: translateY(-2px);
+            }
+
+        .breadcrumb-item.active {
+            color: #ffe0b2;
+            font-weight: 700;
+        }
+
+        .container {
+            margin-top: 2rem;
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 98, 0, 0.1);
+        }
+
+        .table-container {
+            margin-top: 1.5rem;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+            .table thead th {
+                background: linear-gradient(135deg, #ff6200, #ff8c00);
+                color: white;
+                font-weight: 600;
+                text-align: center;
+                padding: 1rem;
+                border: none;
+                font-size: 0.9rem;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+            }
+
+            .table tbody tr {
+                transition: all 0.3s ease;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+                .table tbody tr:hover {
+                    background: linear-gradient(135deg, #fff5f0, #ffe8d9);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(255, 98, 0, 0.1);
+                }
+
+            .table tbody td {
+                padding: 1rem;
+                text-align: center;
+                vertical-align: middle;
+                border: none;
+                font-weight: 500;
+            }
+    </style>
 </head>
 
 <body>
@@ -62,34 +173,6 @@
                 </tr>
             </thead>
             <tbody>
-                @if (orders != null && orders.Count > 0)
-                {
-                    int i = 1;
-                    foreach (var order in orders)
-                    {
-                        var product = products.FirstOrDefault(p => p.ProductID == order.ProductID);
-                        if (product != null)
-                        {
-                            <tr>
-                                <td class="text-center">@i</td>
-                                <td class="text-center">
-                                    <img src="@product.ImageURL" alt="@product.ProductName" class="cart-product-image" />
-                                </td>
-                                <td class="text-center">@product.ProductName</td>
-                                <td class="text-center">@order.UnitPrice.ToString("C")</td>
-                                <td class="text-center">@order.Quantity</td>
-                                <td class="text-center">@order.TotalPrice.ToString("C")</td>
-                            </tr>
-                            i++;
-                        }
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="6" class="text-center">No orders found.</td>
-                    </tr>
-                }
             </tbody>
         </table>
     </div>
@@ -98,11 +181,48 @@
 
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
-    @section Scripts {
-        <script>
-            var js = jQuery.noConflict(true); //handle conflict of dataTable
-                js(document).ready(function () {
-            });
-        </script>
-    }
+    <script>
+        var result = @Html.Raw(Json.Serialize(ViewBag.Order));
+        var products = @Html.Raw(Json.Serialize(ViewBag.Products));
+        console.log("result:", result);
+        console.log("products:", products);
+
+        // Tạo lookup object - CHÚ Ý: dùng key viết thường
+        var productLookup = {};
+        products.forEach(p => {
+            productLookup[p.productID] = {  // Dùng ProductID (viết hoa) từ products
+                name: p.productName,
+                image: p.imageURL,
+            };
+        });
+
+        // Lấy tbody
+        var tbody = document.querySelector("#cartTable tbody");
+
+        // Lặp qua các orderDetail
+        result.orderDetails.forEach((detail, index) => {
+            const row = document.createElement("tr");
+
+            console.log("Detail: ", detail);
+            // SỬA: Dùng ProductID viết hoa để khớp với key trong lookup
+            const product = productLookup[detail.productID]; // Thay detail.productID thành detail.ProductID
+
+            console.log("Looking for productID:", detail.productID);
+            console.log("Found product:", product);
+            console.log("Product name: ", product?.productName ?? 'N/A');
+
+            row.innerHTML = `
+                    <td class="text-center">${index + 1}</td>
+                    <td class="text-center">
+                        <img src="/${product.image}" class="product-image rounded" alt="${product.productName}" width="80" height="80">
+                    </td>
+                    <td class="text-center">${product?.name ?? 'N/A'}</td>
+                    <td class="text-center">${detail.unitPrice}</td>
+                    <td class="text-center">${detail.quantity}</td>
+                    <td class="text-center">${detail.unitPrice * detail.quantity}</td>
+            `;
+
+            tbody.appendChild(row);
+        });
+    </script>
 </body>
