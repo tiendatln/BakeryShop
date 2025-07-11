@@ -189,11 +189,17 @@
                                 <div class="invalid-feedback">Please enter a valid price (> 0)</div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="mb-3">
                                 <label for="stockQuantity" class="form-label">Stock Quantity <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="stockQuantity" name="StockQuantity" min="0" required>
                                 <div class="invalid-feedback">Please enter a valid quantity (>= 0)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3"">
+                            <div class="mb-3">
+                                <label for="createdDate" class="form-label">Created Date <span class="text-danger">*</span></label>
+                                <input type="datetime" class="form-control" id="createdDate" name="CreatedDate" readonly>
                             </div>
                         </div>
                     </div>
@@ -297,7 +303,7 @@
 
 <script>
         $(document).ready(function () {
-        const page = parseInt($(this).data('page'));
+        const page = sessionStorage.getItem("currentPage");;
         if (isNaN(page) || page < 1) {
             loadProducts(1);
         } else {
@@ -539,6 +545,7 @@
                 $('#description').val(data.description);
                 $('#price').val(data.price);
                 $('#stockQuantity').val(data.stockQuantity);
+                $('#createdDate').val(new Date(data.createdDate).toISOString().slice(0, 16)); // Format for datetime-local
                 $('#isAvailable').prop('checked', data.isAvailable);
 
                 // Show image preview if exists
@@ -562,6 +569,15 @@
 
         const form = this;
         const formData = new FormData(form);
+            const dateValue = formData.get("CreatedDate");
+    console.log("date:", dateValue, typeof dateValue);
+
+        const isAvailable = formData.get("IsAvailable") === "on"; // bool true/false
+
+    // Gán lại cho FormData (nếu vẫn dùng FormData)
+    formData.set("IsAvailable", isAvailable); // Vẫn là bool, NHƯNG FormData sẽ auto .toString()
+
+    console.log(isAvailable); // <-- Đây mới là bool thật
         const productId = document.getElementById("productId").value;
         const page = sessionStorage.getItem('currentPage') || 1;
 
@@ -846,7 +862,7 @@
 
             // Use modern storage approach (remove sessionStorage dependency)
             window.paginationState = currentPageData;
-
+            sessionStorage.setItem('currentPage', page);
             console.log(`🚀 Loading page ${page}`, currentPageData);
 
             // Smooth page transition
