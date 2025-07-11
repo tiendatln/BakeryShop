@@ -28,5 +28,13 @@ namespace Service.Services
                 await _connection.InvokeAsync("NotifyProfileUpdated", userId);
             }
         }
+
+        public async Task NotifyProductUpdate()
+        {
+            if(_connection.State == HubConnectionState.Connected)
+            {
+                await _connection.InvokeAsync("NotifyProductUpdate");
+            }
+        }
     }
 }
