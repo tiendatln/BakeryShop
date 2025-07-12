@@ -25,6 +25,7 @@ builder.Services.AddScoped<Service.Interfaces.IUserService, Service.Services.Use
 builder.Services.AddScoped<Service.Interfaces.IProductService, Service.Services.ProuctService>();
 builder.Services.AddScoped<Service.Interfaces.ICategoryService, Service.Services.CategoryService>();
 builder.Services.AddScoped<Service.Interfaces.IFeedbackService, Service.Services.FeedbackService>();
+builder.Services.AddScoped<Service.Interfaces.INotificationService, Service.Services.NotificationService>();
 
 builder.Services.AddScoped<Service.Services.EmailService>();
 

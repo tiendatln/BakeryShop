@@ -9,5 +9,7 @@ namespace Service.Interfaces
     public interface INotificationService
     {
         Task NotifyProfileUpdatedAsync(int userId);
+
+        Task NotifyProductUpdate();
     }
 }

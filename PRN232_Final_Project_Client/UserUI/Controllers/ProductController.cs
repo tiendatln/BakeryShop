@@ -51,7 +51,7 @@ namespace UserUI.Controllers
 
         public async Task<IActionResult> SearchProducts(string searchTerm, int categoryId, double minPrice, double maxPrice, int pageNumper)
         {
-            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 0, minPrice, maxPrice, 12, (pageNumper - 1) * 12);
+            var product = await _productService.SearchProductsOdataAsync(searchTerm, categoryId, 1, minPrice, maxPrice, 12, (pageNumper - 1) * 12);
             return Content(product, "application/json");
         }
 

@@ -17,8 +17,11 @@
         /// Defines the _productService
         /// </summary>
         private readonly IProductService _productService;
+        private readonly INotificationService _notificationService;
 
-    
+        private static bool _isSignalRRunnging = false;
+
+
         #endregion
 
         #region Constructors
@@ -27,9 +30,10 @@
         /// Initializes a new instance of the <see cref="ProductManagementModel"/> class.
         /// </summary>
         /// <param name="productService">The productService<see cref="IProductService"/></param>
-        public ProductManagementModel(IProductService productService)
+        public ProductManagementModel(IProductService productService, INotificationService notificationService)
         {
             _productService = productService;
+            _notificationService = notificationService;
         }
 
         #endregion
@@ -205,6 +209,7 @@
             }
             var token = HttpContext.Session.GetString("AdminToken");
             Console.WriteLine($"Token: {token}");
+            _ = SignalRPlay();
             var createdProduct = await _productService.CreateProductAsync(CreateProduct, token);
 
             if (createdProduct == null)
@@ -265,13 +270,37 @@
             }
             var token = HttpContext.Session.GetString("AdminToken");
             Console.WriteLine($"Token: {token}");
+
+            
             var updatedProduct = await _productService.UpdateProductAsync(UpdateProduct, token);
             if (updatedProduct == null)
             {
                 ModelState.AddModelError(string.Empty, "Failed to update product.");
                 return Page();
             }
+            _ = SignalRPlay();
             return RedirectToPage("ProductManagement");
+        }
+
+        public async Task SignalRPlay()
+        {
+            if (_isSignalRRunnging)
+            {
+                return;
+            }
+            else if (!_isSignalRRunnging)
+            {
+                _isSignalRRunnging = true;
+                try
+                {
+                    await Task.Delay(3000); // Simulate some delay for the SignalR connection
+                }
+                finally
+                {
+                    _isSignalRRunnging = false; // Reset the flag after the operation is complete
+                }
+                _ = _notificationService.NotifyProductUpdate(); // Notify product update
+            }
         }
 
         #endregion
