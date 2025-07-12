@@ -32,7 +32,6 @@ namespace CartAPI.Services
         public IQueryable<CartDTO> GetCartQueryableByUserId(int userId)
         {
             return _mapper.ProjectTo<CartDTO>(_repository.GetCartByUserIDQueryable(userId));
-
         }
 
         public async Task UpdateQuantity(List<CartQuantityUpdateDTO> updates)

@@ -26,16 +26,51 @@ namespace OrderAPI.Repositories
             return new List<Order>();
         }
 
-        // Method to get an order by ID
-        public async Task<Order?> GetOrderById(int id)
+        // Method to get all orders as IQueryable
+        public IQueryable<Order> GetAllOrderQueryable()
+        {
+            if (_context != null && _context.Orders != null)
+            {
+                return _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .OrderByDescending(o => o.OrderDate); // Include related OrderDetails
+            }
+            return Enumerable.Empty<Order>().AsQueryable();
+        }
+
+        // Method to get an order by user ID
+        public async Task<List<Order>> GetOrderByUserId(int id)
         {
             if (_context != null && _context.Orders != null)
             {
                 return await _context.Orders
-                    .Include(o => o.OrderDetails) // Include related OrderDetails
-                    .FirstOrDefaultAsync(o => o.OrderID == id);
+                    .Where(o => o.UserID == id)
+                    .Include(o => o.OrderDetails)
+                    .OrderByDescending(o => o.OrderDate) // Include related OrderDetails
+                    .ToListAsync();
             }
-            return null;
+            return new List<Order>();
+        }
+
+        // Method to get an order by user ID with CountAsync
+        public async Task<int> GetOrderCountByUserIdAsync(int userId)
+        {
+            return await _context.Orders
+                .Where(o => o.UserID == userId)
+                .CountAsync();
+        }
+
+        // Method to get an order by user ID as IQueryable
+        public IQueryable<Order> GetOrderByUserIdQueryable(int id)
+        {
+            if (_context != null && _context.Orders != null)
+            {
+                return _context.Orders
+                    .Where(o => o.UserID == id)
+                    .Include(o => o.OrderDetails) // Include related OrderDetails
+                    .OrderByDescending(o => o.OrderDate);
+            }
+            return Enumerable.Empty<Order>().AsQueryable();
         }
 
         //Method to create a new order

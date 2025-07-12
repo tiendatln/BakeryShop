@@ -569,6 +569,140 @@
       "RouteClaimsRequirement": {
         "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
       }
+    },
+    // ORDER API
+    // get order by userId
+    {
+      "DownstreamPathTemplate": "/api/Orders/Queryable",
+      "UpstreamPathTemplate": "/OrderHistory/queryable",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7254
+        }
+      ],
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      }
+    },
+
+    {
+      "DownstreamPathTemplate": "/odata/ODataOrders?$filter=UserID eq {userId}",
+      "UpstreamPathTemplate": "/OrderHistory/me",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7254
+        }
+      ],
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      },
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+
+    // get order by userId
+    {
+      "DownstreamPathTemplate": "/odata/ODataOrders",
+      "UpstreamPathTemplate": "/OrderAdmin/all",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7254
+        }
+      ],
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      }
+    },
+
+    // get order detail by orderId
+    {
+      "DownstreamPathTemplate": "/api/Orders/{orderId}/OrderDetails",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7254
+        }
+      ],
+      "UpstreamPathTemplate": "/OrderHistory/details/{orderId}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      }
+    },
+
+    // post order
+    {
+      "DownstreamPathTemplate": "/api/Orders/{userId}",
+      "UpstreamPathTemplate": "/OrderHistory/add",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7254
+        }
+      ],
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      },
+      "ChangeDownstreamPathTemplate": {
+        "userId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
+    },
+
+    // post order detail
+    {
+      "DownstreamPathTemplate": "/api/Orders/{orderId}/OrderDetails",
+      "UpstreamPathTemplate": "/OrderDetails/create",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7254
+        }
+      ],
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Customer"
+      },
+      "ChangeDownstreamPathTemplate": {
+        "orderId": "Claims[http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier] > value"
+      }
     }
   ],
   "GlobalConfiguration": {

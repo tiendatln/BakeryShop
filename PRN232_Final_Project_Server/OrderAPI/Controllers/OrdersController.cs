@@ -25,53 +25,81 @@ namespace OrderAPI.Controllers
             _orderService = orderService;
         }
 
-        // GET: api/Orders
-        [HttpGet]
-        [EnableQuery(PageSize = 8)]
-        public async Task<ActionResult<IQueryable<ReadOrderDTO>>> GetOrders()
+        [HttpGet("Queryable")]
+        [EnableQuery]
+        public IActionResult GetOrdersQueryable()
         {
-            var orders = await _orderService.GetAllOrderAsync();
+            var orders = _orderService.GetAllOrderQueryable();
             if (orders == null || !orders.Any())
             {
-                return NotFound("No orders found.");
+                return Ok(Enumerable.Empty<ReadOrderDTO>().AsQueryable());
             }
             return Ok(orders);
         }
 
         // GET: api/Orders/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ReadOrderDTO>> GetOrder(int id)
-        {
-            var orders = await _orderService.GetOrderByIdAsync(id);
+        /*        [HttpGet("{id}")]
+                public async Task<ActionResult<ReadOrderDTO>> GetOrder(int id)
+                {
+                    var orders = await _orderService.GetOrderByUserIdAsync(id);
 
-            if (orders == null)
+                    if (orders == null)
+                    {
+                        return NotFound();
+                    }
+
+                    return Ok(orders);
+                }*/
+
+        // Method to get orders by user ID with queryable
+        // GET: api/Orders/5
+        /*[HttpGet("{userId}")]
+*//*        [EnableQuery(PageSize = 8)]
+*//*        public IQueryable<ReadOrderDTO> GetOrdersByUserIdQueryable(int userId,
+            [FromQuery] bool lastest = true)
+        {
+            var orders = _orderService.GetOrderByUserIdQueryable(userId);
+            if (orders == null || !orders.Any())
             {
-                return NotFound();
+                return Enumerable.Empty<ReadOrderDTO>().AsQueryable();
             }
 
-            return Ok(orders);
+            // order by order id descending if lastest is true
+            if (lastest)
+            {
+                orders = orders.OrderByDescending(o => o.OrderID);
+            }
+            return orders;
+        }*/
+
+        [HttpGet("{userId}/count")]
+        public async Task<ActionResult<int>> GetOrderCount(int userId) // Chú ý: int userId
+        {
+            var count = await _orderService.GetOrderCountByUserIdAsync(userId);
+            return Ok(count);
         }
+
 
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, [FromForm]UpdateOrderDTO order)
-        {
-            if (id != order.OrderID)
-            {
-                return BadRequest();
-            }
-                
-            var orders = await _orderService.UpdateOrderAsync(id, order);
+        /*        [HttpPut("{id}")]
+                public async Task<IActionResult> PutOrder(int id, [FromForm]UpdateOrderDTO order)
+                {
+                    if (id != order.OrderID)
+                    {
+                        return BadRequest();
+                    }
 
-            return Ok(orders);
-        }
+                    var orders = await _orderService.UpdateOrderAsync(id, order);
+
+                    return Ok(orders);
+                }*/
 
         // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(CreateOrderDTO order)
+        [HttpPost("{userId}")]
+        public async Task<ActionResult<Order>> PostOrder(int userId, CreateOrderDTO order)
         {
+            order.UserID = userId; // gán userId từ Ocelot route
             var createdOrder = await _orderService.CreateOrderAsync(order);
             return Ok(createdOrder);
         }
@@ -80,7 +108,7 @@ namespace OrderAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrder(int id)
         {
-            var order = await _orderService.GetOrderByIdAsync(id);
+            var order = await _orderService.GetOrderByUserIdAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -94,7 +122,7 @@ namespace OrderAPI.Controllers
         // Method to get order details by order ID
         // GET: api/Orders/5/OrderDetails
         [HttpGet("{id}/OrderDetails")]
-        [EnableQuery(PageSize = 8)]
+        [EnableQuery]
         public async Task<ActionResult<IEnumerable<ReadOrderDetailDTO>>> GetOrderDetailsByOrderId(int id)
         {
             var orderDetails = await _orderService.GetOrderDetailsByOrderIdAsync(id);
@@ -133,32 +161,32 @@ namespace OrderAPI.Controllers
 
         // Method to update an existing order detail
         // PUT: api/Orders/5/OrderDetails
-        [HttpPut("{id}/OrderDetails")]
-        public async Task<IActionResult> UpdateOrderDetails(int id, [FromForm]UpdateOrderDetailDTO orderDetail)
-        {
-            var updatedOrderDetail = await _orderService.UpdateOrderDetailAsync(id, orderDetail);
-            if (updatedOrderDetail == null)
-            {
-                return NotFound();
-            }
+        /*        [HttpPut("{id}/OrderDetails")]
+                public async Task<IActionResult> UpdateOrderDetails(int id, [FromForm]UpdateOrderDetailDTO orderDetail)
+                {
+                    var updatedOrderDetail = await _orderService.UpdateOrderDetailAsync(id, orderDetail);
+                    if (updatedOrderDetail == null)
+                    {
+                        return NotFound();
+                    }
 
-            return Ok(updatedOrderDetail);
-        }
-        
+                    return Ok(updatedOrderDetail);
+                }*/
+
         // Method to delete an order detail
         // DELETE: api/Orders/OrderDetails/5
-        [HttpDelete("OrderDetails/{id}")]
-        public async Task<IActionResult> DeleteOrderDetail(int id)
-        {
-            var orderDetail = await _orderService.GetOrderDetailByIdAsync(id);
-            if (orderDetail == null)
-            {
-                return NotFound();
-            }
+        /*        [HttpDelete("OrderDetails/{id}")]
+                public async Task<IActionResult> DeleteOrderDetail(int id)
+                {
+                    var orderDetail = await _orderService.GetOrderDetailByIdAsync(id);
+                    if (orderDetail == null)
+                    {
+                        return NotFound();
+                    }
 
-            await _orderService.DeleteOrderDetailAsync(id);
+                    await _orderService.DeleteOrderDetailAsync(id);
 
-            return NoContent();
-        }
+                    return NoContent();
+                }*/
     }
 }

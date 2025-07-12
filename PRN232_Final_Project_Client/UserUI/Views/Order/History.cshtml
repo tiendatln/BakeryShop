@@ -1,0 +1,494 @@
+﻿<!DOCTYPE html>
+@using System.Linq
+@using static System.Runtime.InteropServices.JavaScript.JSType
+@{
+    var ordersJson = ViewBag.Orders as string ?? "[]";
+    var currentPage = ViewBag.CurrentPage ?? 1;
+    var pageSize = 8;
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order History - BakeryShop</title>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8d9 100%);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #ff6200 0%, #ff8c00 50%, #ffa500 100%);
+            padding: 3rem 0;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 8px 32px rgba(255, 98, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="90" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>');
+                animation: float 6s ease-in-out infinite;
+            }
+
+        .header-cart {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb-container .breadcrumb {
+            background: transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        .breadcrumb-item a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+            .breadcrumb-item a:hover {
+                color: #ffe0b2;
+                transform: translateY(-2px);
+            }
+
+        .breadcrumb-item.active {
+            color: #ffe0b2;
+            font-weight: 700;
+        }
+
+        .container {
+            margin-top: 2rem;
+            background: #fff;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 98, 0, 0.1);
+        }
+
+        .table-container {
+            margin-top: 1.5rem;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .table {
+            margin-bottom: 0;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+            .table thead th {
+                background: linear-gradient(135deg, #ff6200, #ff8c00);
+                color: white;
+                font-weight: 600;
+                text-align: center;
+                padding: 1rem;
+                border: none;
+                font-size: 0.9rem;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+            }
+
+            .table tbody tr {
+                transition: all 0.3s ease;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+                .table tbody tr:hover {
+                    background: linear-gradient(135deg, #fff5f0, #ffe8d9);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(255, 98, 0, 0.1);
+                }
+
+            .table tbody td {
+                padding: 1rem;
+                text-align: center;
+                vertical-align: middle;
+                border: none;
+                font-weight: 500;
+            }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+            .status-badge:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+
+        /* Order Status */
+        .order-status-pending {
+            background: linear-gradient(135deg, #ffc107, #ffeb3b);
+            color: #8b5a00;
+        }
+
+        .order-status-shipped {
+            background: linear-gradient(135deg, #28a745, #34ce57);
+            color: white;
+        }
+
+        .order-status-delivered {
+            background: linear-gradient(135deg, #007bff, #0099ff);
+            color: white;
+        }
+
+        .order-status-cancelled {
+            background: linear-gradient(135deg, #dc3545, #ff4757);
+            color: white;
+        }
+
+        /* Payment Status */
+        .payment-status-paid {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .payment-status-pending {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: #8b5a00;
+        }
+
+        .payment-status-failed {
+            background: linear-gradient(135deg, #dc3545, #e55353);
+            color: white;
+        }
+
+        /* Payment Method */
+        .payment-method-credit-card {
+            background: linear-gradient(135deg, #6f42c1, #8e44ad);
+            color: white;
+        }
+
+        .payment-method-cod {
+            background: linear-gradient(135deg, #17a2b8, #20c997);
+            color: white;
+        }
+
+        .payment-method-paypal {
+            background: linear-gradient(135deg, #0070ba, #00457c);
+            color: white;
+        }
+
+        .payment-method-bank-transfer {
+            background: linear-gradient(135deg, #6c757d, #868e96);
+            color: white;
+        }
+
+        .btn-view-detail {
+            background: linear-gradient(135deg, #ff6b35, #ff8c42);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+            /* Hiệu ứng hover chính */
+            .btn-view-detail:hover {
+                background: linear-gradient(135deg, #ff5722, #ff7043);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+            }
+
+            /* Hiệu ứng ripple khi hover */
+            .btn-view-detail::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+
+            .btn-view-detail:hover::before {
+                width: 300px;
+                height: 300px;
+            }
+
+            /* Hiệu ứng khi click */
+            .btn-view-detail:active {
+                transform: translateY(0);
+                box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+            }
+
+            /* Hiệu ứng focus */
+            .btn-view-detail:focus {
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.3);
+            }
+
+            /* Hiệu ứng loading/disabled */
+            .btn-view-detail:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+                transform: none;
+                box-shadow: none;
+            }
+
+            /* Phiên bản với hiệu ứng glow */
+            .btn-view-detail.glow-effect {
+                animation: glow 2s ease-in-out infinite alternate;
+            }
+
+
+        /* Total Amount Styling */
+        .total-amount {
+            font-weight: 700;
+            color: #ff6200;
+            font-size: 1.1rem;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-top: 2rem;
+        }
+
+            .pagination .page-link {
+                color: #ff6200;
+                border: 2px solid #ff6200;
+                margin: 0 0.2rem;
+                border-radius: 10px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+
+                .pagination .page-link:hover {
+                    background: linear-gradient(135deg, #ff6200, #ff8c00);
+                    color: white;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(255, 98, 0, 0.3);
+                }
+
+            .pagination .page-item.active .page-link {
+                background: linear-gradient(135deg, #ff6200, #ff8c00);
+                border-color: #ff6200;
+                color: white;
+                box-shadow: 0 4px 12px rgba(255, 98, 0, 0.3);
+            }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+            .empty-state i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                color: #ff6200;
+            }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <h1 class="header-cart text-center">ORDER HISTORY</h1>
+        <div class="breadcrumb-container d-flex justify-content-center">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="#home">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Order History</li>
+                </ol>
+            </nav>
+        </div>
+    </div>  
+
+    <div class="container" id="orderContentContainer">
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table" id="orderTable">
+                    <thead>
+                        <tr>
+                            <th>Order Date</th>
+                            <th>Shipping Address</th>
+                            <th>Order Status</th>
+                            <th>Payment Method</th>
+                            <th>Payment Status</th>
+                            <th>Total Amount</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center" id="pagination">
+                <!-- Phân trang sẽ được tạo động trong script -->
+            </ul>
+        </nav>
+
+        <form id="detailForm" method="post" action="/Order/HistoryDetail">
+            <input type="hidden" name="orderJson" id="orderJson" />
+        </form>
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            var result = @Html.Raw(ordersJson);
+            var orders = result.value || [];
+            console.log(orders);
+            var totalCount = result['\u0040odata.count'] || 0;
+            var currentPage = @currentPage;
+            var pageSize = @pageSize;
+            var totalPages = Math.ceil(totalCount / pageSize);
+
+            // Render table
+            var tbody = $("#orderTable tbody");
+            tbody.empty();
+            if (orders.length === 0) {
+                tbody.append('<tr><td colspan="7" class="empty-state"><i class="fas fa-shopping-cart"></i><br>No orders found.</td></tr>');
+            } else {
+                $.each(orders, function (index, order) {
+                    // Map OrderStatus to CSS class
+                    var orderStatusClass = '';
+                    switch (order.OrderStatus.toLowerCase()) {
+                        case 'pending':
+                            orderStatusClass = 'order-status-pending';
+                            break;
+                        case 'shipped':
+                            orderStatusClass = 'order-status-shipped';
+                            break;
+                        case 'delivered':
+                            orderStatusClass = 'order-status-delivered';
+                            break;
+                        case 'cancelled':
+                            orderStatusClass = 'order-status-cancelled';
+                            break;
+                        default:
+                            orderStatusClass = 'order-status-pending';
+                    }
+
+                    // Map PaymentStatus to CSS class
+                    var paymentStatusClass = '';
+                    switch (order.PaymentStatus.toLowerCase()) {
+                        case 'paid':
+                            paymentStatusClass = 'payment-status-paid';
+                            break;
+                        case 'pending':
+                            paymentStatusClass = 'payment-status-pending';
+                            break;
+                        case 'failed':
+                            paymentStatusClass = 'payment-status-failed';
+                            break;
+                        default:
+                            paymentStatusClass = 'payment-status-pending';
+                    }
+
+                    // Map PaymentMethod to CSS class
+                    var paymentMethodClass = '';
+                    switch (order.PaymentMethod.toLowerCase().replace(/\s+/g, '-')) {
+                        case 'credit-card':
+                            paymentMethodClass = 'payment-method-credit-card';
+                            break;
+                        case 'cod':
+                            paymentMethodClass = 'payment-method-cod';
+                            break;
+                        case 'paypal':
+                            paymentMethodClass = 'payment-method-paypal';
+                            break;
+                        case 'bank-transfer':
+                            paymentMethodClass = 'payment-method-bank-transfer';
+                            break;
+                        default:
+                            paymentMethodClass = 'payment-method-cod';
+                    }
+
+                    // Format TotalAmount
+                    var formattedTotalAmount = `$${parseFloat(order.TotalAmount).toFixed(2)}`;
+
+                    // Create table row
+                    var row = `
+                        <tr>
+                            <td>${new Date(order.OrderDate).toLocaleDateString()}</td>
+                            <td>${order.ShippingAddress}</td>
+                            <td><span class="status-badge ${orderStatusClass}">${order.OrderStatus}</span></td>
+                            <td><span class="status-badge ${paymentMethodClass}">${order.PaymentMethod}</span></td>
+                            <td><span class="status-badge ${paymentStatusClass}">${order.PaymentStatus}</span></td>
+                            <td><span class="total-amount">${formattedTotalAmount}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-view-detail" data-order='${JSON.stringify(order)}'>
+                                    View Detail
+                                </button>
+                            </td>
+
+
+                        </tr>`;
+                    tbody.append(row);
+                });
+            }
+
+            // Render pagination
+            var pagination = $("#pagination");
+            pagination.empty();
+
+            if (currentPage > 1) {
+                pagination.append(`<li class="page-item"><a class="page-link" href="?page=${currentPage - 1}">Previous</a></li>`);
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                pagination.append(`<li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="?page=${i}">${i}</a>
+                    </li>`);
+            }
+
+            if (currentPage < totalPages) {
+                pagination.append(`<li class="page-item"><a class="page-link" href="?page=${currentPage + 1}">Next</a></li>`);
+            }
+
+            $(document).on("click", ".btn-view-detail", function () {
+                const orderData = $(this).data("order"); // là object rồi nếu dùng jQuery 3.5+
+
+                // Nếu bị lỗi undefined: const orderData = JSON.parse($(this).attr("data-order"));
+                $("#orderJson").val(JSON.stringify(orderData));
+                $("#detailForm").submit();
+            });
+
+
+        });
+    </script>
+</body>
+</html>
