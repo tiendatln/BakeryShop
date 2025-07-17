@@ -705,9 +705,6 @@
       }
     }
   ],
-  "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:7112"
-  },
   "Logging": {
     "LogLevel": {
       "Default": "Debug",

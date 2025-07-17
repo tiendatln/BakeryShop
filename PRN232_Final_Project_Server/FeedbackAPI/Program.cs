@@ -36,7 +36,7 @@ builder.Services.AddControllers().AddOData(options =>
 
 // Add services to the container.builder.Services.AddDbContext<….DbContext…..>(options =>
 builder.Services.AddDbContext<DBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();

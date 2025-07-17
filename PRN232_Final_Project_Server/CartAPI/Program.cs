@@ -23,7 +23,7 @@ builder.Services.AddAutoMapper(typeof(CartPoriles));
 
 // Add DbContext
 builder.Services.AddDbContext<CartDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Dependency Injection cho Repository và Service
 builder.Services.AddScoped<ICartRepository, CartRepository>();

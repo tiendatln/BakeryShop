@@ -20,11 +20,11 @@ namespace OrderAPI.Data
             // Cấu hình Identity để bắt đầu từ ID mong muốn
             modelBuilder.Entity<Order>()
                 .Property(o => o.OrderID)
-                .UseIdentityColumn(1, 1); // Bắt đầu từ 1, tăng 1
+                .UseIdentityColumn(); // Bắt đầu từ 1, tăng 1
 
             modelBuilder.Entity<OrderDetail>()
                 .Property(od => od.OrderDetailID)
-                .UseIdentityColumn(1, 1); // Bắt đầu từ 1, tăng 1
+                .UseIdentityColumn(); // Bắt đầu từ 1, tăng 1
 
             // ===== Seed Data =====
             var rand = new Random(123);
