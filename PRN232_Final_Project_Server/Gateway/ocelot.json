@@ -7,7 +7,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "authapi-uy5u.onrender.com",
-          "Port": 433
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/auth/login",
