@@ -6,8 +6,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7009
+          "Host": "authapi-uy5u.onrender.com",
+          "Port": 433
         }
       ],
       "UpstreamPathTemplate": "/auth/login",
@@ -252,8 +252,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7227
+          "Host": "userapi-z1zs.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/get",
@@ -271,8 +271,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7227
+          "Host": "userapi-z1zs.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/info",
@@ -293,8 +293,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7227
+          "Host": "userapi-z1zs.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/check-email-exit",
@@ -305,8 +305,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7227
+          "Host": "userapi-z1zs.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/register",
@@ -317,8 +317,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7227
+          "Host": "userapi-z1zs.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/update-profile",
@@ -329,8 +329,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7227
+          "Host": "userapi-z1zs.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/{userId}",
@@ -351,8 +351,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7227
+          "Host": "userapi-z1zs.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/users/forgot-password",

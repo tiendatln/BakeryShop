@@ -58,7 +58,7 @@ builder.Services.AddHttpClient("AuthAPI", client =>
 
 builder.Services.AddHttpClient("UserAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7227/api/Users/"); // Adjust the base address as needed
+    client.BaseAddress = new Uri("https://userapi-z1zs.onrender.com/api/Users/"); // Adjust the base address as needed
 });
 
 builder.Services.AddHttpClient("ProductAndCategoryAPI", client =>
