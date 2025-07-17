@@ -20,8 +20,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/products",
@@ -32,8 +32,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/products",
@@ -51,8 +51,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/products/{id}",
@@ -70,8 +70,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/products/category/{id}",
@@ -82,8 +82,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/products/search",
@@ -94,8 +94,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/products/odata",
@@ -109,8 +109,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/products/{id}",
