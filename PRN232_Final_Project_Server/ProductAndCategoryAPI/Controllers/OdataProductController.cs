@@ -24,16 +24,15 @@ namespace ProductAndCategoryAPI.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public IQueryable<ReadProductDTO> Get(ODataQueryOptions<Product> queryOptions)
+        [EnableQuery]
+        public IActionResult Get(ODataQueryOptions<Product> queryOptions)
         {
-            // 1. Get IQueryable<Product> from the service
             IQueryable<Product> products = _productService.GetAllProductForOData();
             IQueryable<Product> results = (IQueryable<Product>)queryOptions.ApplyTo(products);
-            // 3. Project the results to ReadProductDTO
             IQueryable<ReadProductDTO> projectedResults = results.ProjectTo<ReadProductDTO>(_mapper.ConfigurationProvider);
-            // 4. Return the projected results
-            return projectedResults;
+            return Ok(projectedResults);
         }
+
     }
 
 }
