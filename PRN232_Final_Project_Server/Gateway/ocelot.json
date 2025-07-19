@@ -578,8 +578,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7254
+          "Host": "orderapi-nehi.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamHttpMethod": [ "GET" ],
@@ -598,8 +598,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7254
+          "Host": "orderapi-nehi.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamHttpMethod": [ "GET" ],
@@ -622,8 +622,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7254
+          "Host": "orderapi-nehi.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamHttpMethod": [ "GET" ],
@@ -642,8 +642,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7254
+          "Host": "orderapi-nehi.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/OrderHistory/details/{orderId}",
@@ -664,8 +664,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7254
+          "Host": "orderapi-nehi.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamHttpMethod": [ "POST" ],
@@ -688,8 +688,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7254
+          "Host": "orderapi-nehi.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamHttpMethod": [ "POST" ],
