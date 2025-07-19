@@ -78,7 +78,7 @@ builder.Services.AddHttpClient("FeedbackAPI", client =>
 
 builder.Services.AddHttpClient("OrderAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7254/api/Orders/"); // Adjust the base address as needed
+    client.BaseAddress = new Uri("https://orderapi-nehi.onrender.com/api/Orders/"); // Adjust the base address as needed
 });
 
 var app = builder.Build();
