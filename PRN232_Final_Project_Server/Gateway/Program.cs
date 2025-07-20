@@ -68,7 +68,7 @@ builder.Services.AddHttpClient("ProductAndCategoryAPI", client =>
 
 builder.Services.AddHttpClient("CartAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7027/api/Cart/"); // Adjust the base address as needed
+    client.BaseAddress = new Uri("https://cartapi-dgmo.onrender.com/api/Cart/"); // Adjust the base address as needed
 }); 
 
 builder.Services.AddHttpClient("FeedbackAPI", client =>

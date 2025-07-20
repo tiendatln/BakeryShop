@@ -36,7 +36,7 @@ namespace FeedbackAPI.Services
                 {
                     UserID = userId,
                     Description = "",
-                    SubmittedDate = DateTime.MinValue
+                    SubmittedDate = DateTime.UtcNow
                 };
             }
 

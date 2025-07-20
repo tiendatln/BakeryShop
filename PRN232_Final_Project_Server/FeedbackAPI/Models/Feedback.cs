@@ -14,6 +14,6 @@ namespace FeedbackAPI.Models
         [StringLength(1000)]
         public string Description { get; set; } = string.Empty;
 
-        public DateTime SubmittedDate { get; set; } = DateTime.Now;
+        public DateTime SubmittedDate { get; set; } = DateTime.UtcNow;
     }
 }
