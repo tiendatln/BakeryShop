@@ -29,16 +29,10 @@ namespace UserUI.Controllers
             var token = HttpContext.Session.GetString("UserToken");
             if (string.IsNullOrEmpty(token)) return RedirectToAction("Login", "Common");
 
-            var initialCarts = await _cartService.GetCartAsync(token, skip: 0, take: 5);
-            int totalCartCount = 1;
-            if (initialCarts != null)
-            {
-                totalCartCount = await _cartService.GetCartCountAsync(token);
-            }
-            
+            var totalCartCount = await _cartService.GetCartCountAsync(token);
             ViewBag.TotalCartCount = totalCartCount;
 
-            
+            var initialCarts = await _cartService.GetCartAsync(token, skip: 0, take: 5);
 
             var products = new List<ReadProductDTO>();
             var updatedCarts = new List<CartQuantityUpdateDTO>();

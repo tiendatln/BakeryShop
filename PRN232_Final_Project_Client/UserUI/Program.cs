@@ -19,7 +19,7 @@ builder.Services.AddSession(options =>
 // HttpClient
 builder.Services.AddHttpClient<GatewayHttpClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7112/");
+    client.BaseAddress = new Uri("https://gateway-oh3c.onrender.com/");
 });
 
 // Dependency Injection
