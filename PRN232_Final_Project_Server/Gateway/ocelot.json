@@ -124,8 +124,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7027
+          "Host": "cartapi-dgmo.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/cart/me",
@@ -146,8 +146,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7027
+          "Host": "cartapi-dgmo.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/cart/add",
@@ -168,8 +168,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7027
+          "Host": "cartapi-dgmo.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/cart/{cartId}",
@@ -187,8 +187,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7027
+          "Host": "cartapi-dgmo.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/cart/update-quantities",
@@ -207,8 +207,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7027
+          "Host": "cartapi-dgmo.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/cart/me?skip={skip}&take={top}&$orderby=LastUpdated desc",
@@ -229,8 +229,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7027
+          "Host": "cartapi-dgmo.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/cart/count", // Endpoint mà CartService sẽ gọi
@@ -365,8 +365,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/categories",
@@ -378,8 +378,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/categories/Get",
@@ -393,8 +393,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/categories/{id}",
@@ -411,8 +411,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/categories",
@@ -429,8 +429,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/categories/{id}",
@@ -447,8 +447,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7016
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/categories/{id}",

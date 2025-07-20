@@ -47,7 +47,7 @@ namespace Service.Services
         {
             AddBearerToken(token);
             // Gọi một endpoint mới trên API Gateway để lấy số lượng
-            var count = await _httpClient.GetFromJsonAsync<int>("/cart/count");
+            int count = await _httpClient.GetFromJsonAsync<int>("/cart/count");
             return count;
         }
 

@@ -20,7 +20,7 @@ namespace CartAPI.Services
         public Task AddCart(CartCreateDTO dto)
         {
             var cart = _mapper.Map<Cart>(dto);
-            cart.LastUpdated = DateTime.Now;
+            cart.LastUpdated = DateTime.UtcNow;
             return _repository.AddCart(cart);
         }
 

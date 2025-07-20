@@ -22,12 +22,12 @@ namespace CartAPI.Repositories
             {
                 // Đã tồn tại, cập nhật lại số lượng
                 existingCart.Quantity = cart.Quantity;
-                existingCart.LastUpdated = DateTime.Now;
+                existingCart.LastUpdated = DateTime.UtcNow;
             }
             else
             {
                 // Thêm mới
-                cart.LastUpdated = DateTime.Now;
+                cart.LastUpdated = DateTime.UtcNow;
                 _context.Add(cart);
             }
 
@@ -56,7 +56,7 @@ namespace CartAPI.Repositories
             if (cart != null && cart.Quantity != updateCart.Quantity)
             {
                 cart.Quantity = updateCart.Quantity;
-                cart.LastUpdated = DateTime.Now;
+                cart.LastUpdated = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
             }
         }
