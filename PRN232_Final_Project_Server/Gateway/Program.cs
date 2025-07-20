@@ -53,7 +53,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddHttpClient("AuthAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7009/api/Auth/"); // Adjust the base address as needed
+    client.BaseAddress = new Uri("https://authapi-uy5u.onrender.com/api/Auth/"); // Adjust the base address as needed
 });
 
 builder.Services.AddHttpClient("UserAPI", client =>
@@ -73,7 +73,7 @@ builder.Services.AddHttpClient("CartAPI", client =>
 
 builder.Services.AddHttpClient("FeedbackAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7028/api/Feedacks/"); // Adjust the base address as needed
+    client.BaseAddress = new Uri("https://feedbackapi-d2kt.onrender.com/api/Feedacks/"); // Adjust the base address as needed
 });
 
 builder.Services.AddHttpClient("OrderAPI", client =>

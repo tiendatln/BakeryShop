@@ -468,8 +468,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7028
+          "Host": "feedbackapi-d2kt.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/feedbacks",
@@ -488,8 +488,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7028
+          "Host": "feedbackapi-d2kt.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/feedbacks/info",
@@ -511,8 +511,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7028
+          "Host": "feedbackapi-d2kt.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/feedbacks/add",
@@ -534,8 +534,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7028
+          "Host": "feedbackapi-d2kt.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/feedbacks/up/{feedbackId}",
@@ -557,8 +557,8 @@
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 7028
+          "Host": "feedbackapi-d2kt.onrender.com",
+          "Port": 443
         }
       ],
       "UpstreamPathTemplate": "/feedbacks/del/{userId}",
