@@ -15,7 +15,7 @@ namespace Service.Services
         public NotificationService()
         {
             _connection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:7126/notificationHub") // Địa chỉ URL của SignalR Hub
+                .WithUrl("https://notificationapi-4w1d.onrender.com/notificationHub") // Địa chỉ URL của SignalR Hub
                 .Build();
 
             _ = _connection.StartAsync();
