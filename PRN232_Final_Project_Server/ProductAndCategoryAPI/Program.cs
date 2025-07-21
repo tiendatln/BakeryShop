@@ -17,8 +17,8 @@ odataBuilder.EntitySet<ReadProductDTO>("Products")
     .EntityType.HasKey(p => p.ProductID); // Chỉ định key cho entity
 odataBuilder.EntitySet<ReadCategoryDTO>("Categories")
     .EntityType.HasKey(c => c.CategoryID);
-builder.Services.AddControllers().AddOData( options => options
-.AddRouteComponents("odata",odataBuilder.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(100));
+builder.Services.AddControllers().AddOData(options => options
+.AddRouteComponents("odata", odataBuilder.GetEdmModel()).Select().Filter().OrderBy().Expand().Count().SetMaxTop(100));
 odataBuilder.EntitySet<Product>("OdataProduct");
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
