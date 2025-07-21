@@ -18,7 +18,7 @@ COPY Service/ Service/
 
 # Publish
 WORKDIR /src/AdminUI
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet publish AdminUI/AdminUI.csproj -c Release -o /app/publish
 
 # 2) Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
