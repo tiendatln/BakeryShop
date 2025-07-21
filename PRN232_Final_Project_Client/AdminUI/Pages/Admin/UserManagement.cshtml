@@ -46,8 +46,9 @@
             });
 
             // SignalR connection to reload when user updated
+            const env = window.myEnvVar = '@Environment.GetEnvironmentVariable("ENV_NOTIFI_API")';
             const connection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7126/notificationHub")
+                .withUrl(`${env}/notificationHub`)
                 .build();
 
             connection.start()

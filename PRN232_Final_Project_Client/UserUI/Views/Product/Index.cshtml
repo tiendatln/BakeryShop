@@ -829,8 +829,9 @@
 
     <script>
 
+        const env = window.myEnvVar = '@Environment.GetEnvironmentVariable("ENV_NOTIFI_API")';
                        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:7126/notificationHub")
+            .withUrl(`${env}/notificationHub`)
             .withAutomaticReconnect()
             .build();
      
