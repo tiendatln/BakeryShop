@@ -135,7 +135,7 @@ namespace Service.Services
             
 
 
-            var filters = "&filter=";
+            var filters = "&?filter=";
             if (filtersList.Count > 0)
             {
                 filters += string.Join(" and ", filtersList);
@@ -145,7 +145,7 @@ namespace Service.Services
                 filters += "true"; // Trả về tất cả nếu không có bộ lọc nào
             }
             if(take > 0)
-            filters += $"&$top={take}&$skip={skip}";
+            filters += $"&?top={take}&?skip={skip}";
             var response = await _httpClient.GetAsync($"/products/odata?$count=true{filters}");
             response.EnsureSuccessStatusCode();
             var data = await response.Content.ReadAsStringAsync();

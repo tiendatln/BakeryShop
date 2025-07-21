@@ -14,7 +14,7 @@ namespace DTOs.ProductDTO
         public int StockQuantity { get; set; }
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryID { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Today;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         [Required]
         public string ImageURL { get; set; } = string.Empty;
         public bool IsAvailable { get; set; } = true;

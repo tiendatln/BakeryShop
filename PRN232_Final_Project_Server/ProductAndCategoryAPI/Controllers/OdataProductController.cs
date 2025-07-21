@@ -10,7 +10,7 @@ using ProductAndCategoryAPI.Service;
 
 namespace ProductAndCategoryAPI.Controllers
 {
-    [Route("odata/[controller]")]
+    [Route("odata/OdataProduct")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)] // Ignore this controller in Swagger documentation
     public class OdataProductController : ODataController

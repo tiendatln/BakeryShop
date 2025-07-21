@@ -10,7 +10,7 @@ namespace DTOs.ProductDTO
         public decimal Price { get; set; }
         public int StockQuantity { get; set; }
         public int CategoryID { get; set; }
-        public DateTime CreatedDate { get; set; } = default;
+        public DateTime CreatedDate { get; set; }
         public string ImageURL { get; set; } = string.Empty;
         public bool IsAvailable { get; set; } = default;
         public ReadCategoryDTO Category { get; set; } = new ReadCategoryDTO();
