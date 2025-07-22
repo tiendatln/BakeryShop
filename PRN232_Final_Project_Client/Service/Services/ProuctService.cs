@@ -92,6 +92,7 @@ namespace Service.Services
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             using var content = new MultipartFormDataContent();
+
             content.Add(new StringContent(productDto.ProductID.ToString()), "ProductID");
             content.Add(new StringContent(productDto.ProductName), "ProductName");
             content.Add(new StringContent(productDto.Description), "Description");
@@ -101,33 +102,9 @@ namespace Service.Services
             content.Add(new StringContent(productDto.CreatedDate.ToString("o")), "CreatedDate");
             content.Add(new StringContent(productDto.IsAvailable.ToString()), "IsAvailable");
 
-            if (imageStream != null)
-            {
-                if (imageStream.CanSeek) imageStream.Position = 0;
-
-                var fileContent = new StreamContent(imageStream);
-                fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-                content.Add(fileContent, "ImageURL", "image.jpg"); // "ImageURL" phải khớp DTO
-            }
-
-
-            // thêm các phần như bạn đang làm...
-
-            foreach (var part in content)
-            {
-                var disposition = part.Headers.ContentDisposition;
-                Console.WriteLine($"Name: {disposition?.Name}");
-                Console.WriteLine($"FileName: {disposition?.FileName}");
-                Console.WriteLine($"Content-Type: {part.Headers.ContentType}");
-
-                if (part is StringContent stringContent)
-                {
-                    var value = await stringContent.ReadAsStringAsync();
-                    Console.WriteLine($"Value: {value}");
-                }
-            }
-
-
+            var fileContent = new StreamContent(imageStream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            content.Add(fileContent, "ImageURL", "image.jpg");
 
             var response = await _httpClient.PutAsync($"/products/{productDto.ProductID}", content);
             response.EnsureSuccessStatusCode();
@@ -149,21 +126,6 @@ namespace Service.Services
             return await response.Content.ReadFromJsonAsync<ReadProductDTO>();
         }
 
-        public async Task<bool> UpdateProductQuantity(int id, int quantity, string token)
-        {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _httpClient.PutAsync($"/products/update-quantity/{id}?quantity={quantity}", null);
-            if (response.IsSuccessStatusCode)
-            {
-                return true;
-            }
-            else
-            {
-                var error = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Error updating product quantity: {error}");
-                return false;
-            }
-        }
         public async Task<List<ReadProductDTO>> GetProductsByCategoryAsync(int categoryId)
         {
             var response = await _httpClient.GetAsync($"/products/category/{categoryId}");
