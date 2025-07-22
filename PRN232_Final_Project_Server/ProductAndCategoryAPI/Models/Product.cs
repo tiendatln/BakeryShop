@@ -24,7 +24,7 @@ namespace ProductAndCategoryAPI.Models
 
         public bool IsAvailable { get; set; } = true;
 
-        public DateTime CreatedDate { get; set; } 
+        public DateTime CreatedDate { get; set; } = DateTime.Today;
 
         [ForeignKey("Category")]
         public int CategoryID { get; set; }

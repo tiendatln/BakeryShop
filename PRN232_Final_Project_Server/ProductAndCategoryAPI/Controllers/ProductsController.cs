@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Server;
 using ProductAndCategoryAPI.Data;
 using ProductAndCategoryAPI.DTOs;
-using ProductAndCategoryAPI.Migrations;
 using ProductAndCategoryAPI.Models;
 using ProductAndCategoryAPI.Service;
 using System;
