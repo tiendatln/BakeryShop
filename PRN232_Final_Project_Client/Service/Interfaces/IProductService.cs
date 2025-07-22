@@ -23,7 +23,7 @@ namespace Service.Interfaces
         public Task<List<ReadProductDTO>> SearchProductsAsync(string searchTerm);
 
         public Task<List<ReadProductDTO>> GetProductPage(int take, int skip);
-
+        public Task<bool> UpdateProductQuantity(int id, int quantity, string token);
         public Task<string> SearchProductsOdataAsync(string searchTerm, int categoryID, int status, double minPrice, double maxPrice, int take, int skip);
     }
 }

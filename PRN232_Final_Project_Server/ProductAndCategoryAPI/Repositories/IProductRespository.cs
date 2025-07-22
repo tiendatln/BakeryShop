@@ -12,6 +12,7 @@ namespace ProductAndCategoryAPI.Repositories
         Task<bool> DeleteProductAsync(int id);
         Task<IEnumerable<Product>> GetProductsByCategoryIdAsync(int categoryId);
         Task<IEnumerable<Product>> SearchProductsAsync(string searchTerm);
+        Task<bool> UpdateQuantityAsync(int id, int quantity);
         IQueryable<Product> GetAllProduct();
     }
 }

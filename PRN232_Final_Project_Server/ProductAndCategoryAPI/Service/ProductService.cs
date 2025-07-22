@@ -83,7 +83,10 @@ namespace ProductAndCategoryAPI.Service
             var products = await _productRepository.SearchProductsAsync(searchTerm);
             return _mapper.Map<IEnumerable<ReadProductDTO>>(products);
         }
-
+        public async Task<bool> UpdateQuantityAsync(int id, int quantity)
+        {
+            return await _productRepository.UpdateQuantityAsync(id, quantity);
+        }
         public IQueryable<Product> GetAllProductForOData()
         {
             return _productRepository.GetAllProduct();

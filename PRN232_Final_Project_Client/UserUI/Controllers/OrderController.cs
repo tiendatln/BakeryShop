@@ -150,21 +150,10 @@ namespace UserUI.Controllers
                         TotalPrice = unitPrice * cart.Quantity,
                     };
 
-                    await _orderService.CreateOrderDetailAsync(detailDto, orderId.Value, token); // Gọi để tạo OrderDetail
-
-                    var updatedProduct = new UpdateProductDTO
-                    {
-                        ProductID = product.ProductID,
-                        ProductName = product.ProductName,
-                        Description = product.Description,
-                        Price = product.Price,
-                        StockQuantity = newQuantity, // cập nhật tồn kho
-                        CategoryID = product.CategoryID,
-                        ImageURL = product.ImageURL,
-                    };
+                    await _orderService.CreateOrderDetailAsync(detailDto, orderId.Value, token); // Gọi để tạo 
 
                     // update product stock quantity
-                    await _productService.UpdateProductAsync(updatedProduct, token);
+                    await _productService.UpdateProductQuantity(product.ProductID,newQuantity, token);
 
                     // delete cart item after order created
                     await _cartService.DeleteCartAsync(cart.CartID, token);

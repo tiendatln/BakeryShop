@@ -1,9 +1,13 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DTOs.ProductDTO
 {
-    public class UpdateProductDTO
+    public class UpdateProductAdminDTO
     {
         public int ProductID { get; set; }
         [Required(ErrorMessage = "Please Enter Name Product")]
@@ -17,7 +21,6 @@ namespace DTOs.ProductDTO
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryID { get; set; }
         public DateTime CreatedDate { get; set; } = default;
-        //public string ImageUrl { get; set; } = string.Empty;
         public bool IsAvailable { get; set; }
     }
 }

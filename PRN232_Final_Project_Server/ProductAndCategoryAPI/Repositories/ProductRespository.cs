@@ -57,6 +57,15 @@ namespace ProductAndCategoryAPI.Repositories
                 .Where(p => p.ProductName.Contains(searchTerm)).ToListAsync();
         }
 
+        public async Task<bool> UpdateQuantityAsync(int id, int quantity)
+        {
+            var product = await GetProductByIdAsync(id);
+            if (product == null) return false;
+            product.StockQuantity = quantity;
+            _context.Products.Update(product);
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
         public IQueryable<Product> GetAllProduct()
         {
