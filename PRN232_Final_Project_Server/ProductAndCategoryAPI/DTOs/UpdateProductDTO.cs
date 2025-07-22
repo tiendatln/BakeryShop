@@ -17,7 +17,7 @@ namespace ProductAndCategoryAPI.DTOs
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryID { get; set; }
         public DateTime CreatedDate { get; set; } = default;
-        public IFormFile ImageURL { get; set; } = null!;
+        public IFormFile ImageURL { get; set; } = null!; // Assuming this is a file upload, you might want to handle it differently in your service layer
         public bool IsAvailable { get; set; } = default;
     }
 }
