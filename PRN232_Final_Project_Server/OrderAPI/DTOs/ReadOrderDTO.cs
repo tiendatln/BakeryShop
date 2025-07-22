@@ -9,7 +9,7 @@ namespace OrderAPI.DTOs
 
         public int UserID { get; set; }
 
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public DateTime OrderDate { get; set; } 
 
         public decimal TotalAmount { get; set; }
 
