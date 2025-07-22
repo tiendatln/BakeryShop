@@ -15,6 +15,7 @@
     },
 
     // === PRODUCT API ===
+
     {
       "DownstreamPathTemplate": "/api/Products",
       "DownstreamScheme": "https",
@@ -38,6 +39,25 @@
       ],
       "UpstreamPathTemplate": "/products",
       "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/Products/Quantity/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/products/update-quantity/{id}",
+      "UpstreamHttpMethod": [ "PUT" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "RequireAuthentication": true

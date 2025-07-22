@@ -105,16 +105,16 @@ namespace ProductAndCategoryAPI.Controllers
         // GET: api/ProductsQuantity/{id}/{quantity}
         // This endpoint is used to update the quantity of a 
         // product by its ID. It returns the updated product details.
-        //[HttpPut("Quantity/{id}")]
-        //public async Task<ActionResult<ReadProductDTO>> GetUpdateQuantityProduct(int id,[FromQuery] int quantity)
-        //{
-            
-        //    if (!await _product.UpdateQuantityAsync(id, quantity))
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok();
-        //}
+        [HttpPut("Quantity/{id}")]
+        public async Task<ActionResult<ReadProductDTO>> GetUpdateQuantityProduct(int id, [FromQuery] int quantity)
+        {
+
+            if (!await _product.UpdateQuantityAsync(id, quantity))
+            {
+                return NotFound();
+            }
+            return Ok();
+        }
 
 
         // POST: api/Products
