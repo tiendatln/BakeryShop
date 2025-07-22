@@ -96,23 +96,7 @@
             var token = HttpContext.Session.GetString("AdminToken");
             Console.WriteLine($"Token: {token}");
             try
-            {
-                var product = await _productService.GetProductByIdAsync(productId);
-
-                var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                var userFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "../UserUI/wwwroot");
-                var adminFilePath = Path.Combine(adminfolderPath, product.ImageURL);
-                var userFilePath = Path.Combine(userFolderPath, product.ImageURL);
-
-                if (System.IO.File.Exists(adminFilePath))
-                {
-                    System.IO.File.Delete(adminFilePath); // Delete existing file if it exists
-                }
-                if (System.IO.File.Exists(userFilePath))
-                {
-                    System.IO.File.Delete(userFilePath); // Delete existing file if it exists
-                }
-
+            {       
                 await _productService.DeleteProductAsync(productId, token);
                 return new JsonResult(new { success = true });
             }
@@ -176,47 +160,20 @@
         /// <returns>The <see cref="Task{IActionResult}"/></returns>
         public async Task<IActionResult> OnPostCreateAsync(IFormFile ImageFile)
         {
-            if (ImageFile != null && ImageFile.Length > 0)
-            {
-                // Save the image to a specific path, e.g., wwwroot/images
-                var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
-                var userFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "../UserUI/wwwroot", "img/product");
-                var fileName = Path.GetFileName(ImageFile.FileName);
-                var adminFilePath = Path.Combine(adminfolderPath, fileName);
-                var userFilePath = Path.Combine(userFolderPath, fileName);
-                if (!System.IO.File.Exists(adminFilePath))
-                {
-                    Directory.CreateDirectory(adminfolderPath);
-                    using (var stream = new FileStream(adminFilePath, FileMode.Create))
-                    {
-                        await ImageFile.CopyToAsync(stream); // Save the uploaded file
-                    }
-                }
-                if (!System.IO.File.Exists(userFilePath))
-                {
-                    Directory.CreateDirectory(userFolderPath);
-                    using (var stream = new FileStream(userFilePath, FileMode.Create))
-                    {
-                        await ImageFile.CopyToAsync(stream); // Save the uploaded file
-                    }
-                }
-
-                CreateProduct.ImageURL = $"img/product/{fileName}"; // Set the image URL
-            }
-            else
-            {
-                CreateProduct.ImageURL = string.Empty; // Set default or empty if no image provided
-            }
             var token = HttpContext.Session.GetString("AdminToken");
-            Console.WriteLine($"Token: {token}");
-            _ = SignalRPlay();
-            var createdProduct = await _productService.CreateProductAsync(CreateProduct, token);
+            using var stream = ImageFile.OpenReadStream();
+            var createdProduct = await _productService.CreateProductAsync(
+                CreateProduct,
+                stream,
+                token
+            );
 
             if (createdProduct == null)
             {
                 ModelState.AddModelError(string.Empty, "Failed to create product.");
                 return Page();
             }
+
             return RedirectToPage("ProductManagement");
         }
 
@@ -227,52 +184,12 @@
         /// <returns>The <see cref="Task{IActionResult}"/></returns>
         public async Task<IActionResult> OnPostUpdateAsync(IFormFile ImageFile)
         {
-            if (ImageFile != null && ImageFile.Length > 0)
-            {
-                // Save the image to a specific path, e.g., wwwroot/images
-                var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
-                var userFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "../UserUI/wwwroot", "img/product");
-                var fileName = Path.GetFileName(ImageFile.FileName);
-                var adminFilePath = Path.Combine(adminfolderPath, fileName);
-                var userFilePath = Path.Combine(userFolderPath, fileName);
-                if (!System.IO.File.Exists(adminFilePath))
-                {
-                    System.IO.File.Delete(adminFilePath); // Delete existing file if it exists
-                    Directory.CreateDirectory(adminfolderPath);
-                    using (var stream = new FileStream(adminFilePath, FileMode.Create))
-                    {
-                        await ImageFile.CopyToAsync(stream); // Save the uploaded file
-                    }
-                }
-                if (!System.IO.File.Exists(userFilePath))
-                {
-                    System.IO.File.Delete(userFilePath); // Delete existing file if it exists
-                    Directory.CreateDirectory(userFolderPath);
-                    using (var stream = new FileStream(userFilePath, FileMode.Create))
-                    {
-                        await ImageFile.CopyToAsync(stream); // Save the uploaded file
-                    }
-                }
-                UpdateProduct.ImageURL = $"img/product/{fileName}"; // Set the image URL
-            }
-            else
-            {
-                var existingProduct = await _productService.GetProductByIdAsync(UpdateProduct.ProductID);
-                if (existingProduct != null)
-                {
-                    UpdateProduct.ImageURL = existingProduct.ImageURL; // Retain the existing image URL if no new image is provided
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Product not found.");
-                    return Page();
-                }
-            }
+            
             var token = HttpContext.Session.GetString("AdminToken");
             Console.WriteLine($"Token: {token}");
 
-            
-            var updatedProduct = await _productService.UpdateProductAsync(UpdateProduct, token);
+            using var stream = ImageFile.OpenReadStream();
+            var updatedProduct = await _productService.UpdateProductAsync(UpdateProduct, stream, token);
             if (updatedProduct == null)
             {
                 ModelState.AddModelError(string.Empty, "Failed to update product.");
