@@ -63,7 +63,7 @@ builder.Services.AddHttpClient("UserAPI", client =>
 
 builder.Services.AddHttpClient("ProductAndCategoryAPI", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7016"); // Adjust the base address as needed
+    client.BaseAddress = new Uri("https://productapi-o7e6.onrender.com"); // Adjust the base address as needed
 });
 
 builder.Services.AddHttpClient("CartAPI", client =>

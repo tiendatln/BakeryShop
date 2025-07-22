@@ -92,7 +92,6 @@ namespace Service.Services
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             using var content = new MultipartFormDataContent();
-
             content.Add(new StringContent(productDto.ProductID.ToString()), "ProductID");
             content.Add(new StringContent(productDto.ProductName), "ProductName");
             content.Add(new StringContent(productDto.Description), "Description");
@@ -102,10 +101,14 @@ namespace Service.Services
             content.Add(new StringContent(productDto.CreatedDate.ToString("o")), "CreatedDate");
             content.Add(new StringContent(productDto.IsAvailable.ToString()), "IsAvailable");
 
-            var fileContent = new StreamContent(imageStream);
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
-            content.Add(fileContent, "ImageURL", "image.jpg");
+            if (imageStream != null)
+            {
+                if (imageStream.CanSeek) imageStream.Position = 0;
 
+                var fileContent = new StreamContent(imageStream);
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+                content.Add(fileContent, "ImageURL", "image.jpg"); // "ImageURL" phải khớp DTO
+            }
             var response = await _httpClient.PutAsync($"/products/{productDto.ProductID}", content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<UpdateProductDTO>();
