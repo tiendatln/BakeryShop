@@ -109,6 +109,26 @@ namespace Service.Services
                 fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
                 content.Add(fileContent, "ImageURL", "image.jpg"); // "ImageURL" phải khớp DTO
             }
+
+
+            // thêm các phần như bạn đang làm...
+
+            foreach (var part in content)
+            {
+                var disposition = part.Headers.ContentDisposition;
+                Console.WriteLine($"Name: {disposition?.Name}");
+                Console.WriteLine($"FileName: {disposition?.FileName}");
+                Console.WriteLine($"Content-Type: {part.Headers.ContentType}");
+
+                if (part is StringContent stringContent)
+                {
+                    var value = await stringContent.ReadAsStringAsync();
+                    Console.WriteLine($"Value: {value}");
+                }
+            }
+
+
+
             var response = await _httpClient.PutAsync($"/products/{productDto.ProductID}", content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<UpdateProductDTO>();

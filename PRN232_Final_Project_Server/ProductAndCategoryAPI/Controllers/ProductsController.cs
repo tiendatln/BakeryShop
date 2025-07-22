@@ -57,7 +57,7 @@ namespace ProductAndCategoryAPI.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("Admin/{id}")]
+        [HttpPut("{id}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> PutProduct(int id, [FromForm] UpdateProductDTO product)
         {
@@ -135,7 +135,7 @@ namespace ProductAndCategoryAPI.Controllers
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(product.ImageURL.FileName);
+            var uniqueFileName = product.ImageURL.FileName;
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))

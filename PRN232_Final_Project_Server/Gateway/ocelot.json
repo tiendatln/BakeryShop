@@ -47,7 +47,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Products/Admin/{id}",
+      "DownstreamPathTemplate": "/api/Products/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -102,22 +102,6 @@
       "UpstreamHttpMethod": [ "GET" ],
       "Forwarding": {
         "Query": true
-      }
-    },
-    {
-      "DownstreamPathTemplate": "/api/Products/Quantity/{id}",
-      "DownstreamScheme": "https",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "productapi-o7e6.onrender.com",
-          "Port": 443
-        }
-      ],
-      "UpstreamPathTemplate": "/products/update-quantity/{id}",
-      "UpstreamHttpMethod": [ "PUT" ],
-      "AuthenticationOptions": {
-        "AuthenticationProviderKey": "Bearer",
-        "RequireAuthentication": true
       }
     },
     {
