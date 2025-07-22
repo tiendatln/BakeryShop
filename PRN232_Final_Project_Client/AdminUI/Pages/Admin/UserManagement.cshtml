@@ -48,9 +48,9 @@
                 currentPage = 1;
                 loadUsers();
             });
-
+            const env_notifi = '@Environment.GetEnvironmentVariable("ENV_NOTIFI_API")';
             const connection = new signalR.HubConnectionBuilder()
-                .withUrl("https://localhost:7126/notificationHub")
+                .withUrl(`${env_notifi}/notificationHub`)
                 .build();
 
             connection.start()

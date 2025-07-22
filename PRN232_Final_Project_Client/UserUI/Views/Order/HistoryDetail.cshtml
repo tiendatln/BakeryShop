@@ -13,22 +13,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BakeryShop</title>
 
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-@*     <link rel="stylesheet" href="~/css/Cart.css" asp-append-version="true"> *@
-
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-
-    <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-
     <style>
         body {
             background: linear-gradient(135deg, #fff5f0 0%, #ffe8d9 100%);
@@ -182,6 +166,7 @@
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.js"></script>
 
     <script>
+        const env_img = '@Environment.GetEnvironmentVariable("ENV_PRODUCT_IMG")';
         var result = @Html.Raw(Json.Serialize(ViewBag.Order));
         var products = @Html.Raw(Json.Serialize(ViewBag.Products));
         console.log("result:", result);
@@ -214,7 +199,7 @@
             row.innerHTML = `
                     <td class="text-center">${index + 1}</td>
                     <td class="text-center">
-                        <img src="/${product.image}" class="product-image rounded" alt="${product.productName}" width="80" height="80">
+                        <img src="${env_img}/${product.image}" class="product-image rounded" alt="${product.productName}" width="80" height="80">
                     </td>
                     <td class="text-center">${product?.name ?? 'N/A'}</td>
                     <td class="text-center">${detail.unitPrice}</td>

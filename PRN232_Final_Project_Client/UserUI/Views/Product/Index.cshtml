@@ -828,9 +828,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 
     <script>
-
+        const env_notifi = '@Environment.GetEnvironmentVariable("ENV_NOTIFI_API")';
+        const env_img = '@Environment.GetEnvironmentVariable("ENV_PRODUCT_IMG")';
                        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("https://localhost:7126/notificationHub")
+            .withUrl(`${env_notifi}/notificationHub`)
             .withAutomaticReconnect()
             .build();
      
@@ -860,14 +861,21 @@
 
 
             $(document).ready(function () {
-            const page = sessionStorage.getItem("currentPage");
+          
             if (isNaN(page) || page < 1) {
                 loadProducts(1);
             } else {
-                loadProducts(page);
+                loadProducts(1);
             }
         });
          $(document).ready(function () {
+                   $('.category-link').on('click', function () {
+          $('.category-link').removeClass('active'); // bỏ class active khỏi các thẻ khác
+          $(this).addClass('active'); // thêm class active cho thẻ được click
+
+          $('#globalSearchInputProduct').trigger('input'); // kích hoạt sự kiện tìm kiếm
+        });
+
             $('#globalSearchInputProduct').on('input change', function () {
                 const query = $(this).val();
                 if (query.length < 1) {
@@ -1017,14 +1025,14 @@
                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
                         <a class="product-card fade-in scroll-reveal" href="/Detail/Index?productId=${product.ProductID}" style=" animation-delay: ${index * 0.1}s;">
                             <div class="product-image">
-                                <img src="https://localhost:7016/${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
+                                <img src="${env_img}${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
                             </div>
                             <div class="product-info">
                                 <h3 class="product-name">${product.ProductName}</h3>
                                 <div class="product-price">$${product.Price}</div>
-                                <button class="add-to-cart-btn" onclick="event.preventDefault(); addRipple(event);">
-                                    <i class="fas fa-shopping-cart"></i> Add to Cart
-                                </button>
+                                <button class="add-to-cart-btn" onclick="addRipple(event);">
+                                      <i class="fas fa-shopping-cart"></i> Add to Cart
+                                 </button>
                             </div>
                         </a>
                     </div>`;
@@ -1033,7 +1041,7 @@
                         const html=`<div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
             <div class="product-card">
                 <div class="product-image">
-                    <img src="https://localhost:7016/${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
+                    <img src="${env_img}${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
                     <div class="out-of-stock-overlay">HẾT HÀNG</div>
                 </div>
                 <div class="product-info">
