@@ -14,7 +14,7 @@ namespace ProductAndCategoryAPI.DTOs
         public int StockQuantity { get; set; }
         [Required(ErrorMessage = "Please select a category.")]
         public int CategoryID { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Today;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         [Required]
         public IFormFile ImageURL { get; set; } = null!; // Assuming this is a file upload, you might want to handle it differently in your service layer
         public bool IsAvailable { get; set; } = true;

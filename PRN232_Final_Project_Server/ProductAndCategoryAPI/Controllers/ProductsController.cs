@@ -61,9 +61,24 @@ namespace ProductAndCategoryAPI.Controllers
         public async Task<IActionResult> PutProduct(int id, [FromForm] UpdateProductDTO product)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var existingProduct = await _product.GetProductByIdAsync(product.ProductID);
+
+            // Khớp ID
+            if (id != product.ProductID)
+            {
+                ModelState.AddModelError("", "ProductID mismatch.");
+                return BadRequest(ModelState);
+            }
+
+            var existingProduct = await _product.GetProductByIdAsync(id);
+            if (existingProduct == null)
+            {
+                ModelState.AddModelError("", "Product not found.");
+                return BadRequest(ModelState);
+            }
+
             var uniqueFileName = string.Empty;
             var newImageURL = string.Empty;
+
             if (product.ImageURL != null && product.ImageURL.Length > 0)
             {
                 var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
@@ -76,31 +91,25 @@ namespace ProductAndCategoryAPI.Controllers
                 if (System.IO.File.Exists(oldFilePath) && existingProduct.ImageURL != newImageURL)
                 {
                     System.IO.File.Delete(oldFilePath);
-                    using (var stream = new FileStream(adminFilePath, FileMode.Create))
-                    {
-                        await product.ImageURL.CopyToAsync(stream);
-                    }
                 }
 
-
+                using (var stream = new FileStream(adminFilePath, FileMode.Create))
+                {
+                    await product.ImageURL.CopyToAsync(stream);
+                }
             }
             else
             {
-                
-                if (existingProduct != null)
-                {
-                    uniqueFileName = existingProduct.ImageURL;
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Product not found.");
-                    return BadRequest();
-                }
+                uniqueFileName = existingProduct.ImageURL;
+                newImageURL = uniqueFileName; // giữ lại URL cũ
             }
+            Console.WriteLine($"❗ Đang cố cập nhật sản phẩm với ID = {id} và ImageURL = {newImageURL}");
+            Console.WriteLine($"❗ Đang cố cập nhật sản phẩm với Product: {product.ToString()}");
 
             var updatedProduct = await _product.UpdateProductAsync(id, product, newImageURL);
             return Ok(updatedProduct);
         }
+
 
 
 

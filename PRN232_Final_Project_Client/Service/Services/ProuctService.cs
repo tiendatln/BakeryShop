@@ -99,7 +99,9 @@ namespace Service.Services
             content.Add(new StringContent(productDto.Price.ToString()), "Price");
             content.Add(new StringContent(productDto.StockQuantity.ToString()), "StockQuantity");
             content.Add(new StringContent(productDto.CategoryID.ToString()), "CategoryID");
+            productDto.CreatedDate = DateTime.SpecifyKind(productDto.CreatedDate, DateTimeKind.Utc);
             content.Add(new StringContent(productDto.CreatedDate.ToString("o")), "CreatedDate");
+
             content.Add(new StringContent(productDto.IsAvailable.ToString()), "IsAvailable");
 
             var fileContent = new StreamContent(imageStream);

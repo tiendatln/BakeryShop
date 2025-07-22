@@ -303,11 +303,11 @@
 
 <script>
         $(document).ready(function () {
-        const page = sessionStorage.getItem("currentPage");;
+     
         if (isNaN(page) || page < 1) {
             loadProducts(1);
         } else {
-            loadProducts(page);
+            loadProducts(1);
         }
     });
 
@@ -401,7 +401,7 @@
             }
 
             const imageHtml = product.ImageURL
-                ? `<img src="https://localhost:7016/${product.ImageURL}" class="img-thumbnail" style="width:50px;height:50px;" alt="${product.ProductName}">`
+                ? `<img src="/${product.ImageURL}" class="img-thumbnail" style="width:50px;height:50px;" alt="${product.ProductName}">`
                 : `<div class="bg-light text-center d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
                      <i class="fas fa-image text-muted"></i>
                    </div>`;
@@ -550,7 +550,7 @@
 
                 // Show image preview if exists
                 if (data.imageURL) {
-                    $('#previewImg').attr('src', 'https://localhost:7016/' + data.imageURL);
+                    $('#previewImg').attr('src', '/' + data.imageURL);
                     $('#imagePreview').show();
                 }
             },
@@ -633,7 +633,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div class="text-center">
-                                <img src="https://localhost:7016/${data.imageURL || 'assets/images/default-product.jpg'}"
+                                <img src="/${data.imageURL || 'assets/images/default-product.jpg'}"
                                      alt="${data.productName}"
                                      class="img-fluid rounded shadow"
                                      style="max-height: 300px; object-fit: cover;"
