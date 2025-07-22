@@ -152,19 +152,10 @@ namespace UserUI.Controllers
 
                     await _orderService.CreateOrderDetailAsync(detailDto, orderId.Value, token); // Gọi để tạo OrderDetail
 
-                    var updatedProduct = new UpdateProductDTO
-                    {
-                        ProductID = product.ProductID,
-                        ProductName = product.ProductName,
-                        Description = product.Description,
-                        Price = product.Price,
-                        StockQuantity = newQuantity, // cập nhật tồn kho
-                        CategoryID = product.CategoryID,
-                        ImageURL = product.ImageURL,
-                    };
+
 
                     // update product stock quantity
-                    await _productService.UpdateProductAsync(updatedProduct, token);
+                    await _productService.UpdateQuantityAsync(product.ProductID, newQuantity, token);
 
                     // delete cart item after order created
                     await _cartService.DeleteCartAsync(cart.CartID, token);

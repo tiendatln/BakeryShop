@@ -141,6 +141,13 @@ namespace Service.Services
             return await response.Content.ReadFromJsonAsync<List<ReadProductDTO>>();
         }
 
+        public async Task<bool> UpdateQuantityAsync(int id, int quantity, string token)
+        {
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.PutAsJsonAsync($"/products/update-quantity/{id}", quantity);
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<List<ReadProductDTO>> GetProductPage(int take, int skip)
         {
             var response = await _httpClient.GetAsync($"/products/Get?$top={take}&$skip={skip}");
