@@ -105,7 +105,7 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/Products/Quantity",
+      "DownstreamPathTemplate": "/api/Products/Quantity/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {
@@ -113,8 +113,8 @@
           "Port": 443
         }
       ],
-      "UpstreamPathTemplate": "/products/update-quantity",
-      "UpstreamHttpMethod": [ "GET" ],
+      "UpstreamPathTemplate": "/products/update-quantity/{id}",
+      "UpstreamHttpMethod": [ "PUT" ],
       "AuthenticationOptions": {
         "AuthenticationProviderKey": "Bearer",
         "RequireAuthentication": true

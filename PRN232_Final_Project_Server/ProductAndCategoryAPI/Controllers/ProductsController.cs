@@ -62,7 +62,7 @@ namespace ProductAndCategoryAPI.Controllers
         public async Task<IActionResult> PutProduct(int id, [FromForm] UpdateProductDTO product)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var existingProduct = await _product.GetProductByIdAsync(product.ProductID);
+            var existingProduct = await _product.GetProductByIdAsync(id);
             var uniqueFileName = string.Empty;
             var newImageURL = string.Empty;
             if (product.ImageURL != null && product.ImageURL.Length > 0)
@@ -105,8 +105,8 @@ namespace ProductAndCategoryAPI.Controllers
         // GET: api/ProductsQuantity/{id}/{quantity}
         // This endpoint is used to update the quantity of a 
         // product by its ID. It returns the updated product details.
-        [HttpGet("Quantity")]
-        public async Task<ActionResult<ReadProductDTO>> GetUpdateQuantityProduct([FromQuery]int id, [FromQuery]int quantity)
+        [HttpPut("Quantity/{id}")]
+        public async Task<ActionResult<ReadProductDTO>> GetUpdateQuantityProduct(int id,[FromQuery] int quantity)
         {
             
             if (!await _product.UpdateQuantityAsync(id, quantity))

@@ -129,7 +129,7 @@ namespace Service.Services
         public async Task<bool> UpdateProductQuantity(int id, int quantity, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _httpClient.GetAsync($"/products/update-quantity?id={id}&quantity={quantity}");
+            var response = await _httpClient.PutAsync($"/products/update-quantity/{id}?quantity={quantity}", null);
             if (response.IsSuccessStatusCode)
             {
                 return true;
