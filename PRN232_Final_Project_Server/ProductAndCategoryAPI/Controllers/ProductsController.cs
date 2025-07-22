@@ -57,7 +57,7 @@ namespace ProductAndCategoryAPI.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("Admin/{id}")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> PutProduct(int id, [FromForm] UpdateProductDTO product)
         {
@@ -150,7 +150,7 @@ namespace ProductAndCategoryAPI.Controllers
 
 
         // DELETE: api/Products/5
-        [HttpDelete("{id}")]
+        [HttpDelete("Admin/{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _product.GetProductByIdAsync(id);

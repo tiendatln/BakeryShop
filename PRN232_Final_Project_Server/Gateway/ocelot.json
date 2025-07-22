@@ -66,6 +66,25 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/api/Products/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "productapi-o7e6.onrender.com",
+          "Port": 443
+        }
+      ],
+      "UpstreamPathTemplate": "/products/{id}",
+      "UpstreamHttpMethod": [ "PUT", "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "RequireAuthentication": true
+      },
+      "RouteClaimsRequirement": {
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Admin"
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/Products/category/{id}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
