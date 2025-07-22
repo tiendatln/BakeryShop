@@ -18,9 +18,8 @@ namespace ProductAndCategoryAPI.Repositories
         }
         public async Task<Product?> GetProductByIdAsync(int id)
         {
-            _context.ChangeTracker.Clear();
             var product = await _context.Products
-                .Include(p => p.Category) // Include related Category data
+                .Include(p => p.Category) // Include Category details if needed
                 .FirstOrDefaultAsync(p => p.ProductID == id);
             return product;
         }
@@ -58,15 +57,6 @@ namespace ProductAndCategoryAPI.Repositories
                 .Where(p => p.ProductName.Contains(searchTerm)).ToListAsync();
         }
 
-        public async Task<bool> UpdateQuantityAsync(int id, int quantity)
-        {
-            var product = await GetProductByIdAsync(id);
-            if (product == null) return false;
-            product.StockQuantity = quantity;
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
-            return true;
-        }
 
         public IQueryable<Product> GetAllProduct()
         {

@@ -12,7 +12,7 @@ namespace ProductAndCategoryAPI.Service
         Task<bool> DeleteProductAsync(int id);
         Task<IEnumerable<ReadProductDTO>> GetProductsByCategoryIdAsync(int categoryId);
         Task<IEnumerable<ReadProductDTO>> SearchProductsAsync(string searchTerm);
-        Task<bool> UpdateQuantityAsync(int id, int quantity);
+
         IQueryable<Product> GetAllProductForOData();
         IQueryable<ReadProductDTO> GetAllProduct(); 
     }

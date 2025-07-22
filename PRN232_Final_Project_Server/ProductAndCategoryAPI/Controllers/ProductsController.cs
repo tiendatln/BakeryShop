@@ -135,25 +135,6 @@ namespace ProductAndCategoryAPI.Controllers
             return Ok(createdProduct);
         }
 
-        [HttpPut("Quantity/{id}")]
-        public async Task<IActionResult> UpdateProductQuantity(int id, int quantity)
-        {
-            if (quantity < 0)
-            {
-                return BadRequest("Quantity cannot be negative.");
-            }
-            var product = await _product.GetProductByIdAsync(id);
-            if (product == null)
-            {
-                return NotFound("Product not found.");
-            }
-            var updated = await _product.UpdateQuantityAsync(id, quantity);
-            if (!updated)
-            {
-                return BadRequest("Failed to update product quantity.");
-            }
-            return Ok(true);
-        }
 
 
         // DELETE: api/Products/5
