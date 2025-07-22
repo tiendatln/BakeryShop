@@ -1,4 +1,6 @@
 ﻿using DTOs.ProductDTO;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 using Service.BaseService;
 using Service.Interfaces;
 using System;
@@ -6,7 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Net.NetworkInformation;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Service.Services
@@ -56,20 +60,53 @@ namespace Service.Services
             }
         }
 
-        public async Task<ReadProductDTO> CreateProductAsync(CreateProductDTO productDto, string token)
+        public async Task<ReadProductDTO> CreateProductAsync(
+    CreateProductDTO productDto, Stream imageStream, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _httpClient.PostAsJsonAsync("/products", productDto);
+
+            using var content = new MultipartFormDataContent();
+
+            content.Add(new StringContent(productDto.ProductName), "ProductName");
+            content.Add(new StringContent(productDto.Description), "Description");
+            content.Add(new StringContent(productDto.Price.ToString()), "Price");
+            content.Add(new StringContent(productDto.StockQuantity.ToString()), "StockQuantity");
+            content.Add(new StringContent(productDto.CategoryID.ToString()), "CategoryID");
+            content.Add(new StringContent(productDto.CreatedDate.ToString("o")), "CreatedDate");
+            content.Add(new StringContent(productDto.IsAvailable.ToString()), "IsAvailable");
+
+            var fileContent = new StreamContent(imageStream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            content.Add(fileContent, "ImageURL", "image.jpg");
+
+            var response = await _httpClient.PostAsync("/products", content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<ReadProductDTO>();
         }
 
+
+
+
         //Update
-        public async Task<UpdateProductDTO> UpdateProductAsync(UpdateProductDTO productDto, string token)
+        public async Task<UpdateProductDTO> UpdateProductAsync(UpdateProductDTO productDto, Stream imageStream, string token)
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            using var content = new MultipartFormDataContent();
 
-            var response = await _httpClient.PutAsJsonAsync($"/products/{productDto.ProductID}", productDto);
+            content.Add(new StringContent(productDto.ProductID.ToString()), "ProductID");
+            content.Add(new StringContent(productDto.ProductName), "ProductName");
+            content.Add(new StringContent(productDto.Description), "Description");
+            content.Add(new StringContent(productDto.Price.ToString()), "Price");
+            content.Add(new StringContent(productDto.StockQuantity.ToString()), "StockQuantity");
+            content.Add(new StringContent(productDto.CategoryID.ToString()), "CategoryID");
+            content.Add(new StringContent(productDto.CreatedDate.ToString("o")), "CreatedDate");
+            content.Add(new StringContent(productDto.IsAvailable.ToString()), "IsAvailable");
+
+            var fileContent = new StreamContent(imageStream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/jpeg");
+            content.Add(fileContent, "ImageURL", "image.jpg");
+
+            var response = await _httpClient.PutAsync($"/products/{productDto.ProductID}", content);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<UpdateProductDTO>();
         }

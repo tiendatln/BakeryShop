@@ -7,8 +7,8 @@ namespace ProductAndCategoryAPI.Service
     {
         Task<IEnumerable<ReadProductDTO>> GetAllProductsAsync();
         Task<ReadProductDTO> GetProductByIdAsync(int id);
-        Task<Product> CreateProductAsync(CreateProductDTO productDto );
-        Task<UpdateProductDTO> UpdateProductAsync(int id, UpdateProductDTO productDto);
+        Task<Product> CreateProductAsync(CreateProductDTO productDto,string ImageFile);
+        Task<Product> UpdateProductAsync(int id, UpdateProductDTO productDto, string ImageURL);
         Task<bool> DeleteProductAsync(int id);
         Task<IEnumerable<ReadProductDTO>> GetProductsByCategoryIdAsync(int categoryId);
         Task<IEnumerable<ReadProductDTO>> SearchProductsAsync(string searchTerm);

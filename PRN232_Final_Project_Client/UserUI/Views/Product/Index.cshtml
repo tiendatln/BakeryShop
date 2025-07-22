@@ -830,6 +830,7 @@
     <script>
 
         const env = window.myEnvVar = '@Environment.GetEnvironmentVariable("ENV_NOTIFI_API")';
+        const env_img = window.myEnvVar = '@Environment.GetEnvironmentVariable("ENV_PRODUCT_IMG")';
                        const connection = new signalR.HubConnectionBuilder()
             .withUrl(`${env}/notificationHub`)
             .withAutomaticReconnect()
@@ -1018,7 +1019,7 @@
                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
                         <a class="product-card fade-in scroll-reveal" href="/Detail/Index?productId=${product.ProductID}" style=" animation-delay: ${index * 0.1}s;">
                             <div class="product-image">
-                                <img src="${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
+                                <img src="${env_img}${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
                             </div>
                             <div class="product-info">
                                 <h3 class="product-name">${product.ProductName}</h3>
@@ -1034,7 +1035,7 @@
                         const html=`<div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
             <div class="product-card">
                 <div class="product-image">
-                    <img src="${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
+                    <img src="${env_img}${product.ImageURL}" alt="${product.ProductName}" loading="lazy">
                     <div class="out-of-stock-overlay">HẾT HÀNG</div>
                 </div>
                 <div class="product-info">

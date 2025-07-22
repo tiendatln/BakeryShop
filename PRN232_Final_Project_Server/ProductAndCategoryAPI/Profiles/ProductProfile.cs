@@ -9,9 +9,14 @@ namespace ProductAndCategoryAPI.Profiles
         public ProductProfile()
         {
             CreateMap<CreateProductDTO, Product>();
+
             CreateMap<UpdateProductDTO, Product>();
+
             CreateMap<Product, ReadProductDTO>();
-            CreateMap<Product, UpdateProductDTO>();
+
+            CreateMap<Product, UpdateProductDTO>()
+                .ForMember(dest => dest.ImageURL, opt => opt.Ignore()); // ✅ fix lỗi
+
             CreateMap<ReadProductDTO, Product>();
         }
     }

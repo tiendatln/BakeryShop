@@ -12,9 +12,9 @@ namespace Service.Interfaces
 
         public Task<ReadProductDTO> GetProductByIdAsync(int productId);
 
-        public Task<ReadProductDTO> CreateProductAsync(CreateProductDTO productDto, string token);
+        public Task<ReadProductDTO> CreateProductAsync(CreateProductDTO productDto, Stream stream, string token);
 
-        public Task<UpdateProductDTO> UpdateProductAsync(UpdateProductDTO productDto, string token);
+        public Task<UpdateProductDTO> UpdateProductAsync(UpdateProductDTO productDto, Stream imageStream, string token);
 
         public Task DeleteProductAsync(int productId, string token);
 

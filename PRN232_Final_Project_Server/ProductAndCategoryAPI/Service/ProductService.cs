@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.OData.UriParser;
 using ProductAndCategoryAPI.DTOs;
 using ProductAndCategoryAPI.Models;
 using ProductAndCategoryAPI.Repositories;
@@ -29,25 +31,46 @@ namespace ProductAndCategoryAPI.Service
             return _mapper.Map<ReadProductDTO>(product);
         }
 
-        public async Task<Product> CreateProductAsync(CreateProductDTO createProductDto)
+        public async Task<Product> CreateProductAsync(CreateProductDTO createProductDto, string ImageFile)
         {
             var product = _mapper.Map<Product>(createProductDto);
+            product.ImageURL = ImageFile; // Assuming ImageFile is the path to the image
             var createdProduct = await _productRepository.CreateProductAsync(product);
-            return _mapper.Map<Product>(createdProduct);
+            return createdProduct;
         }
 
-        public async Task<UpdateProductDTO> UpdateProductAsync(int id, UpdateProductDTO updateProductDto)
+        public async Task<Product> UpdateProductAsync(int id, UpdateProductDTO updateProductDto, string ImageURL)
         {
             var product = _mapper.Map<Product>(updateProductDto);
+            product.ImageURL = ImageURL; // Assuming ImageURL is the path to the image
             var updatedProduct = await _productRepository.UpdateProductAsync(id, product);
             if (updatedProduct == null) return null;
-            return _mapper.Map<UpdateProductDTO>(updatedProduct);
+            return updatedProduct;
         }
 
         public async Task<bool> DeleteProductAsync(int id)
         {
             // Save the image to a specific path, e.g., wwwroot/images
             var product = await _productRepository.GetProductByIdAsync(id);
+            try
+            {
+
+                var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+         
+                var adminFilePath = Path.Combine(adminfolderPath, product.ImageURL);
+       
+
+                if (System.IO.File.Exists(adminFilePath))
+                {
+                    System.IO.File.Delete(adminFilePath); // Delete existing file if it exists
+                }
+                
+
+            }
+            catch (Exception ex)
+            {
+               return false; // Log the exception as needed
+            }
             return await _productRepository.DeleteProductAsync(id);
         }
         public async Task<IEnumerable<ReadProductDTO>> GetProductsByCategoryIdAsync(int categoryId)

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.Server;
 using ProductAndCategoryAPI.Data;
 using ProductAndCategoryAPI.DTOs;
+using ProductAndCategoryAPI.Migrations;
 using ProductAndCategoryAPI.Models;
 using ProductAndCategoryAPI.Service;
 using System;
@@ -20,10 +21,12 @@ namespace ProductAndCategoryAPI.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _product;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductsController(IProductService product)
+        public ProductsController(IProductService product, IWebHostEnvironment env)
         {
             _product = product;
+            _env = env;
         }
 
         // GET: api/Products
@@ -55,41 +58,83 @@ namespace ProductAndCategoryAPI.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduct(int id, UpdateProductDTO product)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> PutProduct(int id, [FromForm] UpdateProductDTO product)
         {
-            
-
-            // Nếu cập nhật mà không có ảnh mới, thì giữ nguyên ảnh cũ
-            if (string.IsNullOrWhiteSpace(product.ImageURL))
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+            var existingProduct = await _product.GetProductByIdAsync(product.ProductID);
+            var uniqueFileName = string.Empty;
+            var newImageURL = string.Empty;
+            if (product.ImageURL != null && product.ImageURL.Length > 0)
             {
-                var existing = await _product.GetProductByIdAsync(id);
-                if (existing == null)
+                var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
+                uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(product.ImageURL.FileName);
+                var adminFilePath = Path.Combine(adminfolderPath, uniqueFileName);
+                newImageURL = $"img/product/{uniqueFileName}";
+                Directory.CreateDirectory(adminfolderPath);
+
+                var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingProduct.ImageURL);
+                if (System.IO.File.Exists(oldFilePath) && existingProduct.ImageURL != newImageURL)
                 {
-                    return NotFound();
+                    System.IO.File.Delete(oldFilePath);
+                    using (var stream = new FileStream(adminFilePath, FileMode.Create))
+                    {
+                        await product.ImageURL.CopyToAsync(stream);
+                    }
                 }
 
-                product.ImageURL = existing.ImageURL;
+
+            }
+            else
+            {
+                
+                if (existingProduct != null)
+                {
+                    uniqueFileName = existingProduct.ImageURL;
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Product not found.");
+                    return BadRequest();
+                }
             }
 
-            var updatedProduct = await _product.UpdateProductAsync(id, product);
+            var updatedProduct = await _product.UpdateProductAsync(id, product, newImageURL);
             return Ok(updatedProduct);
         }
+
 
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<CreateProductDTO>> PostProduct(CreateProductDTO product)
+        [Consumes("multipart/form-data")]
+        public async Task<ActionResult<ReadProductDTO>> PostProduct([FromForm] CreateProductDTO product)
         {
-            if (product == null)
-            {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                return BadRequest("Product data is null or image is not provided.");
+            if (product.ImageURL == null || product.ImageURL.Length == 0)
+                return BadRequest("Image file is required.");
+
+            var uploadsFolder = Path.Combine(_env.WebRootPath, "img/product");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
             }
 
-            var createdProduct = await _product.CreateProductAsync(product);
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(product.ImageURL.FileName);
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await product.ImageURL.CopyToAsync(stream);
+            }
+
+            var createdProduct = await _product.CreateProductAsync(product, $"img/product/{uniqueFileName}");
             return Ok(createdProduct);
         }
+
 
 
         // DELETE: api/Products/5
