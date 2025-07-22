@@ -62,13 +62,13 @@ namespace ProductAndCategoryAPI.Controllers
         public async Task<IActionResult> PutProduct(int id, [FromForm] UpdateProductDTO product)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var existingProduct = await _product.GetProductByIdAsync(id);
+            var existingProduct = await _product.GetProductByIdAsync(product.ProductID);
             var uniqueFileName = string.Empty;
             var newImageURL = string.Empty;
             if (product.ImageURL != null && product.ImageURL.Length > 0)
             {
                 var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
-                uniqueFileName = product.ImageURL.FileName;
+                uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(product.ImageURL.FileName);
                 var adminFilePath = Path.Combine(adminfolderPath, uniqueFileName);
                 newImageURL = $"img/product/{uniqueFileName}";
                 Directory.CreateDirectory(adminfolderPath);
@@ -77,12 +77,12 @@ namespace ProductAndCategoryAPI.Controllers
                 if (System.IO.File.Exists(oldFilePath) && existingProduct.ImageURL != newImageURL)
                 {
                     System.IO.File.Delete(oldFilePath);
-                    
+                    using (var stream = new FileStream(adminFilePath, FileMode.Create))
+                    {
+                        await product.ImageURL.CopyToAsync(stream);
+                    }
                 }
-                using (var stream = new FileStream(adminFilePath, FileMode.Create))
-                {
-                    await product.ImageURL.CopyToAsync(stream);
-                }
+
 
             }
             else
@@ -102,19 +102,7 @@ namespace ProductAndCategoryAPI.Controllers
             var updatedProduct = await _product.UpdateProductAsync(id, product, newImageURL);
             return Ok(updatedProduct);
         }
-        // GET: api/ProductsQuantity/{id}/{quantity}
-        // This endpoint is used to update the quantity of a 
-        // product by its ID. It returns the updated product details.
-        [HttpPut("Quantity/{id}")]
-        public async Task<ActionResult<ReadProductDTO>> GetUpdateQuantityProduct(int id, [FromQuery] int quantity)
-        {
 
-            if (!await _product.UpdateQuantityAsync(id, quantity))
-            {
-                return NotFound();
-            }
-            return Ok();
-        }
 
 
         // POST: api/Products
@@ -135,7 +123,7 @@ namespace ProductAndCategoryAPI.Controllers
                 Directory.CreateDirectory(uploadsFolder);
             }
 
-            var uniqueFileName = product.ImageURL.FileName;
+            var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(product.ImageURL.FileName);
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
@@ -147,10 +135,29 @@ namespace ProductAndCategoryAPI.Controllers
             return Ok(createdProduct);
         }
 
+        [HttpPut("Quantity/{id}")]
+        public async Task<IActionResult> UpdateProductQuantity(int id, int quantity)
+        {
+            if (quantity < 0)
+            {
+                return BadRequest("Quantity cannot be negative.");
+            }
+            var product = await _product.GetProductByIdAsync(id);
+            if (product == null)
+            {
+                return NotFound("Product not found.");
+            }
+            var updated = await _product.UpdateQuantityAsync(id, quantity);
+            if (!updated)
+            {
+                return BadRequest("Failed to update product quantity.");
+            }
+            return Ok(true);
+        }
 
 
         // DELETE: api/Products/5
-        [HttpDelete("Admin/{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _product.GetProductByIdAsync(id);
