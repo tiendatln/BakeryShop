@@ -68,7 +68,7 @@ namespace ProductAndCategoryAPI.Controllers
             if (product.ImageURL != null && product.ImageURL.Length > 0)
             {
                 var adminfolderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img/product");
-                uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(product.ImageURL.FileName);
+                uniqueFileName = product.ImageURL.FileName;
                 var adminFilePath = Path.Combine(adminfolderPath, uniqueFileName);
                 newImageURL = $"img/product/{uniqueFileName}";
                 Directory.CreateDirectory(adminfolderPath);
@@ -77,12 +77,12 @@ namespace ProductAndCategoryAPI.Controllers
                 if (System.IO.File.Exists(oldFilePath) && existingProduct.ImageURL != newImageURL)
                 {
                     System.IO.File.Delete(oldFilePath);
-                    using (var stream = new FileStream(adminFilePath, FileMode.Create))
-                    {
-                        await product.ImageURL.CopyToAsync(stream);
-                    }
+                    
                 }
-
+                using (var stream = new FileStream(adminFilePath, FileMode.Create))
+                {
+                    await product.ImageURL.CopyToAsync(stream);
+                }
 
             }
             else
@@ -105,16 +105,16 @@ namespace ProductAndCategoryAPI.Controllers
         // GET: api/ProductsQuantity/{id}/{quantity}
         // This endpoint is used to update the quantity of a 
         // product by its ID. It returns the updated product details.
-        [HttpPut("Quantity/{id}")]
-        public async Task<ActionResult<ReadProductDTO>> GetUpdateQuantityProduct(int id,[FromQuery] int quantity)
-        {
+        //[HttpPut("Quantity/{id}")]
+        //public async Task<ActionResult<ReadProductDTO>> GetUpdateQuantityProduct(int id,[FromQuery] int quantity)
+        //{
             
-            if (!await _product.UpdateQuantityAsync(id, quantity))
-            {
-                return NotFound();
-            }
-            return Ok();
-        }
+        //    if (!await _product.UpdateQuantityAsync(id, quantity))
+        //    {
+        //        return NotFound();
+        //    }
+        //    return Ok();
+        //}
 
 
         // POST: api/Products

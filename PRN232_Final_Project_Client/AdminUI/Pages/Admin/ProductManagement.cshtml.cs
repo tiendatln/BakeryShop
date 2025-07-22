@@ -189,6 +189,7 @@
             Console.WriteLine($"Token: {token}");
 
             using var stream = ImageFile.OpenReadStream();
+            var name = stream.ToString();
             var updatedProduct = await _productService.UpdateProductAsync(UpdateProduct, stream, token);
             if (updatedProduct == null)
             {
