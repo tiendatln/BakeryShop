@@ -15,11 +15,11 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
-
+var myValue = Environment.GetEnvironmentVariable("ENV_GATEWAY");
 // HttpClient
 builder.Services.AddHttpClient<GatewayHttpClient>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7112/");
+    client.BaseAddress = new Uri(myValue);
 });
 
 // Dependency Injection
