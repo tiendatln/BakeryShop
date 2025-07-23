@@ -8,7 +8,7 @@ namespace DTOs.OrderDTO
 {
     public class CreateOrderDTO
     {
-        public DateTime OrderDate { get; set; } = DateTime.Now;
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
         public decimal TotalAmount { get; set; }
         public string ShippingAddress { get; set; }
         public string OrderStatus { get; set; } = "Pending";

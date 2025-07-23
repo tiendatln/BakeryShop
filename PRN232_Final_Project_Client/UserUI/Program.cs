@@ -4,6 +4,7 @@ using Service.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -16,6 +17,10 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 var myValue = Environment.GetEnvironmentVariable("ENV_GATEWAY");
+if (myValue == null)
+{
+    myValue = "https://gateway-oh3c.onrender.com/"; // Default value if environment variable is not set
+}
 // HttpClient
 builder.Services.AddHttpClient<GatewayHttpClient>(client =>
 {
