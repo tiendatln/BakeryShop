@@ -15,6 +15,10 @@ builder.Services.AddSession(options =>
 });
 
 var myValue = Environment.GetEnvironmentVariable("ENV_GATEWAY");
+if (myValue == null)
+{
+    myValue = "https://gateway-oh3c.onrender.com/"; // Default value if environment variable is not set
+}
 
 // HttpClient
 builder.Services.AddHttpClient<Service.BaseService.GatewayHttpClient>(client =>

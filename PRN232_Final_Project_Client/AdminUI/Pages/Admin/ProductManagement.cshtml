@@ -305,7 +305,7 @@
     
     const env_img = '@Environment.GetEnvironmentVariable("ENV_PRODUCT_IMG")';
         $(document).ready(function () {
-     
+     var page = sessionStorage.getItem('currentPage') || 1;
         if (isNaN(page) || page < 1) {
             loadProducts(1);
         } else {
