@@ -19,7 +19,7 @@ var myValue = Environment.GetEnvironmentVariable("ENV_GATEWAY");
 // HttpClient
 builder.Services.AddHttpClient<Service.BaseService.GatewayHttpClient>(client =>
 {
-    client.BaseAddress = new Uri("myValue");
+    client.BaseAddress = new Uri(myValue);
 });
 
 // Dependency Injection

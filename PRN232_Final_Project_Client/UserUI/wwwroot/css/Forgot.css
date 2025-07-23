@@ -22,7 +22,7 @@ body {
     align-items: center;
     min-height: 100vh; /* Đảm bảo nó chiếm toàn bộ chiều cao màn hình */
     padding: 2.5rem;
-    background-image: url('/img/PRODUCT/Background/Bakery.jpg');
+    background-image: url('/img/product/background/bakery.jpg');
     background-size: cover;
     background-position: center;
 }
